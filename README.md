@@ -22,4 +22,33 @@ It's free!
 
 The only request when using this project is to reference this repository, the citation/reference when validly occurs provides respect for this work and the authors of the contents used as a reference.
 
+###  Cenário atual
+
+Para cada nova pessoa matriculada na academia, é oferecida uma avaliação física, o qual deve ser feito o agendamento do dia e horário a partir de um formulário disponibilizado via [Google Form](https://docs.google.com/forms/).
+
+Ao realizar a avaliação física, o avaliador anota as informações obtidas em um relatório impresso genérico guardando uma via para a academia e outra para o cliente.
+
+O controle de pagamentos das mensalidades da academia e o controle das vendas e estoque do bar são feitos a partir de uma planilha de Excel.
+
+### As queixas
+
+A principal queixa do meu cliente é em relação a visualização de relatórios de vendas e de pagamentos de mensalidades, que atualmente deve ser feito manualmente todos os meses, bem como uma maneira mais intuitiva de registrar essas ações e que não fosse limitado ao computador onde se localizava o arquivo Excel.
+
+Outra queixa é em relação ao agendamento das avaliações físicas. A utilização do Google Forms não possibilita impor limites dos horários de atendimentos, causando conflitos de horários, agendamentos fora do horário de atendimento, além de que, para visualizar cada agendamento, deve-se acessar a plataforma google e gerar um novo relatório do google Forms.
+
+Sobre as avaliações físicas, a principal queixa é a impossibilidade de fornecer facilmente uma visualização da evolução física dos clientes da empresa, como também o fato de ter que armazenar fisicamente os relatórios de cada cliente. 
+
+### Proposta
+
+De maneira inexperiente das novas tecnologias, inicialmente propus realizar um aplicativo utilizando [Windows Forms com banco de dados local](https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-) . Porém percebi que essa abordagem não solucionaria uma das necessidades dos clientes que é a alta disponibilidade, uma vez que um dos proprietários trabalha em outra cidade e gostaria de acompanhar as informações da academia em tempo real de onde estiver. 
+
+Com isso em mente, propus reiniciar o projeto, dessa vez disponibilizando as principais funcionalidades de forma online através de um Web Service, e como forma de acessar essas funcionalidades, propus a criação de um Aplicativo Mobile e um Web Site com utilização tanto dos clientes da academia, como também para uso administrativo pelos proprietários.
+
+Para solucionar o problema dos agendamentos de horários da avaliação física propus a utilização do serviço chamado [Calendly](https://calendly.com/), que desde os recursos gratuitos disponibilizados soluciona as necessidades referente aos agendamentos, além de disponibilizar também:
+
+* Integração com agendas dos celulares como Calendário do Google e Outlook .
+* Facilidade na integração a Sites.
+* APIs de integrações.
+
+
 ## Some Observations about this App 
