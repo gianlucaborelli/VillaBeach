@@ -1,4 +1,6 @@
-# VillaBeach Project - Web Service
+<div align=Center>
+<h1>:sunrise: VillaBeach Project - Web Service</h1>
+</div>
 
 Projeto desenvolvido em substituição ao [Projeto winForm VillaBeach](https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-), que teve seu desenvolvimento descontinuado, buscando melhor atender as necessidades do cliente, como alta disponibilidade e multiplataforma.
 
