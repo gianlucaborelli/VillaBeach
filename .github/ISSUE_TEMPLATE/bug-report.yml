@@ -1,0 +1,52 @@
+name: 🐞 Bug or error report
+description: Report an anomaly or unexpected behavior.
+labels: ['Needs: Triage :mag:', 'type:bug-suspected']
+title: "[Bug]: "
+body:
+  - type: markdown
+    attributes:
+      value: |
+
+        Thank you for reporting a bug! Use the sections below to submit a bug **only** if it relates to this repository.
+
+        - All bug reports are welcome!
+        - This  repository is maintained voluntarily. Please be courteous and patient. 🙂
+        - Remember to include sufficient details and context.
+        - If you have multiple questions, suggestions, or bugs, please submit them in separate issues.
+        - Pull requests will be accepted. If you know how to fix it - go ahead! If you know how to make it - go ahead!
+
+        Please provide the following details about the issue you encountered.  *Issues that do not provide the information requested in this form will be flagged as **incomplete** & automatically closed.*
+
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can I get in touch with you if I need more info?
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: Also tell us, what did you expect to happen?
+      placeholder: Tell us what you see!
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: What browsers are you seeing the problem on?
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant log output
+      description: Please copy and paste any relevant log output. This will be automatically formatted into code, so no need for backticks.
+      render: shell 
