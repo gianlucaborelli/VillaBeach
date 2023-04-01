@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class AddressEntity: BaseEntity
+    public class Address: BaseEntity
     {
         private string _postalCode;
         public string PostalCode

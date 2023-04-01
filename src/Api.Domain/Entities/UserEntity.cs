@@ -47,7 +47,7 @@ namespace Api.Domain.Entities
         }
         private GenderEnum _gender = GenderEnum.RatherNotSay;
 
-        public List<ContactEntity> ContactList
+        public List<Contact> ContactList
         {
             get
             {
@@ -58,7 +58,7 @@ namespace Api.Domain.Entities
                 _contactList.AddRange(value);
             }
         }
-        private List<ContactEntity> _contactList = new();
+        private List<Contact> _contactList = new();
 
 
     }

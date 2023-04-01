@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Sales : BaseEntity
+    public class Sale : BaseEntity
     {
         public List<TransactionProduct> TransactionProducts = new();
 

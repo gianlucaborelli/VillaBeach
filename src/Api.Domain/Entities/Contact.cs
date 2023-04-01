@@ -7,7 +7,7 @@ using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Entities
 {
-    public class ContactEntity: BaseEntity
+    public class Contact: BaseEntity
     {
         
         public ContactTypeEnum ContactType {get;set;}
