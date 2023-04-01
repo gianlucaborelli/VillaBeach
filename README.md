@@ -2,15 +2,17 @@
 <h1>:sunrise: VillaBeach Project - Web Service</h1>
 </div>
 
-Projeto desenvolvido em substituição ao [Projeto winForm VillaBeach](https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-), que teve seu desenvolvimento descontinuado, buscando melhor atender as necessidades do cliente, como alta disponibilidade e multiplataforma.
+<img align="right" height="400em" src="https://github.com/gianlucaborelli/VillaBeach-WebService/blob/cd5a93ba24ef494676f7b8106b03211dd4824bb3/img/DALL%C2%B7E%202023-03-03%2001.16.29%20-%20on%20expressive%20oil%20painting%20voley%20beach%20.png" alt="Voley Beach, OpenIa image">
+
+<p align="justify">Projeto desenvolvido em substituição ao <a target="_blank" href="https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-">projeto Winform</a> , que teve seu desenvolvimento descontinuado, buscando melhor atender as necessidades do cliente, como alta disponibilidade e multiplataforma.</p>
 
 ## About this Project 
 
-This project aims to assist in the management of a company called **VillaBeach** located in the city of [Brodowski](https://www.google.com/maps/place/Brodowski,+SP,+14340-000/@-20.9915545,-47.6566512,14), in the countryside of the State of São Paulo, and its core business is a gym environment with a beach volleyball court joined together with a pub and recreation environment. 
+<p align="justify"> This project aims to assist in the management of a company called <b>VillaBeach</b> located in the city of <a target="_blank" href="https://www.google.com/maps/place/Brodowski,+SP,+14340-000/@-20.9915545,-47.6566512,14">Brodowski</a>, in the countryside of the State of São Paulo, and its core business is a gym environment with a beach volleyball court joined together with a pub and recreation environment. </p>
 
-With the full consent of the company's owners, this project will not have the purpose of selling and monetization, being fully developed to practice my knowledge and compose my portfolio. 
+<p align="justify"> With the full consent of the company's owners, this project will not have the purpose of selling and monetization, being fully developed to practice my knowledge and compose my portfolio. </p>
 
-**OBS:** All third-party material used in this project are included in the "References" tab at the end of this page, as well as included in the source code when applicable. 
+<p align="justify"> <b>OBS:</b> All third-party material used in this project are included in the "References" tab at the end of this page, as well as included in the source code when applicable. </p>
 
 ## Why? 
 
