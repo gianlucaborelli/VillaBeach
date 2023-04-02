@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class TransactionProduct : BaseEntity
+    public class PurchasedProduct: BaseEntity
     {
         private int _amount;
         public int Amount
@@ -16,13 +16,11 @@ namespace Api.Domain.Entities
         }
 
         [ForeignKey("Product")]
-        public Guid _productId;
+        public Guid ProductId;
         public Product Product { get; set; }
 
-        [ForeignKey("Price")]
-        public Guid _priceId;
-        public Price Price { get; set; }
-
-
+        [ForeignKey("ProductPrice")]
+        public Guid ProductPriceId;
+        public ProductPrice ProductPrice { get; set; }
     }
 }

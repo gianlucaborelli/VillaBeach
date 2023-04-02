@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Price : BaseEntity
+    public class ProductPrice :BaseEntity
     {
         private decimal _value;
         public decimal Value
@@ -21,11 +21,9 @@ namespace Api.Domain.Entities
             get { return _current; }
             set { _current = value; }
         }
-
-        [ForeignKey("Product")]
+        
+        [ForeignKey("Product")]        
         public Guid ProductId;
-        public virtual Product Product { get; set; }
-
-
+        public Product Product{get;set;}
     }
 }

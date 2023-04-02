@@ -42,6 +42,6 @@ namespace Api.Domain.Entities
             set { _barCode = value; }
         }
 
-        public virtual List<Price> Prices { get; set; } = new();
+        public virtual List<ProductPrice> Prices { get; set; } = new();
     }
 }

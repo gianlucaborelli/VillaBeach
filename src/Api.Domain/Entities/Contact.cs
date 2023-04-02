@@ -17,7 +17,7 @@ namespace Api.Domain.Entities
         public string Description {get;set;}
 
         [ForeignKey("User")]
-        public Guid _userId;
+        public Guid UserId;
         public UserEntity User {get; set;}
 
     }

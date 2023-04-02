@@ -57,8 +57,8 @@ namespace Api.Domain.Entities
             set { _description = value; }
         }   
                 
-        [ForeignKey("User")]
+        [ForeignKey("User")]        
+        public Guid UserId;
         public UserEntity User{get;set;}
-        public Guid _userId;
     }
 }

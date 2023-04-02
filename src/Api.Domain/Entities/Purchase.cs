@@ -8,10 +8,10 @@ namespace Api.Domain.Entities
 {
     public class Purchase : BaseEntity
     {
-        public List<TransactionProduct> TransactionProducts = new();
+        public List<PurchasedProduct> PurchasedProducts = new();
 
         [ForeignKey("User")]
-        public Guid _userId;
+        public Guid UserId;
         public UserEntity User { get; set; }
     }
 }
