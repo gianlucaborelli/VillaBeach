@@ -21,8 +21,8 @@ namespace Api.Domain.Entities
             set { _amountOfDay = value; }
         }
         
-        private string _description;
-        public string Description
+        private string? _description;
+        public string? Description
         {
             get { return _description; }
             set { _description = value; }

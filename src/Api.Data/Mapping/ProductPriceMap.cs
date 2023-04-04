@@ -12,17 +12,22 @@ namespace Api.Data.Mapping
     {
         public void Configure(EntityTypeBuilder<ProductPrice> builder)
         {
-            builder.ToTable("ProductPrice");
+            builder.ToTable("ProductPrices");
 
             builder.HasKey(p => p.Id);
 
-            builder.HasIndex(p => p.Id);  
+            builder.HasIndex(p => p.Id);
 
-            builder.HasOne(p => p.Product)
-                .WithMany()
-                .HasForeignKey(p => p.ProductId);
+            builder.HasOne(pp => pp.Product)
+                .WithMany(p => p.Prices)
+                .HasForeignKey(pp => pp.ProductId);
 
-            
+            builder.Property(c => c.Value)
+                .IsRequired();
+
+            builder.Property(p => p.Current)
+                    .IsRequired();
+
         }
     }
 }

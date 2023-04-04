@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Enroll: BaseEntity
+    public class Enrollment: BaseEntity
     {      
 
         [ForeignKey("User")]        

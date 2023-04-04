@@ -14,8 +14,8 @@ namespace Api.Domain.Entities
             set { _name = value; }
         }
 
-        private string _description;
-        public string Description
+        private string? _description;
+        public string? Description
         {
             get { return _description; }
             set { _description = value; }
@@ -27,16 +27,9 @@ namespace Api.Domain.Entities
             get { return _stock; }
             set { _stock = value; }
         }
-
-        private string _manufacturer;
-        public string Manufacturer
-        {
-            get { return _manufacturer; }
-            set { _manufacturer = value; }
-        }
-
-        private string _barCode;
-        public string BarCode
+       
+        private string? _barCode;
+        public string? BarCode
         {
             get { return _barCode; }
             set { _barCode = value; }

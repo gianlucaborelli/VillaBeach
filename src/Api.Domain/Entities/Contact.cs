@@ -14,11 +14,10 @@ namespace Api.Domain.Entities
 
         public string ContactForm {get;set;}
         
-        public string Description {get;set;}
-
-        [ForeignKey("User")]
+        public string? Description {get;set;}
+        
         public Guid UserId;
-        public UserEntity User {get; set;}
+        public UserEntity User {get; set;} = new();
 
     }
 }

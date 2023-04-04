@@ -15,12 +15,10 @@ namespace Api.Domain.Entities
             set { _amount = value; }
         }
 
-        [ForeignKey("Product")]
         public Guid ProductId;
-        public Product Product { get; set; }
+        public Product Product { get; set; } = new();
 
-        [ForeignKey("ProductPrice")]
         public Guid ProductPriceId;
-        public ProductPrice ProductPrice { get; set; }
+        public ProductPrice ProductPrice { get; set; } = new();
     }
 }

@@ -50,15 +50,14 @@ namespace Api.Domain.Entities
             set { _state = value; }
         }
         
-        private string _description;
-        public string Description
+        private string? _description;
+        public string? Description
         {
             get { return _description; }
             set { _description = value; }
         }   
-                
-        [ForeignKey("User")]        
+              
         public Guid UserId;
-        public UserEntity User{get;set;}
+        public UserEntity User{get;set;} = new();
     }
 }

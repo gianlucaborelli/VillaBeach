@@ -14,6 +14,6 @@ namespace Api.Domain.Entities
 
         [ForeignKey("PlanPrice")]
         public Guid PriceId { get; set; }
-        public PlanPrice Price { get; set;}
+        public PlanPrice Price { get; set;} = new();
     }
 }

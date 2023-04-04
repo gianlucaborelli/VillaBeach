@@ -21,9 +21,9 @@ namespace Api.Domain.Entities
             get { return _current; }
             set { _current = value; }
         }
-        
-        [ForeignKey("Product")]        
+                  
         public Guid ProductId;
-        public Product Product{get;set;}
+        public Product Product{get;set;} = new();
+
     }
 }

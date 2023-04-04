@@ -9,9 +9,9 @@ namespace Api.Domain.Entities
     public class Purchase : BaseEntity
     {
         public List<PurchasedProduct> PurchasedProducts = new();
-
-        [ForeignKey("User")]
+        
         public Guid UserId;
-        public UserEntity User { get; set; }
+        public UserEntity User { get; set; } = new();
+
     }
 }

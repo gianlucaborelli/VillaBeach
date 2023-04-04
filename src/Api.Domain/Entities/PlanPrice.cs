@@ -21,12 +21,8 @@ namespace Api.Domain.Entities
             get { return _current; }
             set { _current = value; }
         }
-
-        [ForeignKey("Plan")]        
+     
         public Guid PlanId;
-        public Plan Plan{get;set;}
-
-
-
+        public Plan Plan{get;set;} = new();
     }
 }

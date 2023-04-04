@@ -60,6 +60,56 @@ namespace Api.Domain.Entities
         }
         private List<Contact> _contactList = new();
 
+        public List<Address> AddressList
+        {
+            get
+            {
+                return _addressList;
+            }
+            set
+            {
+                _addressList.AddRange(value);
+            }
+        }
+        private List<Address> _addressList = new();
 
+        public List<Enrollment> EnrollmentList
+        {
+            get
+            {
+                return _enrollmentList;
+            }
+            set
+            {
+                _enrollmentList.AddRange(value);
+            }
+        }
+        private List<Enrollment> _enrollmentList = new();
+
+        public List<Purchase> PurchasesList
+        {
+            get
+            {
+                return _purchasesList;
+            }
+            set
+            {
+                _purchasesList.AddRange(value);
+            }
+        }
+        private List<Purchase> _purchasesList = new();
+
+        public List<Sale> SalesList
+        {
+            get
+            {
+                return _salesList;
+            }
+            set
+            {
+                _salesList.AddRange(value);
+            }
+        }
+        private List<Sale> _salesList = new();
     }
 }

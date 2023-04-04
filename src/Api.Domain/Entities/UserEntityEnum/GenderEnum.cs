@@ -11,6 +11,6 @@ namespace Api.Domain.Entities.UserEntityEnum
         [Description("Não Binário")]
         Nonbinary,
         [Description("Prefiro não Responder")]
-        RatherNotSay
+        RatherNotSay = 0
     }
 }
