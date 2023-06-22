@@ -8,22 +8,12 @@ namespace Api.Domain.Entities
 {
     public class ProductPriceEntity :BaseEntity
     {
-        private decimal _value;
-        public decimal Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+        public decimal Value{get;set;}
 
-        private bool _current;
-        public bool Current
-        {
-            get { return _current; }
-            set { _current = value; }
-        }
+        public bool Current{get;set;}
                   
-        public Guid ProductId;
-        public ProductEntity Product{get;set;} = new();
+        public Guid ProductId {get;set;}
+        public ProductEntity Product {get;set;} = new();
 
     }
 }

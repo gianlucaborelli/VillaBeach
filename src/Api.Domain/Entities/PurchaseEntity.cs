@@ -8,9 +8,9 @@ namespace Api.Domain.Entities
 {
     public class PurchaseEntity : BaseEntity
     {
-        public List<PurchasedProductEntity> PurchasedProducts = new();
+        public List<PurchasedProductEntity> PurchasedProducts {get;set;} = new();
         
-        public Guid UserId;
+        public Guid UserId {get;set;}
         public UserEntity User { get; set; } = new();
 
     }

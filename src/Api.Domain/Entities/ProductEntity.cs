@@ -6,34 +6,14 @@ using System.Threading.Tasks;
 namespace Api.Domain.Entities
 {
     public class ProductEntity : BaseEntity
-    {
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+    {        
+        public string Name{get;set;}
 
-        private string? _description;
-        public string? Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }
+        public string? Description{get;set;}
 
-        private int _stock;
-        public int Stock
-        {
-            get { return _stock; }
-            set { _stock = value; }
-        }
-       
-        private string? _barCode;
-        public string? BarCode
-        {
-            get { return _barCode; }
-            set { _barCode = value; }
-        }
+        public int Stock{get;set;}
+        
+        public string? BarCode{get;set;}
 
         public virtual List<ProductPriceEntity> Prices { get; set; } = new();
     }

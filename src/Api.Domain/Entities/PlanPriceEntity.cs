@@ -7,22 +7,12 @@ using System.Threading.Tasks;
 namespace Api.Domain.Entities
 {
     public class PlanPriceEntity : BaseEntity
-    {
-        private decimal _value;
-        public decimal Value
-        {
-            get { return _value; }
-            set { _value = value; }
-        }
+    {        
+        public decimal Value{get;set;}
 
-        private bool _current;
-        public bool Current
-        {
-            get { return _current; }
-            set { _current = value; }
-        }
+        public bool Current{get;set;}
      
-        public Guid PlanId;
+        public Guid PlanId {get;set;}
         public PlanEntity Plan{get;set;} = new();
     }
 }

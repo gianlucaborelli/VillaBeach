@@ -8,56 +8,23 @@ namespace Api.Domain.Entities
 {
     public class AddressEntity: BaseEntity
     {
-        private string _postalCode;
-        public string PostalCode
-        {
-            get { return _postalCode; }
-            set { _postalCode = value; }
-        }
         
-        private string _street;
-        public string Street
-        {
-            get { return _street; }
-            set { _street = value; }
-        }
+        public string PostalCode {get; set;}
         
-        private string _number;
-        public string Number
-        {
-            get { return _number; }
-            set { _number = value; }
-        }
+        public string Street {get; set;}
+        
+        public string Number{get; set;}
+        
+        public string District{get; set;}
+                
+        public string City{get; set;}
 
-        private string _district;
-        public string District
-        {
-            get { return _district; }
-            set { _district = value; }
-        }
         
-        private string _city;
-        public string City
-        {
-            get { return _city; }
-            set { _city = value; }
-        }
-
-        private string _state;
-        public string State
-        {
-            get { return _state; }
-            set { _state = value; }
-        }
+        public string State{get; set;}        
         
-        private string? _description;
-        public string? Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }   
-              
-        public Guid UserId;
-        public UserEntity User{get;set;} = new();
+        public string? Description{get; set;}
+                      
+        public Guid UserId {get; set;}
+        public UserEntity User {get;set;} = new();
     }
 }

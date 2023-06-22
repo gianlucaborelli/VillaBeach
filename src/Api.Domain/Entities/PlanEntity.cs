@@ -7,26 +7,12 @@ namespace Api.Domain.Entities
 {
     public class PlanEntity: BaseEntity
     {
-        private string _name;
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
         
-        private int _amountOfDay;
-        public int AmountOfDay
-        {
-            get { return _amountOfDay; }
-            set { _amountOfDay = value; }
-        }
+        public string Name{get; set;}        
         
-        private string? _description;
-        public string? Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }        
+        public int AmountOfDay{get; set;}        
+        
+        public string? Description{get; set;}
 
         public virtual List<PlanPriceEntity> Prices { get; set; } = new();
     }

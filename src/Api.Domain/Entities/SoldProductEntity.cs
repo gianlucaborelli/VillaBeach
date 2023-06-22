@@ -8,17 +8,12 @@ namespace Api.Domain.Entities
 {
     public class SoldProductEntity : BaseEntity
     {
-        private int _amount;
-        public int Amount
-        {
-            get { return _amount; }
-            set { _amount = value; }
-        }
+        public int Amount{get;set;}
 
-        public Guid ProductId;
+        public Guid ProductId {get;set;}
         public ProductEntity Product { get; set; } = new();
 
-        public Guid ProductPriceId;
+        public Guid ProductPriceId {get;set;}
         public ProductPriceEntity ProductPrice { get; set; } = new();
     }
 }

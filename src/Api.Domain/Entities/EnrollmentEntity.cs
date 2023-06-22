@@ -16,12 +16,7 @@ namespace Api.Domain.Entities
         [ForeignKey("Tuition")]
         public Guid TuitionId {get; set;}
         public TuitionEntity Tuition { get; set; }
-
-        private DateTime _deadline;
-        public DateTime Deadline
-        {
-            get { return _deadline; }
-            set { _deadline = value; }
-        }
+        
+        public DateTime Deadline{get; set;}
     }
 }
