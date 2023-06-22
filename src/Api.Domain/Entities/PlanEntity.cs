@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Product : BaseEntity
+    public class PlanEntity: BaseEntity
     {
         private string _name;
         public string Name
@@ -13,28 +13,21 @@ namespace Api.Domain.Entities
             get { return _name; }
             set { _name = value; }
         }
-
+        
+        private int _amountOfDay;
+        public int AmountOfDay
+        {
+            get { return _amountOfDay; }
+            set { _amountOfDay = value; }
+        }
+        
         private string? _description;
         public string? Description
         {
             get { return _description; }
             set { _description = value; }
-        }
+        }        
 
-        private int _stock;
-        public int Stock
-        {
-            get { return _stock; }
-            set { _stock = value; }
-        }
-       
-        private string? _barCode;
-        public string? BarCode
-        {
-            get { return _barCode; }
-            set { _barCode = value; }
-        }
-
-        public virtual List<ProductPrice> Prices { get; set; } = new();
+        public virtual List<PlanPriceEntity> Prices { get; set; } = new();
     }
 }

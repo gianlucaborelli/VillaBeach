@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class PurchasedProduct: BaseEntity
+    public class PurchasedProductEntity: BaseEntity
     {
         private int _amount;
         public int Amount
@@ -16,10 +16,10 @@ namespace Api.Domain.Entities
         }
 
         public Guid ProductId;
-        public Product Product { get; set; } = new();
+        public ProductEntity Product { get; set; } = new();
 
         public Guid ProductPriceId;
-        public ProductPrice ProductPrice { get; set; } = new();
+        public ProductPriceEntity ProductPrice { get; set; } = new();
 
     }
 }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Enrollment: BaseEntity
+    public class EnrollmentEntity: BaseEntity
     {      
 
         [ForeignKey("User")]        
@@ -15,7 +15,7 @@ namespace Api.Domain.Entities
 
         [ForeignKey("Tuition")]
         public Guid TuitionId {get; set;}
-        public Tuition Tuition { get; set; }
+        public TuitionEntity Tuition { get; set; }
 
         private DateTime _deadline;
         public DateTime Deadline

@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Data.Mapping
 {
-    public class PurchaseMap : IEntityTypeConfiguration<Purchase>
+    public class PurchaseMap : IEntityTypeConfiguration<PurchaseEntity>
     {
-        public void Configure(EntityTypeBuilder<Purchase> builder)
+        public void Configure(EntityTypeBuilder<PurchaseEntity> builder)
         {
             builder.ToTable("Purchases");
 

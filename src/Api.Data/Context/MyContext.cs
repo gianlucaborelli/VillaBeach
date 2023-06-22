@@ -11,18 +11,18 @@ namespace Api.Data.Context
     public class MyContext : DbContext
     {
         public DbSet<UserEntity> Users => Set<UserEntity>();
-        public DbSet<Address> Addresses => Set<Address>();
-        public DbSet<Contact> Contacts => Set<Contact>();
-        public DbSet<ProductPrice> ProductPrices => Set<ProductPrice>();
-        public DbSet<PlanPrice> PlanPrices => Set<PlanPrice>();
-        public DbSet<PurchasedProduct> PurchasedProducts => Set<PurchasedProduct>();
-        public DbSet<SoldProduct> SoldProducts => Set<SoldProduct>();
-        public DbSet<Sale> Sales => Set<Sale>();
-        public DbSet<Purchase> Purchases => Set<Purchase>();
-        public DbSet<Product> Products => Set<Product>();
-        public DbSet<Plan> Plans => Set<Plan>();
-        public DbSet<Enrollment> Enrollments => Set<Enrollment>();
-        public DbSet<Tuition> Tuitions => Set<Tuition>();
+        public DbSet<AddressEntity> Addresses => Set<AddressEntity>();
+        public DbSet<ContactEntity> Contacts => Set<ContactEntity>();
+        public DbSet<ProductPriceEntity> ProductPrices => Set<ProductPriceEntity>();
+        public DbSet<PlanPriceEntity> PlanPrices => Set<PlanPriceEntity>();
+        public DbSet<PurchasedProductEntity> PurchasedProducts => Set<PurchasedProductEntity>();
+        public DbSet<SoldProductEntity> SoldProducts => Set<SoldProductEntity>();
+        public DbSet<SaleEntity> Sales => Set<SaleEntity>();
+        public DbSet<PurchaseEntity> Purchases => Set<PurchaseEntity>();
+        public DbSet<ProductEntity> Products => Set<ProductEntity>();
+        public DbSet<PlanEntity> Plans => Set<PlanEntity>();
+        public DbSet<EnrollmentEntity> Enrollments => Set<EnrollmentEntity>();
+        public DbSet<TuitionEntity> Tuitions => Set<TuitionEntity>();
 
         public MyContext(DbContextOptions<MyContext> options) : base(options)
         {
@@ -33,17 +33,17 @@ namespace Api.Data.Context
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Address>(new AddressMap().Configure);
-            modelBuilder.Entity<Contact>(new ContactMap().Configure);
-            modelBuilder.Entity<Enrollment>(new EnrollmentMap().Configure);
-            modelBuilder.Entity<Plan>(new PlanMap().Configure);
-            modelBuilder.Entity<PlanPrice>(new PlanPriceMap().Configure);
-            modelBuilder.Entity<Product>(new ProductMap().Configure);
-            modelBuilder.Entity<ProductPrice>(new ProductPriceMap().Configure);
-            modelBuilder.Entity<Purchase>(new PurchaseMap().Configure);            
-            modelBuilder.Entity<PurchasedProduct>(new PurchasedProductsMap().Configure);
-            modelBuilder.Entity<Sale>(new SaleMap().Configure);
-            modelBuilder.Entity<SoldProduct>(new SoldProductMap().Configure);
+            modelBuilder.Entity<AddressEntity>(new AddressMap().Configure);
+            modelBuilder.Entity<ContactEntity>(new ContactMap().Configure);
+            modelBuilder.Entity<EnrollmentEntity>(new EnrollmentMap().Configure);
+            modelBuilder.Entity<PlanEntity>(new PlanMap().Configure);
+            modelBuilder.Entity<PlanPriceEntity>(new PlanPriceMap().Configure);
+            modelBuilder.Entity<ProductEntity>(new ProductMap().Configure);
+            modelBuilder.Entity<ProductPriceEntity>(new ProductPriceMap().Configure);
+            modelBuilder.Entity<PurchaseEntity>(new PurchaseMap().Configure);            
+            modelBuilder.Entity<PurchasedProductEntity>(new PurchasedProductsMap().Configure);
+            modelBuilder.Entity<SaleEntity>(new SaleMap().Configure);
+            modelBuilder.Entity<SoldProductEntity>(new SoldProductMap().Configure);
             modelBuilder.Entity<UserEntity>(new UserMap().Configure);
         }
     }

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class PlanPrice : BaseEntity
+    public class PlanPriceEntity : BaseEntity
     {
         private decimal _value;
         public decimal Value
@@ -23,6 +23,6 @@ namespace Api.Domain.Entities
         }
      
         public Guid PlanId;
-        public Plan Plan{get;set;} = new();
+        public PlanEntity Plan{get;set;} = new();
     }
 }

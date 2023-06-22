@@ -47,7 +47,7 @@ namespace Api.Domain.Entities
         }
         private GenderEnum _gender = GenderEnum.RatherNotSay;
 
-        public List<Contact> ContactList
+        public List<ContactEntity> ContactList
         {
             get
             {
@@ -58,9 +58,9 @@ namespace Api.Domain.Entities
                 _contactList.AddRange(value);
             }
         }
-        private List<Contact> _contactList = new();
+        private List<ContactEntity> _contactList = new();
 
-        public List<Address> AddressList
+        public List<AddressEntity> AddressList
         {
             get
             {
@@ -71,9 +71,9 @@ namespace Api.Domain.Entities
                 _addressList.AddRange(value);
             }
         }
-        private List<Address> _addressList = new();
+        private List<AddressEntity> _addressList = new();
 
-        public List<Enrollment> EnrollmentList
+        public List<EnrollmentEntity> EnrollmentList
         {
             get
             {
@@ -84,9 +84,9 @@ namespace Api.Domain.Entities
                 _enrollmentList.AddRange(value);
             }
         }
-        private List<Enrollment> _enrollmentList = new();
+        private List<EnrollmentEntity> _enrollmentList = new();
 
-        public List<Purchase> PurchasesList
+        public List<PurchaseEntity> PurchasesList
         {
             get
             {
@@ -97,9 +97,9 @@ namespace Api.Domain.Entities
                 _purchasesList.AddRange(value);
             }
         }
-        private List<Purchase> _purchasesList = new();
+        private List<PurchaseEntity> _purchasesList = new();
 
-        public List<Sale> SalesList
+        public List<SaleEntity> SalesList
         {
             get
             {
@@ -110,6 +110,6 @@ namespace Api.Domain.Entities
                 _salesList.AddRange(value);
             }
         }
-        private List<Sale> _salesList = new();
+        private List<SaleEntity> _salesList = new();
     }
 }

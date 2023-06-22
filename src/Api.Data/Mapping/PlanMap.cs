@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Data.Mapping
 {
-    public class PlanMap : IEntityTypeConfiguration<Plan>
+    public class PlanMap : IEntityTypeConfiguration<PlanEntity>
     {
-        public void Configure(EntityTypeBuilder<Plan> builder)
+        public void Configure(EntityTypeBuilder<PlanEntity> builder)
         {
             builder.ToTable("Plans");
 

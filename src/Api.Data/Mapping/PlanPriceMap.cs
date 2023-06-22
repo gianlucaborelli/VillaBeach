@@ -7,9 +7,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Api.Data.Mapping
 {
-    public class PlanPriceMap : IEntityTypeConfiguration<PlanPrice>
+    public class PlanPriceMap : IEntityTypeConfiguration<PlanPriceEntity>
     {
-        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<PlanPrice> builder)
+        public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<PlanPriceEntity> builder)
         {
             builder.ToTable("PlanPrices");
 

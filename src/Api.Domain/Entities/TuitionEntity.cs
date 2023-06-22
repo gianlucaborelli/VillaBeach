@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Tuition : BaseEntity
+    public class TuitionEntity : BaseEntity
     {
         [ForeignKey("Plan")]
         public Guid PlanId { get; set; }
-        public Plan Plan { get; set;}
+        public PlanEntity Plan { get; set;}
 
         [ForeignKey("PlanPrice")]
         public Guid PriceId { get; set; }
-        public PlanPrice Price { get; set;} = new();
+        public PlanPriceEntity Price { get; set;} = new();
     }
 }

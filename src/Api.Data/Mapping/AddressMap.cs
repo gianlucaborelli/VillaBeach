@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Data.Mapping
 {
-    public class AddressMap : IEntityTypeConfiguration<Address>
+    public class AddressMap : IEntityTypeConfiguration<AddressEntity>
     {
-        public void Configure(EntityTypeBuilder<Address> builder)
+        public void Configure(EntityTypeBuilder<AddressEntity> builder)
         {
             builder.ToTable("Addresses");
 

@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Data.Mapping
 {
-    public class SoldProductMap : IEntityTypeConfiguration<SoldProduct>
+    public class SoldProductMap : IEntityTypeConfiguration<SoldProductEntity>
     {
-        public void Configure(EntityTypeBuilder<SoldProduct> builder)
+        public void Configure(EntityTypeBuilder<SoldProductEntity> builder)
         {
             builder.ToTable("SoldProducts");
 

@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
-    public class Purchase : BaseEntity
+    public class PurchaseEntity : BaseEntity
     {
-        public List<PurchasedProduct> PurchasedProducts = new();
+        public List<PurchasedProductEntity> PurchasedProducts = new();
         
         public Guid UserId;
         public UserEntity User { get; set; } = new();

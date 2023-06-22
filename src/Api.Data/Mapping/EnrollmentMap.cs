@@ -8,9 +8,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace Api.Data.Mapping
 {
-    public class EnrollmentMap : IEntityTypeConfiguration<Enrollment>
+    public class EnrollmentMap : IEntityTypeConfiguration<EnrollmentEntity>
     {
-        public void Configure(EntityTypeBuilder<Enrollment> builder)
+        public void Configure(EntityTypeBuilder<EnrollmentEntity> builder)
         {
             builder.ToTable("Enrollments");
 
