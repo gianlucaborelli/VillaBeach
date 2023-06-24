@@ -1,4 +1,6 @@
 using Api.CrossCutting.DependencyInjection;
+using Api.CrossCutting.Mappings;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -9,6 +11,16 @@ var builder = WebApplication.CreateBuilder(args);
 
 ConfigureService.ConfigureDependenciesService(builder.Services);
 ConfigureRepository.ConfigureDependenciesRepository(builder.Services);
+
+var mapperConfiguration =new AutoMapper.MapperConfiguration(configuration =>{
+    configuration.AddProfile(new DtoToModelProfile());
+    configuration.AddProfile(new EntityToDtoProfile());
+    configuration.AddProfile(new EntityToModelProfile());
+});
+
+IMapper mapper= mapperConfiguration.CreateMapper();
+
+builder.Services.AddSingleton(mapper);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
