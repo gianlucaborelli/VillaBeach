@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Api.Domain.Entities.UserEntityEnum;
@@ -8,7 +9,9 @@ namespace Api.Domain.Models
 {
     public class UserModel : BaseModel
     {
-
+        [Required(ErrorMessage = "Nome é obrigatório.")]
+        [StringLength(70, ErrorMessage ="Nome deve ter no maximo {1} caracteres.")]
+        [MinLength(5, ErrorMessage = "Nome deve conter no mínimo {1} caracteres.")]
         private string _name = string.Empty;
         public string Name
         {
@@ -16,6 +19,10 @@ namespace Api.Domain.Models
             set { _name = value; }
         }
 
+        [Required(ErrorMessage = "E-mail é obrigatório.")]
+        [EmailAddress(ErrorMessage = "E-mail em formato inválido.")]
+        [StringLength(70, ErrorMessage ="E-mail deve ter no maximo {1} caracteres.")]
+        [MinLength(5, ErrorMessage = "E-mail deve conter no mínimo {1} caracteres.")]
         private string _email = string.Empty;
         public string Email
         {
