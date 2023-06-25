@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Domain.Dtos.Product;
 using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
 using AutoMapper;
@@ -14,11 +15,17 @@ namespace Api.CrossCutting.Mappings
         {
             CreateMap<UserDto, UserEntity>()
                 .ReverseMap();
-
             CreateMap<UserDtoCreateResult, UserEntity>()
                 .ReverseMap();
-
             CreateMap<UserDtoUpdateResult, UserEntity>()
+                .ReverseMap();
+
+
+            CreateMap<ProductEntity, ProductDto>()
+                .ReverseMap();
+            CreateMap<ProductEntity, ProductDtoCreateResult>()
+                .ReverseMap();
+            CreateMap<ProductEntity, ProductDtoUpdateResult>()
                 .ReverseMap();
         }
     }

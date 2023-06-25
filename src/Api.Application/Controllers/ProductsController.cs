@@ -1,25 +1,25 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
-using Api.Domain.Dtos.User;
-using Api.Domain.Entities;
-using Api.Domain.Interfaces.Services.User;
+using Api.Domain.Dtos.Product;
+using Api.Domain.Interfaces.Services.Product;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Api.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UsersController : ControllerBase
-    {
+    public class ProductsController : ControllerBase
+    {        
+        private IProductService _service;
 
-        private IUserService _service;
-
-        public UsersController(IUserService service)
+        public ProductsController(IProductService service)
         {
-            _service =  service;
+            _service = service;
         }
 
         [HttpGet]
@@ -39,7 +39,7 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet]
-        [Route("{id}", Name = "GetUserWithId")]
+        [Route("{id}", Name = "GetProductWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
             if(!ModelState.IsValid)
@@ -56,18 +56,18 @@ namespace Api.Application.Controllers
         }
 
         [HttpPost]        
-        public async Task<ActionResult> Post([FromBody]UserDtoCreate user)
+        public async Task<ActionResult> Post([FromBody]ProductDtoCreateRequest product)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var result = await _service.Post(user);
+                var result = await _service.Post(product);
 
                 if(result != null)
                 {
-                    return Created(new Uri(Url.Link("GetUserWithId", new{ id = result.Id})), result);
+                    return Created(new Uri(Url.Link("GetProductWithId", new{ id = result.Id})), result);
                 }
                 else
                 {
@@ -81,14 +81,14 @@ namespace Api.Application.Controllers
         }
 
         [HttpPut]        
-        public async Task<ActionResult> Put([FromBody]UserDtoUpdateRequest user)
+        public async Task<ActionResult> Put([FromBody]ProductDtoUpdateRequest product)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                var result = await _service.Put(user);
+                var result = await _service.Put(product);
 
                 if(result != null)
                 {
@@ -119,6 +119,7 @@ namespace Api.Application.Controllers
             {
                 return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
             }
-        }
+        }    
+
     }
 }

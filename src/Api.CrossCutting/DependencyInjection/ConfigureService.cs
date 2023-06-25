@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Api.Domain.Interfaces.Services.Product;
 using Api.Domain.Interfaces.Services.User;
 using Api.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
@@ -13,6 +14,8 @@ namespace Api.CrossCutting.DependencyInjection
         public static void ConfigureDependenciesService (IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IUserService, UserService>();
+
+            serviceCollection.AddTransient<IProductService, ProductService>();
         }
     }
 }

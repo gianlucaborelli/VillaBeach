@@ -18,7 +18,7 @@ namespace Api.CrossCutting.DependencyInjection
 
             serviceCollection.AddDbContext<MyContext>(
             options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"))
-);
+            );
         }
     }
 }
