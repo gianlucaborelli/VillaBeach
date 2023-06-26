@@ -40,6 +40,12 @@ namespace Api.Service.Services
             return _mapper.Map<IEnumerable<ProductDto>>(entity);
         }
 
+        public async Task<IEnumerable<ProductDtoAvailableResult>> GetAvailableProducts()
+        {
+            var entity =  await _repository.SelectAsync();
+            return _mapper.Map<IEnumerable<ProductDtoAvailableResult>>(entity);
+        }
+
         public async Task<ProductDtoCreateResult> Post(ProductDtoCreateRequest user)
         {
             var model= _mapper.Map<ProductModel>(user);

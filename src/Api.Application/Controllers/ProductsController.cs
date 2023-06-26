@@ -39,6 +39,23 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet]
+        [Route("Available")]
+        public async Task<ActionResult> GetAllAvailableProducts()
+        {
+            if(!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                return Ok (await _service.GetAvailableProducts());
+            }
+            catch(ArgumentException e)
+            {
+                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet]
         [Route("{id}", Name = "GetProductWithId")]
         public async Task<ActionResult> Get(Guid id)
         {

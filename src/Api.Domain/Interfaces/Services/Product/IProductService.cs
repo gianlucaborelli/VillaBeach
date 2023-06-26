@@ -12,6 +12,8 @@ namespace Api.Domain.Interfaces.Services.Product
 
         Task<IEnumerable<ProductDto>> GetAll ();
 
+        Task<IEnumerable<ProductDtoAvailableResult>> GetAvailableProducts ();
+
         Task<ProductDtoCreateResult> Post (ProductDtoCreateRequest user);
 
         Task<ProductDtoUpdateResult> Put (ProductDtoUpdateRequest user);
