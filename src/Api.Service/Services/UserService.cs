@@ -7,27 +7,23 @@ using Api.Domain.Entities;
 using Api.Domain.Interfaces;
 using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Models;
+using Api.Domain.Repository;
 using AutoMapper;
 
 namespace Api.Service.Services
 {
     public class UserService : IUserService
     {
-        private IRepository<UserEntity> _repository;
+        private IUserRepository _repository;
 
         private readonly IMapper _mapper;
 
-        public UserService(IRepository<UserEntity> repository, IMapper mapper)
+        public UserService(IUserRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
         }
-
-        public async Task<bool> Delete(Guid id)
-        {
-            return await _repository.DeleteAsync(id);
-        }
-
+        
         public async Task<UserDto> Get(Guid id)
         {
             var entity =  await _repository.SelectAsync(id);
@@ -38,6 +34,17 @@ namespace Api.Service.Services
         {
             var entity =  await _repository.SelectAsync();
             return _mapper.Map<IEnumerable<UserDto>>(entity);
+        }
+
+        public async Task<IEnumerable<UserDto>?> FindByName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                return null;
+
+            var entityList= await _repository.FindByName(name);
+
+            return _mapper.Map<IEnumerable<UserDto>?>(entityList);
+            
         }
 
         public async Task<UserDtoCreateResult> Post(UserDtoCreate user)
@@ -54,6 +61,11 @@ namespace Api.Service.Services
             var entity = _mapper.Map<UserEntity>(model);
             var result = await _repository.UpdateAsync(entity);
             return _mapper.Map<UserDtoUpdateResult>(result);
+        }
+
+        public async Task<bool> Delete(Guid id)
+        {
+            return await _repository.DeleteAsync(id);
         }
     }
 }

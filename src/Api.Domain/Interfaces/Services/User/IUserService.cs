@@ -18,5 +18,7 @@ namespace Api.Domain.Interfaces.Services.User
         Task<UserDtoUpdateResult> Put (UserDtoUpdateRequest user);
 
         Task<bool> Delete (Guid id);
+
+        Task<IEnumerable<UserDto>?> FindByName (string name);
     }
 }
