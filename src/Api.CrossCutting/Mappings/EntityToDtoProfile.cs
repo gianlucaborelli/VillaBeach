@@ -33,6 +33,14 @@ namespace Api.CrossCutting.Mappings
             CreateMap<ProductEntity, ProductDtoAvailableResult>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Prices.FirstOrDefault(x => x.Current == true)))
                 .ReverseMap();
+
+            CreateMap<ProductPriceEntity, ProductPriceDto>()
+                .ReverseMap();
+            CreateMap<ProductPriceEntity, ProductPriceDtoCreateResult>()
+                .ReverseMap();
+            CreateMap<ProductPriceEntity, ProductPriceDtoUpdateResult>()
+                .ReverseMap();
+
         }
     }
 }

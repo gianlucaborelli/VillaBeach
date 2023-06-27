@@ -15,7 +15,7 @@ namespace Api.Application.Controllers
     public class UsersController : ControllerBase
     {
 
-        private IUserService _service;
+        private readonly IUserService _service;
 
         public UsersController(IUserService service)
         {

@@ -14,10 +14,13 @@ namespace Api.CrossCutting.Mappings
         public EntityToModelProfile()
         {
             CreateMap<UserEntity, UserModel>()
-            .ReverseMap();
+                .ReverseMap();
 
             CreateMap<ProductEntity, ProductModel>()
-            .ReverseMap();
+                .ReverseMap();
+
+            CreateMap<ProductPriceEntity, ProductPriceModel>()
+                .ReverseMap();
         }
     }
 }

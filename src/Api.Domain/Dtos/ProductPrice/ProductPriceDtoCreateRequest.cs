@@ -1,12 +1,11 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Api.Domain.Entities
+namespace Api.Domain.Dtos.ProductPrice
 {
-    public class ProductPriceEntity :BaseEntity
+    public class ProductPriceDtoCreateRequest
     {
         public decimal Value{get;set;}
 
@@ -14,6 +13,5 @@ namespace Api.Domain.Entities
                   
         public Guid ProductId {get;set;}
 
-        public ProductEntity Product {get;set;}
     }
 }
