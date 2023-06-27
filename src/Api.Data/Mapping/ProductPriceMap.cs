@@ -23,7 +23,8 @@ namespace Api.Data.Mapping
                 .HasForeignKey(pp => pp.ProductId);
 
             builder.Property(c => c.Value)
-                .IsRequired();
+                .IsRequired()
+                .HasPrecision(12,2);
 
             builder.Property(p => p.Current)
                     .IsRequired();
