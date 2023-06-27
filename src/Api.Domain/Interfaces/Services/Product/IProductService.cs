@@ -8,16 +8,18 @@ namespace Api.Domain.Interfaces.Services.Product
 {
     public interface IProductService
     {
-        Task<ProductDto> Get (Guid id);
+        Task<ProductDto> Get(Guid id);
 
-        Task<IEnumerable<ProductDto>> GetAll ();
+        Task<IEnumerable<ProductDto>> GetAll();
 
-        Task<IEnumerable<ProductDtoAvailableResult>> GetAvailableProducts ();
+        Task<IEnumerable<ProductDto>?> FindByName(string name);
 
-        Task<ProductDtoCreateResult> Post (ProductDtoCreateRequest user);
+        Task<IEnumerable<ProductDtoAvailableResult>> GetAvailableProducts();
 
-        Task<ProductDtoUpdateResult> Put (ProductDtoUpdateRequest user);
+        Task<ProductDtoCreateResult> Post(ProductDtoCreateRequest user);
 
-        Task<bool> Delete (Guid id);
+        Task<ProductDtoUpdateResult> Put(ProductDtoUpdateRequest user);
+
+        Task<bool> Delete(Guid id);
     }
 }

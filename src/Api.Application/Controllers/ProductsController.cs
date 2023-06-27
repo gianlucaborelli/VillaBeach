@@ -37,6 +37,30 @@ namespace Api.Application.Controllers
                 return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
             }
         }
+        
+        [HttpGet("findByName/{name}")]
+        public async Task<IActionResult> FindByName(string name)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            if (string.IsNullOrWhiteSpace(name))
+                return BadRequest();
+
+            try
+            {
+                var result = await _service.FindByName(name);
+
+                if (result == null)
+                    return NotFound();
+
+                return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
 
         [HttpGet]
         [Route("Available")]

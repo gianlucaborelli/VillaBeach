@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Data.Context;
 using Api.Data.Repository;
 using Api.Domain.Entities;
@@ -12,7 +8,6 @@ namespace Api.Data.Implementations
 {
     public class UserImplementation : BaseRepository<UserEntity>, IUserRepository
     {
-
         private DbSet<UserEntity> _dataSet;
 
         public UserImplementation(MyContext context):base(context)
