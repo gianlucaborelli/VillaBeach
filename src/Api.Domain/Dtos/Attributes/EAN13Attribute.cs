@@ -11,12 +11,12 @@ namespace Api.Domain.Dtos.Attributes
         protected override ValidationResult IsValid(object value, ValidationContext validationContext)
         {
             if (value == null)
-                throw new ArgumentException("Código de Barras nulo");
+                return new ValidationResult("Código de Barras é obrigatório.");
 
             string barcode = value.ToString();
 
-            if (barcode.Length != 13 || !barcode.All(char.IsDigit))            
-                throw new ArgumentException("O código de barras é inválido. Deve ser um código EAN-13 válido com 13 dígitos.");
+            if (barcode.Length != 13 || !barcode.All(char.IsDigit))
+                return new ValidationResult("Código de barras em formato invalido. Deve ser um código EAN-13 válido com 13 dígitos.");
 
             // Verificar se o código de barras segue a lógica de validação do EAN-13
             int sum = 0;
@@ -35,7 +35,7 @@ namespace Api.Domain.Dtos.Attributes
             if (result)
                 return ValidationResult.Success;
             else
-                throw new ArgumentException("O código de barras é inválido.");
+                return new ValidationResult("Código de barras inválido.");
         }
     }
 }
