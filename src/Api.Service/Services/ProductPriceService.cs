@@ -7,27 +7,22 @@ using Api.Domain.Entities;
 using Api.Domain.Interfaces;
 using Api.Domain.Interfaces.Services.ProductPrice;
 using Api.Domain.Models;
+using Api.Domain.Repository;
 using AutoMapper;
 
 namespace Api.Service.Services
 {
     public class ProductPriceService : IProductPriceService
     {
-        private IRepository<ProductPriceEntity> _repository;
+        private IProductPriceRepository _repository;
 
         private readonly IMapper _mapper;
 
-        public ProductPriceService(IRepository<ProductPriceEntity> repository, IMapper mapper)
+        public ProductPriceService(IProductPriceRepository repository, IMapper mapper)
         {
             _repository = repository;
             _mapper = mapper;
-        }
-
-
-        public async Task<bool> Delete(Guid id)
-        {
-            return await _repository.DeleteAsync(id);
-        }
+        }        
 
         public async Task<ProductPriceDto> Get(Guid id)
         {
@@ -35,26 +30,53 @@ namespace Api.Service.Services
             return _mapper.Map<ProductPriceDto>(entity);
         }
 
-        public async Task<IEnumerable<ProductPriceDto>> GetAll()
+        public async Task<ProductPriceDto> GetCurrentProductPriceByProductId(Guid id)
         {
-            var entity =  await _repository.SelectAsync();
+            var entity =  await _repository.FindCurrentProductPriceByProductId(id);
+            return _mapper.Map<ProductPriceDto>(entity);
+        }        
+
+        public async Task<IEnumerable<ProductPriceDto>?> GetAllByProductId(Guid id)
+        {
+            var entity =  await _repository.FindByProductId(id);
             return _mapper.Map<IEnumerable<ProductPriceDto>>(entity);
         }
 
-        public async Task<ProductPriceDtoCreateResult> Post(ProductPriceDtoCreateRequest user)
+        public async Task<ProductPriceDtoCreateResult> Post(ProductPriceDtoCreateRequest productPrice)
         {
-            var model= _mapper.Map<ProductPriceModel>(user);
+            var model= _mapper.Map<ProductPriceModel>(productPrice);
             var entity = _mapper.Map<ProductPriceEntity>(model);
+
+            var productPriceList = await _repository.FindByProductId(entity.ProductId);
+
+            if(productPriceList != null)
+            {
+                foreach(ProductPriceEntity priceEntity in productPriceList)
+                {
+                    if(priceEntity.Current)
+                    {
+                        priceEntity.Current = false;
+                        await _repository.UpdateAsync(priceEntity);
+                    }
+                }
+            }
+
+            entity.Current = true;
             var result = await _repository.InsertAsync(entity);
             return _mapper.Map<ProductPriceDtoCreateResult>(result);
         }
 
-        public async Task<ProductPriceDtoUpdateResult> Put(ProductPriceDtoUpdateRequest user)
+        public async Task<ProductPriceDtoUpdateResult> Put(ProductPriceDtoUpdateRequest productPrice)
         {
-            var model= _mapper.Map<ProductPriceModel>(user);
+            var model= _mapper.Map<ProductPriceModel>(productPrice);
             var entity = _mapper.Map<ProductPriceEntity>(model);
             var result = await _repository.UpdateAsync(entity);
             return _mapper.Map<ProductPriceDtoUpdateResult>(result);
+        }
+
+        public async Task<bool> Delete(Guid id)
+        {
+            return await _repository.DeleteAsync(id);
         }
     }
 }

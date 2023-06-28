@@ -10,11 +10,13 @@ namespace Api.Domain.Interfaces.Services.ProductPrice
     {
         Task<ProductPriceDto> Get (Guid id);
 
-        Task<IEnumerable<ProductPriceDto>> GetAll ();
+        Task<ProductPriceDto> GetCurrentProductPriceByProductId (Guid id);        
 
-        Task<ProductPriceDtoCreateResult> Post (ProductPriceDtoCreateRequest user);
+        Task<IEnumerable<ProductPriceDto>?> GetAllByProductId (Guid productId);
 
-        Task<ProductPriceDtoUpdateResult> Put (ProductPriceDtoUpdateRequest user);
+        Task<ProductPriceDtoCreateResult> Post (ProductPriceDtoCreateRequest productPrice);
+
+        Task<ProductPriceDtoUpdateResult> Put (ProductPriceDtoUpdateRequest productPrice);
 
         Task<bool> Delete (Guid id);
     }

@@ -12,8 +12,6 @@ namespace Api.Domain.Dtos.ProductPrice
     {        
         [DecimalPrecision(2)]
         public decimal Value{get;set;}
-
-        public bool Current{get;set;}
         
         public Guid ProductId {get;set;}
 

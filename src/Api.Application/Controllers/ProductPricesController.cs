@@ -21,15 +21,31 @@ namespace Api.Application.Controllers
             _service = service;
         }
 
-        [HttpGet]
-        public async Task<ActionResult> GetAll()
+        [HttpGet("findAllByProductId/{productId}")]
+        public async Task<ActionResult> GetAllByProductId(Guid productId)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok(await _service.GetAll());
+                return Ok(await _service.GetAllByProductId(productId));
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
+        [HttpGet("findCurrentPriceByProductId/{productId}")]
+        public async Task<ActionResult> GetCurrentPriceByProductId(Guid productId)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            try
+            {
+                return Ok(await _service.GetCurrentProductPriceByProductId(productId));
             }
             catch (ArgumentException e)
             {
