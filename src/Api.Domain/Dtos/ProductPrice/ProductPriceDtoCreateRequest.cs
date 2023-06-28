@@ -10,6 +10,7 @@ namespace Api.Domain.Dtos.ProductPrice
 {
     public class ProductPriceDtoCreateRequest
     {        
+        [DecimalPrecision(2)]
         public decimal Value{get;set;}
 
         public bool Current{get;set;}
