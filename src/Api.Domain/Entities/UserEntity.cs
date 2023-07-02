@@ -14,14 +14,14 @@ namespace Api.Domain.Entities
 
         public GenderEnum Gender {get;set;} = GenderEnum.RatherNotSay;
 
-        public List<ContactEntity> ContactList {get;set;} = new();
+        public List<ContactEntity> ContactList {get;set;} 
 
-        public List<AddressEntity> AddressList {get;set;} = new();
+        public List<AddressEntity> AddressList {get;set;} 
 
-        public List<EnrollmentEntity> EnrollmentList {get;set;} = new();
+        public List<EnrollmentEntity> EnrollmentList {get;set;} 
 
-        public List<PurchaseEntity> PurchasesList {get;set;} = new();
+        public List<PurchaseEntity> PurchasesList {get;set;} 
 
-        public List<SaleEntity> SalesList {get;set;} = new();
+        public List<SaleEntity> SalesList {get;set;}
     }
 }

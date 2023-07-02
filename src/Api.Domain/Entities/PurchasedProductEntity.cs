@@ -11,10 +11,9 @@ namespace Api.Domain.Entities
         public int Amount {get;set;}
 
         public Guid ProductId {get;set;}
-        public ProductEntity Product { get; set; } = new();
+        public ProductEntity Product { get; set; }
 
         public Guid ProductPriceId {get;set;}
-        public ProductPriceEntity ProductPrice { get; set; } = new();
-
+        public ProductPriceEntity ProductPrice { get; set; } 
     }
 }
