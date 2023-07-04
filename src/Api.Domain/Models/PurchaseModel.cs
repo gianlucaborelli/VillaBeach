@@ -21,5 +21,13 @@ namespace Api.Domain.Models
             get { return _userId; }
             set { _userId = value; }
         }
+
+        private bool _isCompete;
+        public bool IsComplete
+        {
+            get { return _isCompete; }
+            set { _isCompete = value; }
+        }
+        
     }
 }

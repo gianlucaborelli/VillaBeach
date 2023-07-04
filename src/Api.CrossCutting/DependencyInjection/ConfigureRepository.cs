@@ -20,6 +20,7 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddScoped<IUserRepository, UserImplementation>();
             serviceCollection.AddScoped<IProductRepository,ProductImplementation>();
             serviceCollection.AddScoped<IProductPriceRepository,ProductPriceImplementation>();
+            serviceCollection.AddScoped<IPurchaseRepository,PurchaseImplementation>();
 
             serviceCollection.AddDbContext<MyContext>(
             options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"))

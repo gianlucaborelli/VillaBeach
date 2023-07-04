@@ -5,6 +5,7 @@ using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Api.Domain.Dtos.Product;
 using Api.Domain.Dtos.ProductPrice;
+using Api.Domain.Dtos.Purchase;
 using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
 using AutoMapper;
@@ -41,6 +42,12 @@ namespace Api.CrossCutting.Mappings
             CreateMap<ProductPriceEntity, ProductPriceDtoUpdateResult>()
                 .ReverseMap();
 
+            CreateMap<PurchaseEntity, PurchaseDto>()
+                .ReverseMap();
+            CreateMap<PurchaseEntity, PurchaseDtoCreateRequest>()
+                .ReverseMap();
+            CreateMap<PurchaseEntity, PurchaseDtoUpdateRequest>()
+                .ReverseMap();
         }
     }
 }
