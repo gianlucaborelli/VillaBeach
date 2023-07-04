@@ -9,5 +9,7 @@ namespace Api.Domain.Repository
         Task<IEnumerable<ProductPriceEntity>?> FindByProductId (Guid productId);
         
         Task<ProductPriceEntity?> FindCurrentProductPriceByProductId (Guid productId);
+
+        Task<bool> UpdatePricesToNotCurrentByIdProduct(Guid productIds);
     }
 }

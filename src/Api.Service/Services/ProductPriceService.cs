@@ -22,53 +22,42 @@ namespace Api.Service.Services
         {
             _repository = repository;
             _mapper = mapper;
-        }        
+        }
 
         public async Task<ProductPriceDto> Get(Guid id)
         {
-            var entity =  await _repository.SelectAsync(id);
+            var entity = await _repository.SelectAsync(id);
             return _mapper.Map<ProductPriceDto>(entity);
         }
 
         public async Task<ProductPriceDto> GetCurrentProductPriceByProductId(Guid id)
         {
-            var entity =  await _repository.FindCurrentProductPriceByProductId(id);
+            var entity = await _repository.FindCurrentProductPriceByProductId(id);
             return _mapper.Map<ProductPriceDto>(entity);
-        }        
+        }
 
         public async Task<IEnumerable<ProductPriceDto>?> GetAllByProductId(Guid id)
         {
-            var entity =  await _repository.FindByProductId(id);
+            var entity = await _repository.FindByProductId(id);
             return _mapper.Map<IEnumerable<ProductPriceDto>>(entity);
         }
 
         public async Task<ProductPriceDtoCreateResult> Post(ProductPriceDtoCreateRequest productPrice)
         {
-            var model= _mapper.Map<ProductPriceModel>(productPrice);
+            var model = _mapper.Map<ProductPriceModel>(productPrice);
             var entity = _mapper.Map<ProductPriceEntity>(model);
 
-            var productPriceList = await _repository.FindByProductId(entity.ProductId);
-
-            if(productPriceList != null)
-            {
-                foreach(ProductPriceEntity priceEntity in productPriceList)
-                {
-                    if(priceEntity.Current)
-                    {
-                        priceEntity.Current = false;
-                        await _repository.UpdateAsync(priceEntity);
-                    }
-                }
-            }
+            await _repository.UpdatePricesToNotCurrentByIdProduct(entity.ProductId);
 
             entity.Current = true;
             var result = await _repository.InsertAsync(entity);
             return _mapper.Map<ProductPriceDtoCreateResult>(result);
+
         }
 
         public async Task<ProductPriceDtoUpdateResult> Put(ProductPriceDtoUpdateRequest productPrice)
         {
-            var model= _mapper.Map<ProductPriceModel>(productPrice);
+            var model = _mapper.Map<ProductPriceModel>(productPrice);
             var entity = _mapper.Map<ProductPriceEntity>(model);
             var result = await _repository.UpdateAsync(entity);
             return _mapper.Map<ProductPriceDtoUpdateResult>(result);

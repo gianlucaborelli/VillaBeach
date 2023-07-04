@@ -18,8 +18,8 @@ namespace Api.Data.Implementations
         public ProductPriceImplementation(MyContext context) : base(context)
         {
             _dataSet = context.Set<ProductPriceEntity>();
-        }        
-        
+        }
+
         public async Task<IEnumerable<ProductPriceEntity>?> FindByProductId(Guid productId)
         {
             return await _dataSet.Where(u => u.ProductId == productId).ToListAsync();
@@ -28,6 +28,29 @@ namespace Api.Data.Implementations
         public async Task<ProductPriceEntity?> FindCurrentProductPriceByProductId(Guid productId)
         {
             return await _dataSet.FirstOrDefaultAsync(p => p.ProductId == productId && p.Current);
+        }
+
+        public async Task<bool> UpdatePricesToNotCurrentByIdProduct(Guid productId)
+        {
+            using var transaction = _context.Database.BeginTransaction();
+            try
+            {
+                var pricesToUpdate = await _dataSet
+                    .Where(p => p.Current && p.ProductId == productId)
+                    .ToListAsync();
+
+                pricesToUpdate.ForEach(p => p.Current = false);
+
+                await _context.SaveChangesAsync();
+
+                transaction.Commit();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                throw ex;
+            }
         }
     }
 }
