@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
 using Api.Domain.Interfaces.Services.User;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Application.Controllers
@@ -23,6 +24,7 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet]
+        [Authorize]
         public async Task<ActionResult> GetAll()
         {
             if (!ModelState.IsValid)
