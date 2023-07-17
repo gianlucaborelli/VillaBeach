@@ -60,13 +60,41 @@ namespace Api.Service.Services
         {
             var model = _mapper.Map<PurchaseModel>(user);
             var entity = _mapper.Map<PurchaseEntity>(model);
+
+            var purchase = await _repository.SelectAsync(entity.Id);
+
+            if(purchase.IsComplete)
+                throw new Exception("Completed purchases cannot be changed");
+
             var result = await _repository.UpdateAsync(entity);
             return _mapper.Map<PurchaseDtoUpdateResult>(result);
         }
 
         public async Task<PurchaseDto> SetPurchaseAsComplete(Guid id)
         {
+            var purchase = await _repository.SelectAsync(id);
+
+            if (purchase == null)
+                throw new Exception("Purchase not found");
+
+            if(purchase.IsComplete)
+                return _mapper.Map<PurchaseDto>(purchase);
+            
             var result = await _repository.SetComplete(id);
+            return _mapper.Map<PurchaseDto>(result);
+        }
+
+        public async Task<PurchaseDto> SetPurchaseAsIncomplete(Guid id)
+        {
+            var purchase = await _repository.SelectAsync(id);
+
+            if (purchase == null)
+                throw new Exception("Purchase not found");
+
+            if(!purchase.IsComplete)
+                return _mapper.Map<PurchaseDto>(purchase);
+            
+            var result = await _repository.SetIncomplete(id);
             return _mapper.Map<PurchaseDto>(result);
         }
 

@@ -12,6 +12,7 @@ namespace Api.Domain.Repository
         Task<IEnumerable<PurchaseEntity>?> SelectAllIncompleteByUser(Guid userId);
         Task<IEnumerable<PurchaseEntity>?> SelectAllIncomplete();
         Task<IEnumerable<PurchaseEntity>?> FindByUserId(Guid userId);
-        Task<PurchaseEntity> SetComplete(Guid userId);
+        Task<PurchaseEntity?> SetComplete(Guid purchaseId);
+        Task<PurchaseEntity?> SetIncomplete(Guid purchaseId);
     }
 }

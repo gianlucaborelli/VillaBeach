@@ -33,16 +33,84 @@ namespace Api.Data.Implementations
             return await _dataSet.Where(u => u.UserId == userId && u.IsComplete == false).ToListAsync();
         }
 
-        public async Task<PurchaseEntity> SetComplete(Guid purchaseId)
+        public async Task<PurchaseEntity?> SetComplete(Guid purchaseId)
         {
             var purchase = await _dataSet.FirstOrDefaultAsync(u => u.Id == purchaseId);
 
-            if (purchase != null)
+            if (purchase != null && !purchase.IsComplete)
             {
-                purchase.IsComplete = true;
-                await _context.SaveChangesAsync();                
-            }
+                using var transaction = _context.Database.BeginTransaction();
+                try
+                {
+                    purchase.IsComplete = true;
 
+                    foreach (var product in purchase.PurchasedProducts)
+                    {
+                        var dbProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
+
+                        if (dbProduct != null)
+                        {
+                            dbProduct.Stock += product.Amount;
+                        }
+                        else
+                        {
+                            throw new Exception("Product not found");
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+            
+            return purchase;
+        }
+
+        public async Task<PurchaseEntity?> SetIncomplete(Guid purchaseId)
+        {
+            var purchase = await _dataSet.FirstOrDefaultAsync(u => u.Id == purchaseId);
+
+            if (purchase != null && purchase.IsComplete)
+            {
+                using var transaction = _context.Database.BeginTransaction();
+                try
+                {
+                    purchase.IsComplete = false;
+
+                    foreach (var product in purchase.PurchasedProducts)
+                    {
+                        var dbProduct = await _context.Products.FirstOrDefaultAsync(p => p.Id == product.Id);
+
+                        if (dbProduct != null)
+                        {
+                            dbProduct.Stock -= product.Amount;
+
+                            if(dbProduct.Stock < 0)
+                                throw new ArgumentOutOfRangeException("Product amount less than zero");
+                        }
+                        else
+                        {
+                            throw new Exception("Product not found");
+                        }
+                    }
+
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    throw ex;
+                }
+            }
+            
             return purchase;
         }
     }
