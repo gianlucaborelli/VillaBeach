@@ -4,11 +4,12 @@
 
 <img align="right" height="400em" src="https://github.com/gianlucaborelli/VillaBeach-WebService/blob/cd5a93ba24ef494676f7b8106b03211dd4824bb3/img/DALL%C2%B7E%202023-03-03%2001.16.29%20-%20on%20expressive%20oil%20painting%20voley%20beach%20.png" alt="Voley Beach, OpenIa image">
 
-<p align="justify">Projeto desenvolvido em substituição ao <a target="_blank" href="https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-">projeto Winform</a> , que teve seu desenvolvimento descontinuado, buscando melhor atender as necessidades do cliente, como alta disponibilidade e multiplataforma.</p>
+Project developed as a replacement for the discontinued <a target="_blank" href="https://github.com/gianlucaborelli/ProjectVillaBeach-DEPRECATED-">Winform project</a>, aiming to better meet the client's needs, such as high availability and multi-platform support.
+
 
 ## About this Project 
 
-<p align="justify"> This project aims to assist in the management of a company called <b>VillaBeach</b> located in the city of <a target="_blank" href="https://www.google.com/maps/place/Brodowski,+SP,+14340-000/@-20.9915545,-47.6566512,14">Brodowski</a>, in the countryside of the State of São Paulo, and its core business is a gym environment with a beach volleyball court joined together with a pub and recreation environment. </p>
+<p align="justify"> This project aims to assist in the management of a company called <b>VillaBeach</b> located in the city of <a target="_blank" href="https://www.google.com/maps/place/Brodowski,+SP,+14340-000/@-20.9915545,-47.6566512,14">Brodowski</a>, in the countryside of the State of São PauloThe core business of VillaBeach is a gym environment with a beach volleyball court, combined with a pub and recreational area. </p>
 
 <p align="justify"> With the full consent of the company's owners, this project will not have the purpose of selling and monetization, being fully developed to practice my knowledge and compose my portfolio. </p>
 
