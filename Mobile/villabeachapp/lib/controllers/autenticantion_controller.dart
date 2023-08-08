@@ -17,9 +17,21 @@ class AutenticacaoController extends GetxController {
     isLoading.value = false;
   }
 
+  logout() async {
+    isLoading.value = true;
+    await AuthService.to.logout();
+    isLoading.value = false;
+  }
+
   register() async {
     isLoading.value = true;
-    await AuthService.to.createUser(email.text, password.text);
+    await AuthService.to.createUser(email.text, password.text, name.text);
+    isLoading.value = false;
+  }
+
+  resetPassword() async {
+    isLoading.value = true;
+    await AuthService.to.resetPassword(email.text);
     isLoading.value = false;
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:villabeachapp/widgets/appbar_custom.dart';
+import 'package:villabeachapp/widgets/navbar.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -6,10 +8,8 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Villa Beach'),
-        centerTitle: true,
-      ),
+      drawer: NavBar(),
+      appBar: const AppBarCustom(),
     );
   }
 }

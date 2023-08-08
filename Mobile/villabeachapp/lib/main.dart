@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
         ),
       ),
       title: 'VillaBeach',
-      home: CheckAuth(),
+      home: const CheckAuth(),
     );
   }
 }
