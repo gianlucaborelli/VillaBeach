@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../controllers/autenticantion_controller.dart';
+import '../../controllers/authenticantion_controller.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({super.key});
@@ -17,7 +17,7 @@ class _SignupPageState extends State<SignupPage> {
   final FocusNode _focusNodePassword = FocusNode();
   final FocusNode _focusNodeConfirmPassword = FocusNode();
 
-  final controller = Get.put(AutenticacaoController());
+  final controller = Get.put(AuthenticationController());
   final TextEditingController _controllerConFirmPassword =
       TextEditingController();
 
@@ -26,7 +26,6 @@ class _SignupPageState extends State<SignupPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),

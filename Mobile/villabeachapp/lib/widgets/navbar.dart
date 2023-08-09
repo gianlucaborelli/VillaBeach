@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/service/auth_service.dart';
 
-import '../controllers/autenticantion_controller.dart';
+import '../controllers/authenticantion_controller.dart';
 
 class NavBar extends StatelessWidget {
   NavBar({super.key});
-  final controller = Get.put(AutenticacaoController());
+  final controller = Get.put(AuthenticationController());
 
   @override
   Widget build(BuildContext context) {

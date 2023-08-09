@@ -438,3 +438,8 @@ src/.vscode/*
 
 # Built Visual Studio Code Extensions
 *.vsix
+Mobile/villabeachapp/android/app/google-services.json
+Mobile/villabeachapp/ios/firebase_app_id_file.json
+Mobile/villabeachapp/ios/Runner/GoogleService-Info.plist
+Mobile/villabeachapp/macos/firebase_app_id_file.json
+Mobile/villabeachapp/macos/Runner/GoogleService-Info.plist

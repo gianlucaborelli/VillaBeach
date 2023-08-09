@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/config.dart';
+import 'package:villabeachapp/theme/color_schemes.g.dart';
 import 'package:villabeachapp/widgets/check_auth.dart';
 
 void main() async {
@@ -15,11 +16,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      theme: ThemeData.from(
-        colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color.fromARGB(255, 38, 124, 64),
-        ),
-      ),
+      theme: ThemeData(useMaterial3: true, colorScheme: lightColorScheme),
+      darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
       title: 'VillaBeach',
       home: const CheckAuth(),
     );

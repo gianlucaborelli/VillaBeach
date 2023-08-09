@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:villabeachapp/controllers/autenticantion_controller.dart';
+import 'package:villabeachapp/controllers/authenticantion_controller.dart';
 import 'package:villabeachapp/pages/auth_pages/reset_password_page.dart';
 import 'package:villabeachapp/pages/auth_pages/signup_page.dart';
 
@@ -16,14 +16,13 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage> {
   final GlobalKey<FormState> _formKey = GlobalKey();
   final FocusNode _focusNodePassword = FocusNode();
-  final controller = Get.put(AutenticacaoController());
+  final controller = Get.put(AuthenticationController());
 
   bool _obscurePassword = true;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Theme.of(context).colorScheme.primaryContainer,
       body: Form(
         key: _formKey,
         child: SingleChildScrollView(
