@@ -51,15 +51,11 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
               TextFormField(
                 controller: controller.email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "E-mail",
-                  prefixIcon: const Icon(Icons.mail_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  prefixIcon: Icon(Icons.mail_outline),
+                  border: UnderlineInputBorder(),
+                  enabledBorder: UnderlineInputBorder(),
                 ),
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
@@ -70,7 +66,7 @@ class _ResetPasswordPageState extends State<ResetPasswordPage> {
                 },
               ),
               const SizedBox(height: 10),
-              ElevatedButton(
+              FilledButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size.fromHeight(50),
                   shape: RoundedRectangleBorder(

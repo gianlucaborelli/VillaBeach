@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:villabeachapp/controllers/theme_controller.dart';
 import '../service/auth_service.dart';
 
 class AuthenticationController extends GetxController {
@@ -14,6 +15,7 @@ class AuthenticationController extends GetxController {
   login() async {
     isLoading.value = true;
     await AuthService.to.login(email.text, password.text);
+    await ThemeController.to.loadThemeMode();
     isLoading.value = false;
   }
 

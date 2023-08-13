@@ -1,16 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:villabeachapp/controllers/theme_controller.dart';
 import 'package:villabeachapp/service/auth_service.dart';
 
 import '../controllers/authenticantion_controller.dart';
 
-class NavBar extends StatelessWidget {
-  NavBar({super.key});
+enum ThemeModes { light, system, dark }
+
+class NavBar extends StatefulWidget {
+  const NavBar({super.key});
+
+  @override
+  State<NavBar> createState() => _NavBarState();
+}
+
+class _NavBarState extends State<NavBar> {
   final controller = Get.put(AuthenticationController());
+
+  final ThemeController themeController = ThemeController.to;
+
+  late Set<ThemeModes> themeModeSelected;
 
   @override
   Widget build(BuildContext context) {
     String? photoURL = AuthService.to.user?.photoURL;
+    Set<ThemeModes> themeModeSelected = <ThemeModes>{
+      ThemeModes.values.byName(themeController.themeText.value)
+    };
 
     return Drawer(
       child: ListView(
@@ -21,11 +37,9 @@ class NavBar extends StatelessWidget {
               AuthService.to.user!.displayName == null
                   ? 'Cliente'
                   : AuthService.to.user!.displayName!,
-              //style: Theme.of(context).textTheme.bodyMedium,
             ),
             accountEmail: Text(
               AuthService.to.user!.email!,
-              //style: Theme.of(context).textTheme.bodyMedium,
             ),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
@@ -53,15 +67,57 @@ class NavBar extends StatelessWidget {
           ),
           const Divider(),
           ListTile(
-            leading: const Icon(Icons.settings),
-            title: const Text('Configurações'),
-            onTap: () => controller.logout(),
-          ),
-          ListTile(
             leading: const Icon(Icons.exit_to_app_outlined),
             title: const Text('Sair'),
             onTap: () => controller.logout(),
-          )
+          ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                child: const Icon(Icons.lightbulb_circle_outlined),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(15, 0, 20, 0),
+                child: const Text('Tema'),
+              ),
+              SegmentedButton(
+                showSelectedIcon: false,
+                segments: const <ButtonSegment<ThemeModes>>[
+                  ButtonSegment(
+                    value: ThemeModes.light,
+                    icon: Icon(Icons.light_mode_outlined),
+                  ),
+                  ButtonSegment(
+                    value: ThemeModes.dark,
+                    icon: Icon(Icons.dark_mode_outlined),
+                  ),
+                  ButtonSegment(
+                    value: ThemeModes.system,
+                    label: Text(
+                      'Sistema',
+                      style: TextStyle(fontSize: 9),
+                    ),
+                  ),
+                ],
+                selected: themeModeSelected,
+                onSelectionChanged: (Set<ThemeModes> newSelection) {
+                  setState(
+                    () {
+                      themeModeSelected = newSelection;
+                      String themeModeName =
+                          themeModeSelected.first.toString().split('.').last;
+                      themeController.changeTheme(themeModeName);
+                    },
+                  );
+                },
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity(horizontal: -1, vertical: -3),
+                ),
+              ),
+            ],
+          ),
         ],
       ),
     );

@@ -52,15 +52,11 @@ class _SignupPageState extends State<SignupPage> {
               TextFormField(
                 controller: controller.name,
                 keyboardType: TextInputType.name,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Nome",
-                  prefixIcon: const Icon(Icons.person_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  prefixIcon: Icon(Icons.person_outline),
+                  border: UnderlineInputBorder(),
+                  enabledBorder: UnderlineInputBorder(),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -75,15 +71,11 @@ class _SignupPageState extends State<SignupPage> {
                 controller: controller.email,
                 focusNode: _focusNodeEmail,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "Email",
-                  prefixIcon: const Icon(Icons.email_outlined),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  prefixIcon: Icon(Icons.email_outlined),
+                  border: UnderlineInputBorder(),
+                  enabledBorder: UnderlineInputBorder(),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -111,12 +103,8 @@ class _SignupPageState extends State<SignupPage> {
                       icon: _obscurePassword
                           ? const Icon(Icons.visibility_outlined)
                           : const Icon(Icons.visibility_off_outlined)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  border: const UnderlineInputBorder(),
+                  enabledBorder: const UnderlineInputBorder(),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -147,12 +135,8 @@ class _SignupPageState extends State<SignupPage> {
                       icon: _obscurePassword
                           ? const Icon(Icons.visibility_outlined)
                           : const Icon(Icons.visibility_off_outlined)),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  border: const UnderlineInputBorder(),
+                  enabledBorder: const UnderlineInputBorder(),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -166,7 +150,7 @@ class _SignupPageState extends State<SignupPage> {
               const SizedBox(height: 50),
               Column(
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
                       shape: RoundedRectangleBorder(

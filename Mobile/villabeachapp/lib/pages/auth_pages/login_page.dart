@@ -43,15 +43,11 @@ class _LoginPageState extends State<LoginPage> {
               TextFormField(
                 controller: controller.email,
                 keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: "E-mail",
-                  prefixIcon: const Icon(Icons.mail_outline),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  prefixIcon: Icon(Icons.mail_outline),
+                  border: UnderlineInputBorder(),
+                  enabledBorder: UnderlineInputBorder(),
                 ),
                 onEditingComplete: () => _focusNodePassword.requestFocus(),
                 validator: (String? value) {
@@ -80,12 +76,8 @@ class _LoginPageState extends State<LoginPage> {
                         ? const Icon(Icons.visibility_outlined)
                         : const Icon(Icons.visibility_off_outlined),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
+                  border: const UnderlineInputBorder(),
+                  enabledBorder: const UnderlineInputBorder(),
                 ),
                 validator: (String? value) {
                   if (value == null || value.isEmpty) {
@@ -115,12 +107,9 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 40),
               Column(
                 children: [
-                  ElevatedButton(
+                  FilledButton(
                     style: ElevatedButton.styleFrom(
                       minimumSize: const Size.fromHeight(50),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
                     ),
                     onPressed: () {
                       if (_formKey.currentState?.validate() ?? false) {
@@ -136,7 +125,6 @@ class _LoginPageState extends State<LoginPage> {
                       TextButton(
                         onPressed: () {
                           _formKey.currentState?.reset();
-
                           Navigator.push(
                             context,
                             MaterialPageRoute(
