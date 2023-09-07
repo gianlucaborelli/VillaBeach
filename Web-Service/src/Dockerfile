@@ -1,9 +1,12 @@
-# https://hub.docker.com/_/microsoft-dotnet
+
+# https://hub.docker.com/_m/icrosoft-dotnet
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
-ENV ASPNETCORE_URLS=http://+:5000
-EXPOSE 5000
+# Changed the port from 5000 to 80 as the error states that the Dockerfile must expose a TCP port
+# It is common to expose port 80 for web applications
+ENV ASPNETCORE_URLS=http://+:80
+EXPOSE 80
 
 # copy csproj and restore as distinct layers
 COPY . .
