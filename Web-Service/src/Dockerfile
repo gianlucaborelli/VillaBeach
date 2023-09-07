@@ -2,20 +2,19 @@
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
 WORKDIR /source
 
+ENV ASPNETCORE_URLS=http://+:5000
+EXPOSE 5000
+
 # copy csproj and restore as distinct layers
 COPY . .
 RUN dotnet restore "./Api.Application/Application.csproj" --disable-parallel
-RUN dotnet restore "./Api.CrossCutting/CrossCutting.csproj" --disable-parallel
-RUN dotnet restore "./Api.Data/Data.csproj" --disable-parallel
-RUN dotnet restore "./Api.Domain/Domain.csproj" --disable-parallel
-RUN dotnet restore "./Api.Service/Service.csproj" --disable-parallel
 
 # copy everything else and build app
 RUN dotnet publish "./Api.Application/Application.csproj" -c release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
+FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
 WORKDIR /app
-COPY --from=publish /app/publish .
+COPY --from=build /app ./
 
-CMD ASPNETCORE_URLS=http://*:$PORT dotnet Application.dll
+ENTRYPOINT ["dotnet", "Application.dll"]
