@@ -22,7 +22,8 @@ namespace Api.CrossCutting.Configuration
                         ValidAudience = projectId,
                         ValidateLifetime = true
                     };
-                });
+                }
+            );
         }
     }
 }
