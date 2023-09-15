@@ -4,9 +4,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api.CrossCutting.Configuration
 {
-    public class ConfigureFirebase
+    public static class ConfigureFirebase
     {
-        public static void ConfigureFirebaseAuthentication(IServiceCollection serviceCollection)
+        public static void ConfigureFirebaseAuthentication(this IServiceCollection serviceCollection)
         {
             var projectId = Environment.GetEnvironmentVariable("PROJECT_ID");
             serviceCollection

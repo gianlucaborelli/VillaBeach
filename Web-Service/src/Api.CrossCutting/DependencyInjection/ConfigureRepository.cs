@@ -12,15 +12,15 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.CrossCutting.DependencyInjection
 {
-    public class ConfigureRepository
+    public static class ConfigureRepository
     {
-        public static void ConfigureDependenciesRepository(IServiceCollection serviceCollection)
+        public static void ConfigureDependenciesRepository(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             serviceCollection.AddScoped<IUserRepository, UserImplementation>();
-            serviceCollection.AddScoped<IProductRepository,ProductImplementation>();
-            serviceCollection.AddScoped<IProductPriceRepository,ProductPriceImplementation>();
-            serviceCollection.AddScoped<IPurchaseRepository,PurchaseImplementation>();
+            serviceCollection.AddScoped<IProductRepository, ProductImplementation>();
+            serviceCollection.AddScoped<IProductPriceRepository, ProductPriceImplementation>();
+            serviceCollection.AddScoped<IPurchaseRepository, PurchaseImplementation>();
 
             serviceCollection.AddDbContext<MyContext>(
             options => options.UseNpgsql(Environment.GetEnvironmentVariable("DATABASE_URL"))

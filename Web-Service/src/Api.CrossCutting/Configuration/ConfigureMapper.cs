@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.CrossCutting.Configuration
 {
-    public class ConfigureMapper
+    public static class ConfigureMapper
     {
-        public static void ConfigureMapperService(IServiceCollection serviceCollection)
+        public static void ConfigureMapperService(this IServiceCollection serviceCollection)
         {
             var mapperConfiguration = new AutoMapper.MapperConfiguration(configuration =>
             {
@@ -18,7 +18,7 @@ namespace Api.CrossCutting.Configuration
 
             IMapper mapper = mapperConfiguration.CreateMapper();
 
-            serviceCollection.AddSingleton(mapper);            
+            serviceCollection.AddSingleton(mapper);
         }
     }
 }

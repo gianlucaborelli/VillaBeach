@@ -4,12 +4,10 @@ using Api.CrossCutting.DependencyInjection;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-
-ConfigureFirebase.ConfigureFirebaseAuthentication(builder.Services);
-ConfigureService.ConfigureDependenciesService(builder.Services);
-ConfigureRepository.ConfigureDependenciesRepository(builder.Services);
-ConfigureMapper.ConfigureMapperService(builder.Services);
-
+builder.Services.ConfigureFirebaseAuthentication();
+builder.Services.ConfigureMapperService();
+builder.Services.ConfigureDependenciesRepository();
+builder.Services.ConfigureDependenciesService();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
 
 builder.Services.AddControllers();
