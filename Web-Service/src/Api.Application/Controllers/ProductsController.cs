@@ -14,7 +14,7 @@ namespace Api.Application.Controllers
     [Route("api/[controller]")]
     [ApiController]
     public class ProductsController : ControllerBase
-    {        
+    {
         private IProductService _service;
 
         public ProductsController(IProductService service)
@@ -25,19 +25,19 @@ namespace Api.Application.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok (await _service.GetAll());
+                return Ok(await _service.GetAll());
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
-        
+
         [HttpGet("findByName/{name}")]
         public async Task<IActionResult> FindByName(string name)
         {
@@ -66,16 +66,16 @@ namespace Api.Application.Controllers
         [Route("Available")]
         public async Task<ActionResult> GetAllAvailableProducts()
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok (await _service.GetAvailableProducts());
+                return Ok(await _service.GetAvailableProducts());
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
@@ -83,84 +83,81 @@ namespace Api.Application.Controllers
         [Route("{id}", Name = "GetProductWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok (await _service.Get(id));
+                return Ok(await _service.Get(id));
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        [HttpPost]        
-        public async Task<ActionResult> Post([FromBody]ProductDtoCreateRequest product)
+        [HttpPost]
+        public async Task<ActionResult> Post([FromBody] ProductDtoCreateRequest product)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var result = await _service.Post(product);
 
-                if(result != null)
+                if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetProductWithId", new{ id = result.Id})), result);
+                    return Created(new Uri(Url.Link("GetProductWithId", new { id = result.Id })), result);
                 }
                 else
                 {
                     return BadRequest();
                 }
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        [HttpPut]        
-        public async Task<ActionResult> Put([FromBody]ProductDtoUpdateRequest product)
+        [HttpPut]
+        public async Task<ActionResult> Put([FromBody] ProductDtoUpdateRequest product)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
                 var result = await _service.Put(product);
 
-                if(result != null)
+                if (result != null)
                 {
-                    return Ok (result);
+                    return Ok(result);
                 }
                 else
                 {
                     return BadRequest();
                 }
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
 
-        [HttpDelete ("{id}")]                
+        [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
-            if(!ModelState.IsValid)
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             try
             {
-                return Ok (await _service.Delete(id));
+                return Ok(await _service.Delete(id));
             }
-            catch(ArgumentException e)
+            catch (ArgumentException e)
             {
-                return StatusCode ((int) HttpStatusCode.InternalServerError, e.Message);
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
-        }    
+        }
 
     }
 }

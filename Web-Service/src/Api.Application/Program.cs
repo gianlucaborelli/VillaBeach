@@ -11,6 +11,8 @@ ConfigureService.ConfigureDependenciesService(builder.Services);
 ConfigureRepository.ConfigureDependenciesRepository(builder.Services);
 ConfigureMapper.ConfigureMapperService(builder.Services);
 
+builder.Services.AddScoped<ModelBindingFailureFilter>();
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
