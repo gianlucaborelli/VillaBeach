@@ -1,5 +1,6 @@
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,6 +11,7 @@ builder.Services.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
 
+builder.Services.AddLogging();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
@@ -23,6 +25,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseProblemDetailsExceptionHandler();
 app.UseHttpsRedirection();
 
 app.UseAuthentication();
