@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Api.Domain.Dtos.User;
-using Api.Domain.Entities;
 using Api.Domain.Interfaces.Services.User;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -15,20 +10,21 @@ namespace Api.Application.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-
+        private readonly ILogger<UsersController> _logger;
         private readonly IUserService _service;
 
-        public UsersController(IUserService service)
+        public UsersController(IUserService service, ILogger<UsersController> logger)
         {
+            _logger = logger;
             _service = service;
+            _logger.LogInformation("Users controller called ");
         }
 
         [HttpGet]
         [Authorize]
         public async Task<ActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users getAll method Starting.");
 
             try
             {
@@ -44,8 +40,7 @@ namespace Api.Application.Controllers
         [Route("{id}", Name = "GetUserWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users Get method Starting.");
 
             try
             {
@@ -57,11 +52,10 @@ namespace Api.Application.Controllers
             }
         }
 
-        [HttpGet("findByName/{name}")]
+        [HttpGet("findByName={name}")]
         public async Task<IActionResult> FindByName(string name)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users findByName method Starting.");
 
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest();
@@ -84,8 +78,7 @@ namespace Api.Application.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] UserDtoCreate user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users Post method Starting.");
 
             try
             {
@@ -109,8 +102,7 @@ namespace Api.Application.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] UserDtoUpdateRequest user)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users Put method Starting.");
 
             try
             {
@@ -134,8 +126,7 @@ namespace Api.Application.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
+            _logger.LogInformation("Users Delete method Starting.");
 
             try
             {

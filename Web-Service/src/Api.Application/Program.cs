@@ -1,8 +1,10 @@
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
-using Microsoft.Extensions.Logging;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container.
 builder.Services.ConfigureFirebaseAuthentication();
@@ -24,6 +26,7 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+app.UseSerilogRequestLogging();
 
 app.UseProblemDetailsExceptionHandler();
 app.UseHttpsRedirection();
