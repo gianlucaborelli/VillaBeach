@@ -86,7 +86,7 @@ namespace Api.Application.Controllers
 
                 if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetUserWithId", new { id = result.Id })), result);
+                    return Created(new Uri(Url.Link("GetUserWithId", new { id = result.Id })!), result);
                 }
                 else
                 {

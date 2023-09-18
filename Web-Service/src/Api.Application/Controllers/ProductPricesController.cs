@@ -24,9 +24,6 @@ namespace Api.Application.Controllers
         [HttpGet("findAllByProductId/{productId}")]
         public async Task<ActionResult> GetAllByProductId(Guid productId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAllByProductId(productId));
@@ -40,9 +37,6 @@ namespace Api.Application.Controllers
         [HttpGet("findCurrentPriceByProductId/{productId}")]
         public async Task<ActionResult> GetCurrentPriceByProductId(Guid productId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetCurrentProductPriceByProductId(productId));
@@ -57,9 +51,6 @@ namespace Api.Application.Controllers
         [Route("{id}", Name = "GetProductPriceWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.Get(id));
@@ -79,7 +70,7 @@ namespace Api.Application.Controllers
 
                 if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetProductPriceWithId", new { id = result.Id })), result);
+                    return Created(new Uri(Url.Link("GetProductPriceWithId", new { id = result.Id })!), result);
                 }
                 else
                 {

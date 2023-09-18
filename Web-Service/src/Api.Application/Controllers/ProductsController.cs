@@ -25,9 +25,6 @@ namespace Api.Application.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAll());
@@ -41,9 +38,6 @@ namespace Api.Application.Controllers
         [HttpGet("findByName/{name}")]
         public async Task<IActionResult> FindByName(string name)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             if (string.IsNullOrWhiteSpace(name))
                 return BadRequest();
 
@@ -66,9 +60,6 @@ namespace Api.Application.Controllers
         [Route("Available")]
         public async Task<ActionResult> GetAllAvailableProducts()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAvailableProducts());
@@ -83,9 +74,6 @@ namespace Api.Application.Controllers
         [Route("{id}", Name = "GetProductWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.Get(id));
@@ -105,7 +93,7 @@ namespace Api.Application.Controllers
 
                 if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetProductWithId", new { id = result.Id })), result);
+                    return Created(new Uri(Url.Link("GetProductWithId", new { id = result.Id })!), result);
                 }
                 else
                 {
@@ -121,9 +109,6 @@ namespace Api.Application.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] ProductDtoUpdateRequest product)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var result = await _service.Put(product);
@@ -146,9 +131,6 @@ namespace Api.Application.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.Delete(id));
@@ -158,6 +140,5 @@ namespace Api.Application.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
-
     }
 }

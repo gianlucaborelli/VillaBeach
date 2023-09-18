@@ -23,9 +23,6 @@ namespace Api.Application.Controllers
         [HttpGet]
         public async Task<ActionResult> GetAll()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAll());
@@ -40,9 +37,6 @@ namespace Api.Application.Controllers
         [Route("{id}", Name = "GetPurchaseWithId")]
         public async Task<ActionResult> Get(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.Get(id));
@@ -57,9 +51,6 @@ namespace Api.Application.Controllers
         [Route("incomplete")]
         public async Task<ActionResult> GetAllIncomplete()
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAllIncomplete());
@@ -74,9 +65,6 @@ namespace Api.Application.Controllers
         [Route("incomplete/{userId}")]
         public async Task<ActionResult> GetAllIncompleteByUser(Guid userId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.GetAllIncompleteByUser(userId));
@@ -90,9 +78,6 @@ namespace Api.Application.Controllers
         [HttpGet("findByUserId/{userId}")]
         public async Task<ActionResult> FindByUserId(Guid userId)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.FindByUserId(userId));
@@ -106,16 +91,13 @@ namespace Api.Application.Controllers
         [HttpPost("setComplete/{id}")]
         public async Task<ActionResult> SetComplete(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var result = await _service.SetPurchaseAsComplete(id);
 
                 if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })), result);
+                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })!), result);
                 }
                 else
                 {
@@ -131,16 +113,13 @@ namespace Api.Application.Controllers
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] PurchaseDtoCreateRequest purchase)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var result = await _service.Post(purchase);
 
                 if (result != null)
                 {
-                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })), result);
+                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })!), result);
                 }
                 else
                 {
@@ -156,9 +135,6 @@ namespace Api.Application.Controllers
         [HttpPut]
         public async Task<ActionResult> Put([FromBody] PurchaseDtoUpdateRequest purchase)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 var result = await _service.Put(purchase);
@@ -181,9 +157,6 @@ namespace Api.Application.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult> Delete(Guid id)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             try
             {
                 return Ok(await _service.Delete(id));
