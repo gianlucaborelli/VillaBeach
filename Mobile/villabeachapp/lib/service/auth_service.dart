@@ -14,13 +14,16 @@ class AuthService extends GetxController {
     _firebaseUser = Rxn<User?>(_auth.currentUser);
     _firebaseUser.bindStream(_auth.authStateChanges());
 
-    ever(_firebaseUser, (User? user) {
-      if (user != null) {
-        userIsAuthenticated.value = true;
-      } else {
-        userIsAuthenticated.value = false;
-      }
-    });
+    ever(
+      _firebaseUser,
+      (User? user) {
+        if (user != null) {
+          userIsAuthenticated.value = true;
+        } else {
+          userIsAuthenticated.value = false;
+        }
+      },
+    );
   }
 
   User? get user => _firebaseUser.value;

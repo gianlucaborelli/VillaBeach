@@ -29,6 +29,12 @@ class _NavBarState extends State<NavBar> {
     };
 
     return Drawer(
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(30),
+          bottomRight: Radius.circular(30),
+        ),
+      ),
       child: ListView(
         padding: EdgeInsets.zero,
         children: [
@@ -65,6 +71,11 @@ class _NavBarState extends State<NavBar> {
                   fit: BoxFit.cover),
             ),
           ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Produtos'),
+            onTap: () => {},
+          ),
           const Divider(),
           ListTile(
             leading: const Icon(Icons.exit_to_app_outlined),
@@ -78,7 +89,7 @@ class _NavBarState extends State<NavBar> {
                 child: const Icon(Icons.lightbulb_circle_outlined),
               ),
               Container(
-                padding: const EdgeInsets.fromLTRB(15, 0, 20, 0),
+                padding: const EdgeInsets.fromLTRB(15, 0, 50, 0),
                 child: const Text('Tema'),
               ),
               SegmentedButton(
@@ -94,10 +105,7 @@ class _NavBarState extends State<NavBar> {
                   ),
                   ButtonSegment(
                     value: ThemeModes.system,
-                    label: Text(
-                      'Sistema',
-                      style: TextStyle(fontSize: 9),
-                    ),
+                    icon: Icon(Icons.terminal_outlined),
                   ),
                 ],
                 selected: themeModeSelected,
@@ -113,7 +121,7 @@ class _NavBarState extends State<NavBar> {
                 },
                 style: const ButtonStyle(
                   tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  visualDensity: VisualDensity(horizontal: -1, vertical: -3),
+                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
                 ),
               ),
             ],
