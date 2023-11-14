@@ -62,13 +62,13 @@ namespace Api.Data.Implementations
 
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    throw;
                 }
             }
-            
+
             return purchase;
         }
 
@@ -91,7 +91,7 @@ namespace Api.Data.Implementations
                         {
                             dbProduct.Stock -= product.Amount;
 
-                            if(dbProduct.Stock < 0)
+                            if (dbProduct.Stock < 0)
                                 throw new ArgumentOutOfRangeException("Product amount less than zero");
                         }
                         else
@@ -104,13 +104,13 @@ namespace Api.Data.Implementations
 
                     transaction.Commit();
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
                     transaction.Rollback();
-                    throw ex;
+                    throw;
                 }
             }
-            
+
             return purchase;
         }
     }

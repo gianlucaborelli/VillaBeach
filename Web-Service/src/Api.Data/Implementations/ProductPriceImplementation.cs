@@ -46,10 +46,10 @@ namespace Api.Data.Implementations
                 transaction.Commit();
                 return true;
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 transaction.Rollback();
-                throw ex;
+                throw;
             }
         }
     }

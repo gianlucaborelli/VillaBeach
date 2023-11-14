@@ -18,7 +18,7 @@ namespace Api.Data.Repository
         {
             _context = context;
             _dataSet = _context.Set<T>();
-        }    
+        }
 
         public async Task<bool> DeleteAsync(Guid id)
         {
@@ -29,12 +29,12 @@ namespace Api.Data.Repository
                     return false;
 
                 _dataSet.Remove(result);
-                
+
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return true;
@@ -44,8 +44,8 @@ namespace Api.Data.Repository
         {
             try
             {
-                if(item.Id == Guid.Empty) 
-                   item.Id =Guid.NewGuid();
+                if (item.Id == Guid.Empty)
+                    item.Id = Guid.NewGuid();
 
                 item.CreateAt = DateTime.UtcNow;
 
@@ -53,41 +53,41 @@ namespace Api.Data.Repository
 
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return item;
         }
 
-        public async Task<bool> ExistAsync (Guid id)
+        public async Task<bool> ExistAsync(Guid id)
         {
             return await _dataSet.AnyAsync(p => p.Id.Equals(id));
-        }        
+        }
 
         public async Task<T> SelectAsync(Guid id)
         {
             try
             {
-                return await _dataSet.SingleOrDefaultAsync(p => p.Id.Equals(id));                
+                return await _dataSet.SingleOrDefaultAsync(p => p.Id.Equals(id));
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                throw ex;
-            }            
+                throw;
+            }
         }
 
         public async Task<IEnumerable<T>> SelectAsync()
         {
             try
             {
-                return await _dataSet.ToListAsync();                
+                return await _dataSet.ToListAsync();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                throw ex;
-            }      
+                throw;
+            }
         }
 
         public async Task<T> UpdateAsync(T item)
@@ -104,9 +104,9 @@ namespace Api.Data.Repository
                 _context.Entry(result).CurrentValues.SetValues(item);
                 await _context.SaveChangesAsync();
             }
-            catch(Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
 
             return item;
