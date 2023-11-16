@@ -43,8 +43,17 @@ namespace Api.Service.Services
 
             var entityList= await _repository.FindByName(name);
 
-            return _mapper.Map<IEnumerable<UserDto>?>(entityList);
-            
+            return _mapper.Map<IEnumerable<UserDto>?>(entityList);            
+        }
+
+        public async Task<UserDto?> FindByEmail(string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return null;
+
+            var entityList= await _repository.FindByName(email);
+
+            return _mapper.Map<UserDto>(entityList);            
         }
 
         public async Task<UserDtoCreateResult> Post(UserDtoCreate user)

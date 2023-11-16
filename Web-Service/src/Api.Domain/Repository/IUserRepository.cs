@@ -6,5 +6,11 @@ namespace Api.Domain.Repository
     public interface IUserRepository : IRepository<UserEntity>
     {
         Task<IEnumerable<UserEntity>?> FindByName (string name);
+
+        Task<UserEntity?> FindById (string Id);
+
+        Task<UserEntity?> FindByEmail (string email);
+
+        Task<bool> UserExists (string email);
     }
 }

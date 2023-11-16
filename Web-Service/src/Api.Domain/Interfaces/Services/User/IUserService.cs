@@ -20,5 +20,7 @@ namespace Api.Domain.Interfaces.Services.User
         Task<bool> Delete (Guid id);
 
         Task<IEnumerable<UserDto>?> FindByName (string name);
+
+        Task<UserDto?> FindByEmail (string email);
     }
 }

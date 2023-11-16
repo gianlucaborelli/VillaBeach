@@ -15,9 +15,30 @@ namespace Api.Data.Implementations
             _dataSet = context.Set<UserEntity>();
         }
 
+        public async Task<UserEntity?> FindByEmail(string email)
+        {
+            return await _dataSet.Where(user => user.Email.ToLower()
+                 .Equals(email.ToLower())).SingleOrDefaultAsync();
+        }
+
+        public async Task<bool> UserExists(string email)
+        {
+            if (await _dataSet.AnyAsync(user => user.Email.ToLower()
+                 .Equals(email.ToLower())))
+            {
+                return true;
+            }
+            return false;
+        }
+
         public async Task<IEnumerable<UserEntity>?> FindByName(string name)
         {
             return await _dataSet.Where(u => u.Name.Contains(name)).ToListAsync();
+        }
+
+        public async Task<UserEntity?> FindById(string id)
+        {
+            return await _dataSet.Where(user => user.Id == Guid.Parse(id)).SingleOrDefaultAsync();
         }
     }
 }

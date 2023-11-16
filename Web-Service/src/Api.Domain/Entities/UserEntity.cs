@@ -8,20 +8,34 @@ namespace Api.Domain.Entities
 {
     public class UserEntity : BaseEntity
     {
-        public string Name {get;set;} = string.Empty;
+        public string Name { get; set; } = string.Empty;
 
-        public string Email {get;set;} = string.Empty;
+        public string Email { get; set; } = string.Empty;
 
-        public GenderEnum Gender {get;set;} = GenderEnum.RatherNotSay;
+        public byte[] PasswordHash { get; set; } = new byte[32];
 
-        public List<ContactEntity> ContactList {get;set;} 
+        public byte[] PasswordSalt { get; set; } = new byte[32];
 
-        public List<AddressEntity> AddressList {get;set;} 
+        public string? VerificationToken { get; set; }
 
-        public List<EnrollmentEntity> EnrollmentList {get;set;} 
+        public DateTime? VerifiedAt { get; set; }
 
-        public List<PurchaseEntity> PurchasesList {get;set;} 
+        public string? PasswordResetToken { get; set; }
 
-        public List<SaleEntity> SalesList {get;set;}
+        public DateTime? ResetTokenExpires { get; set; }
+
+        public string Role { get; set; } = "Customer";
+
+        public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
+
+        public List<ContactEntity> ContactList { get; set; }
+
+        public List<AddressEntity> AddressList { get; set; }
+
+        public List<EnrollmentEntity> EnrollmentList { get; set; }
+
+        public List<PurchaseEntity> PurchasesList { get; set; }
+
+        public List<SaleEntity> SalesList { get; set; }
     }
 }

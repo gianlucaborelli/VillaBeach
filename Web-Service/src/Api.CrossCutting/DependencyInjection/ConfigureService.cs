@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Api.Domain.Interfaces.Services.Login;
 using Api.Domain.Interfaces.Services.Product;
 using Api.Domain.Interfaces.Services.ProductPrice;
 using Api.Domain.Interfaces.Services.Purchase;
@@ -19,6 +16,7 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddTransient<IProductService, ProductService>();
             serviceCollection.AddTransient<IProductPriceService, ProductPriceService>();
             serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
+            serviceCollection.AddTransient<ILoginService, LoginService>();
         }
     }
 }

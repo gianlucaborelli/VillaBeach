@@ -7,7 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container.
-builder.Services.ConfigureFirebaseAuthentication();
+builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureMapperService();
 builder.Services.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
@@ -17,6 +17,7 @@ builder.Services.AddLogging();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
