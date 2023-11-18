@@ -21,7 +21,7 @@ namespace Api.Application.Controllers
         }
 
         [HttpGet]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult> GetAll()
         {
             _logger.LogInformation("Users getAll method Starting.");

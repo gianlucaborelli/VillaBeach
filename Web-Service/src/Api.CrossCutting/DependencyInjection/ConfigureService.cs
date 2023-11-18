@@ -4,6 +4,7 @@ using Api.Domain.Interfaces.Services.ProductPrice;
 using Api.Domain.Interfaces.Services.Purchase;
 using Api.Domain.Interfaces.Services.User;
 using Api.Service.Services;
+using Api.Service.Security;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.CrossCutting.DependencyInjection
@@ -17,6 +18,8 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddTransient<IProductPriceService, ProductPriceService>();
             serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
             serviceCollection.AddTransient<ILoginService, LoginService>();
+            serviceCollection.AddTransient<IRefreshTokenService, RefreshTokenService>();
+            serviceCollection.AddTransient<ITokenService, TokenService>();
         }
     }
 }

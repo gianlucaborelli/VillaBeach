@@ -7,8 +7,9 @@ namespace Api.Domain.Interfaces.Services.Login
     {
         Task<ServiceResponse<Guid>> Register(RegisterDtoRequest user);
         Task<bool> UserExists(string email);
-        Task<ServiceResponse<string>> Login(string email, string password);
+        Task<LoginDtoResult> Login(string email, string password);
         Task<ServiceResponse<bool>> ChangePassword(string userId, string newPassword);
+        Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request);
         int GetUserId();
         string GetUserEmail();
         Task<UserDto> GetUserByEmail(string email);

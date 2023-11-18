@@ -96,7 +96,7 @@ namespace Api.Data.Repository
             {
                 var result = await _dataSet.SingleOrDefaultAsync(p => p.Id.Equals(item.Id));
                 if (result == null)
-                    return null;
+                    throw new ArgumentException($"Item with ID {item.Id} not found in the database.");
 
                 item.UpdateAt = DateTime.UtcNow;
                 item.CreateAt = result.CreateAt;

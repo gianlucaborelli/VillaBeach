@@ -70,15 +70,29 @@ namespace Api.Domain.Models
         {
             get { return _resetTokenExpires; }
             set { _resetTokenExpires = value; }
+        }        
+
+        private string _refreshToken = string.Empty;
+        public string RefreshToken
+        {
+            get { return _refreshToken; }
+            set { _refreshToken = value; }
+        }                
+
+        private DateTime? _refreshTokenExpires;
+        public DateTime? RefreshTokenExpires
+        {
+            get { return _refreshTokenExpires; }
+            set { _refreshTokenExpires = value; }
         }
+        
 
         private string _role = "Customer";
         public string Role
         {
             get { return _role; }
             set { _role = value; }
-        }
-        
+        }        
 
         private GenderEnum _gender = GenderEnum.RatherNotSay;
         public GenderEnum Gender

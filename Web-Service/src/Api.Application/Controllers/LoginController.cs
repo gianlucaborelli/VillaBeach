@@ -39,11 +39,7 @@ namespace Api.Application.Controllers
         [HttpPost("login")]
         public async Task<ActionResult<ServiceResponse<string>>> Login(LoginDtoRequest request)
         {
-            var response = await _service.Login(request.Email, request.Password);
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
+            var response = await _service.Login(request.Email, request.Password);           
 
             return Ok(response);
         }
@@ -64,6 +60,14 @@ namespace Api.Application.Controllers
             }
 
             return Ok(response);
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<ActionResult<string>> RefreshToken([FromBody]RefreshTokenDtoRequest request)
+        {
+            var token = await _service.RefreshToken(request);
+
+            return Ok(token);
         }
     }
 }

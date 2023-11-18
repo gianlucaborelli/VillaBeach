@@ -24,6 +24,10 @@ namespace Api.Domain.Entities
 
         public DateTime? ResetTokenExpires { get; set; }
 
+        public string RefreshToken { get; set; } = string.Empty;
+
+        public DateTime? RefreshTokenExpires {get; set;}
+
         public string Role { get; set; } = "Customer";
 
         public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
