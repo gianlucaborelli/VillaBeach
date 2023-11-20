@@ -1,17 +1,13 @@
 using Api.Domain.Dtos.Login;
-using Api.Domain;
 using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using Api.Domain.Interfaces.Services.Login;
 using Microsoft.AspNetCore.Http;
-using Api.Domain.Dtos.User;
 using Api.Domain.Repository;
 using Api.Domain.Entities;
 using AutoMapper;
 using Api.Service.Exceptions;
-
 
 namespace Api.Service.Security
 {
@@ -45,7 +41,6 @@ namespace Api.Service.Security
 
         public async Task<LoginDtoResult> Login(string email, string password)
         {
-            var response = new ServiceResponse<string>();
             var user = await _repository.FindByEmail(email);
 
             if (user == null)
@@ -56,6 +51,7 @@ namespace Api.Service.Security
             {
                 throw new AuthenticationServiceException("Wrong password.", 400);
             }
+
             string newAccessToken = _tokenService.CreateToken(user);
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
 
@@ -68,7 +64,7 @@ namespace Api.Service.Security
             return new LoginDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
         }
 
-        public async Task<ServiceResponse<Guid>> Register(RegisterDtoRequest userRequest)
+        public async Task<Guid> Register(RegisterDtoRequest userRequest)
         {
             if (await _repository.UserExists(userRequest.Email))
             {
@@ -88,7 +84,7 @@ namespace Api.Service.Security
 
             await _repository.InsertAsync(newUser);
 
-            return new ServiceResponse<Guid> { Data = newUser.Id, Message = "Registration successful!" };
+            return newUser.Id;
         }
 
         private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
@@ -111,7 +107,7 @@ namespace Api.Service.Security
             }
         }
 
-        public async Task<ServiceResponse<bool>> ChangePassword(string userId, string newPassword)
+        public async Task<bool> ChangePassword(string userId, string newPassword)
         {
             var user = await _repository.FindById(userId);
             if (user == null)
@@ -126,12 +122,11 @@ namespace Api.Service.Security
 
             await _repository.UpdateAsync(user);
 
-            return new ServiceResponse<bool> { Data = true, Message = "Password has been changed." };
+            return true;
         }
 
         public async Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request)
         {
-
             var refreshToken = request.RefreshToken;
 
             var principal = _refreshTokenService.GetPrincipalFromExpiredToken(request.AccessToken);
@@ -140,11 +135,17 @@ namespace Api.Service.Security
                 throw new SecurityTokenException("Invalid access token/refresh token");
             }
 
-            string email = principal.Identity.Name;            
+            string email = string.Empty;
+
+            if (principal?.Identity?.Name is not null) email = principal.Identity.Name;
 
             var user = await _repository.FindByEmail(email);
 
-            if (user != null)
+            if (user is null)
+            {
+                throw new AuthenticationServiceException("User not found", 404);
+            }
+            else
             {
                 if (!user.RefreshToken.Equals(refreshToken))
                 {
@@ -162,18 +163,8 @@ namespace Api.Service.Security
                 user.RefreshTokenExpires = newRefreshToken.Expires;
 
                 await _repository.UpdateAsync(user);
-                return new RefreshTokenDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
-            }
-            else
-            {
-                throw new AuthenticationServiceException("User not found", 404);
+                return new RefreshTokenDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };                
             };
-        }
-
-        public async Task<UserDto> GetUserByEmail(string email)
-        {
-            var entity = await _repository.FindByEmail(email);
-            return _mapper.Map<UserDto>(entity);
         }
 
         public Task<bool> UserExists(string email)

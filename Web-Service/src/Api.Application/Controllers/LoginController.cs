@@ -24,20 +24,15 @@ namespace Api.Application.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<ServiceResponse<int>>> Register(RegisterDtoRequest request)
+        public async Task<ActionResult<Guid>> Register(RegisterDtoRequest request)
         {
             var response = await _service.Register(request);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
-
+            
             return Ok(response);
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<ServiceResponse<string>>> Login(LoginDtoRequest request)
+        public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest request)
         {
             var response = await _service.Login(request.Email, request.Password);           
 
@@ -45,19 +40,14 @@ namespace Api.Application.Controllers
         }
 
         [HttpPost("change-password"), Authorize]
-        public async Task<ActionResult<ServiceResponse<bool>>> ChangePassword([FromBody] string newPassword)
+        public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if  (userId ==null){
                 throw new ApplicationException("Not found.");
             }
-            var response = await _service.ChangePassword(userId, newPassword);
-
-            if (!response.Success)
-            {
-                return BadRequest(response);
-            }
+            var response = await _service.ChangePassword(userId, newPassword);           
 
             return Ok(response);
         }
