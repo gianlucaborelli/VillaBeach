@@ -1,5 +1,4 @@
 using System.Security.Claims;
-using Api.Domain;
 using Api.Domain.Dtos.Login;
 using Api.Domain.Interfaces.Services.Login;
 using Microsoft.AspNetCore.Authorization;
@@ -19,23 +18,20 @@ namespace Api.Application.Controllers
         {
             _logger = logger;
             _service = service;
-            _logger.LogInformation("Login controller called");
-            
+            _logger.LogInformation("Login controller called");            
         }
-
+        
         [HttpPost("register")]
         public async Task<ActionResult<Guid>> Register(RegisterDtoRequest request)
         {
-            var response = await _service.Register(request);
-            
+            var response = await _service.Register(request);            
             return Ok(response);
         }
 
         [HttpPost("login")]
         public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest request)
         {
-            var response = await _service.Login(request.Email, request.Password);           
-
+            var response = await _service.Login(request.Email, request.Password);
             return Ok(response);
         }
 
@@ -45,7 +41,7 @@ namespace Api.Application.Controllers
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
 
             if  (userId ==null){
-                throw new ApplicationException("Not found.");
+                return NotFound("Not found.");
             }
             var response = await _service.ChangePassword(userId, newPassword);           
 
@@ -56,7 +52,6 @@ namespace Api.Application.Controllers
         public async Task<ActionResult<string>> RefreshToken([FromBody]RefreshTokenDtoRequest request)
         {
             var token = await _service.RefreshToken(request);
-
             return Ok(token);
         }
     }

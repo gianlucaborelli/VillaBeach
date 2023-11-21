@@ -10,10 +10,11 @@ namespace Api.Service.Security
     {
         public string CreateToken(UserEntity user)
         {
-            List<Claim> claims = new List<Claim>
+            List<Claim> claims = new()
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-                new Claim(ClaimTypes.Name, user.Email),
+                new Claim(ClaimTypes.Name, user.Name),
+                new Claim(ClaimTypes.Email, user.Email),
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
@@ -31,7 +32,7 @@ namespace Api.Service.Security
 
             var token = new JwtSecurityToken(
                     claims: claims,
-                    expires: DateTime.Now.AddDays(1),
+                    expires: DateTime.Now.AddMinutes(30),
                     signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);

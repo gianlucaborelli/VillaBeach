@@ -16,7 +16,7 @@ namespace Api.Service.Security
             var refreshToken = new RefreshTokenDto
             {
                 Token = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Expires = DateTime.UtcNow.AddMinutes(60),
                 Created = DateTime.Now
             };
 
@@ -25,12 +25,9 @@ namespace Api.Service.Security
 
         public ClaimsPrincipal? GetPrincipalFromExpiredToken(string? token)
         {
-            var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY");
+            var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY") ?? 
+                            throw new ApplicationException("Token key is not configured.");
 
-            if (tokenKey == null)
-            {
-                throw new ApplicationException("Token key is not configured.");
-            }
 
             var tokenValidationParameters = new TokenValidationParameters
             {
@@ -43,8 +40,6 @@ namespace Api.Service.Security
             };
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
-
             
             SecurityToken securityToken;
             var principal = tokenHandler.ValidateToken(token, tokenValidationParameters, out securityToken);

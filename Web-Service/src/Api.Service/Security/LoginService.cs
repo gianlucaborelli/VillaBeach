@@ -32,12 +32,12 @@ namespace Api.Service.Security
             _refreshTokenService = refreshTokenService;
         }
 
-        public int GetUserId()
-        {
-            return int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-        }
+        // public int GetUserId()
+        // {
+        //     return int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
+        // }
 
-        public string GetUserEmail() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        // public string GetUserEmail() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
 
         public async Task<LoginDtoResult> Login(string email, string password)
         {
@@ -87,26 +87,6 @@ namespace Api.Service.Security
             return newUser.Id;
         }
 
-        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512())
-            {
-                passwordSalt = hmac.Key;
-                passwordHash = hmac
-                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-            }
-        }
-
-        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
-        {
-            using (var hmac = new HMACSHA512(passwordSalt))
-            {
-                var computedHash =
-                    hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
-                return computedHash.SequenceEqual(passwordHash);
-            }
-        }
-
         public async Task<bool> ChangePassword(string userId, string newPassword)
         {
             var user = await _repository.FindById(userId);
@@ -135,9 +115,7 @@ namespace Api.Service.Security
                 throw new SecurityTokenException("Invalid access token/refresh token");
             }
 
-            string email = string.Empty;
-
-            if (principal?.Identity?.Name is not null) email = principal.Identity.Name;
+            string email = principal.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email).Value;
 
             var user = await _repository.FindByEmail(email);
 
@@ -167,9 +145,24 @@ namespace Api.Service.Security
             };
         }
 
-        public Task<bool> UserExists(string email)
+        private void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            return _repository.UserExists(email);
+            using (var hmac = new HMACSHA512())
+            {
+                passwordSalt = hmac.Key;
+                passwordHash = hmac
+                    .ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+            }
+        }
+
+        private bool VerifyPasswordHash(string password, byte[] passwordHash, byte[] passwordSalt)
+        {
+            using (var hmac = new HMACSHA512(passwordSalt))
+            {
+                var computedHash =
+                    hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
+                return computedHash.SequenceEqual(passwordHash);
+            }
         }
     }
 }

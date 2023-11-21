@@ -8,6 +8,7 @@ namespace Api.Application.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -20,8 +21,7 @@ namespace Api.Application.Controllers
             _logger.LogInformation("Users controller called ");
         }
 
-        [HttpGet]
-        [Authorize(Roles = "Admin")]
+        [HttpGet]                
         public async Task<ActionResult> GetAll()
         {
             _logger.LogInformation("Users getAll method Starting.");

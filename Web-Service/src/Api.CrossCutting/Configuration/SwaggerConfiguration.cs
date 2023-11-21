@@ -1,3 +1,4 @@
+using System.Reflection;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
 
@@ -9,7 +10,21 @@ namespace Api.CrossCutting.Configuration
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "villabeach_webservice", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { 
+                    Title = "villabeach_webservice", 
+                    Version = "v1",
+                    Contact = new OpenApiContact()
+                        {
+                            Name = "Gianluca Borelli",
+                            Url = new Uri("https://github.com/gianlucaborelli"),
+                        },
+                    License = new OpenApiLicense()
+                        {
+                            Name = "MIT",
+                            Url = new Uri("http://opensource.org/licenses/MIT"),
+                        }
+                    }
+                );
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
@@ -22,18 +37,22 @@ namespace Api.CrossCutting.Configuration
                 });
                 c.AddSecurityRequirement(new OpenApiSecurityRequirement
                 {
-                {
-                    new OpenApiSecurityScheme
                     {
-                        Reference = new OpenApiReference
+                        new OpenApiSecurityScheme
                         {
-                            Type = ReferenceType.SecurityScheme,
-                            Id = "Bearer"
-                        }
-                    },
-                    new string[] {}
-                }
+                            Reference = new OpenApiReference
+                            {
+                                Type = ReferenceType.SecurityScheme,
+                                Id = "Bearer"
+                            }
+                        },
+                        new string[] {}
+                    }
                 });
+
+                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
             });
         }
     }
