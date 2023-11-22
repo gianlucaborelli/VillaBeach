@@ -1,12 +1,10 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:villabeachapp/database/db_firestore.dart';
 import 'package:villabeachapp/service/auth_service.dart';
 
 class ThemeController extends GetxController {
   RxString themeText = ''.obs;
-  late FirebaseFirestore db = DBFirestore.get();
+  //late FirebaseFirestore db = DBFirestore.get();
   late AuthService authService = AuthService();
 
   Map<String, ThemeMode> themeModes = {
@@ -19,14 +17,14 @@ class ThemeController extends GetxController {
 
   loadThemeMode() async {
     if (AuthService.to.userIsAuthenticated.value) {
-      final snapshot = await db
-          .collection('user')
-          .doc(AuthService.to.user!.uid)
-          .collection('preferences')
-          .doc('settings')
-          .get();
+      // final snapshot = await db
+      //     .collection('user')
+      //     .doc(AuthService.to.user!.uid)
+      //     .collection('preferences')
+      //     .doc('settings')
+      //     .get();
 
-      themeText.value = snapshot.get('themeMode');
+      // themeText.value = snapshot.get('themeMode');
     } else {
       themeText.value = 'system';
     }
@@ -37,12 +35,12 @@ class ThemeController extends GetxController {
     ThemeMode? themeMode = themeModes[theme];
     Get.changeThemeMode(themeMode ?? ThemeMode.system);
     if (AuthService.to.userIsAuthenticated.value) {
-      await db
-          .collection('user')
-          .doc(AuthService.to.user!.uid)
-          .collection('preferences')
-          .doc('settings')
-          .set({'themeMode': theme});
+      // await db
+      //     .collection('user')
+      //     .doc(AuthService.to.user!.uid)
+      //     .collection('preferences')
+      //     .doc('settings')
+      //     .set({'themeMode': theme});
     }
   }
 
