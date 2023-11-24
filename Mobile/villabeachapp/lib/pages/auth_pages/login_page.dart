@@ -6,8 +6,8 @@ import 'package:villabeachapp/pages/auth_pages/signup_page.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   State<LoginPage> createState() => _LoginPageState();

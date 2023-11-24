@@ -35,99 +35,97 @@ class _NavBarState extends State<NavBar> {
           bottomRight: Radius.circular(30),
         ),
       ),
-      // child: ListView(
-      //   padding: EdgeInsets.zero,
-      //   children: [
-      //     UserAccountsDrawerHeader(
-      //       accountName: Text(
-      //         // AuthService.to.user!.displayName == null
-      //         //     ? 'Cliente'
-      //         //     : AuthService.to.user!.displayName!,
-      //       ),
-      //       accountEmail: Text(
-      //         // AuthService.to.user!.email!,
-      //       ),
-      //       currentAccountPicture: CircleAvatar(
-      //         child: ClipOval(
-      //           // child: Container(
-      //           //   child: photoURL != null
-      //           //       ? Image.network(
-      //           //           photoURL,
-      //           //           fit: BoxFit.cover,
-      //           //         )
-      //           //       : const FittedBox(
-      //           //           fit: BoxFit.fill,
-      //           //           child: Icon(
-      //           //             Icons.account_circle,
-      //           //             size: 100,
-      //           //           ),
-      //           //         ),
-      //           // ),
-      //         ),
-      //       ),
-      //       decoration: const BoxDecoration(
-      //         image: DecorationImage(
-      //             image: AssetImage('assets/images/appbar_image3.jpg'),
-      //             fit: BoxFit.cover),
-      //       ),
-      //     ),
-      //     ListTile(
-      //       leading: const Icon(Icons.category),
-      //       title: const Text('Produtos'),
-      //       onTap: () => {},
-      //     ),
-      //     const Divider(),
-      //     ListTile(
-      //       leading: const Icon(Icons.exit_to_app_outlined),
-      //       title: const Text('Sair'),
-      //       onTap: () => controller.logout(),
-      //     ),
-      //     Row(
-      //       children: [
-      //         Container(
-      //           padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
-      //           child: const Icon(Icons.lightbulb_circle_outlined),
-      //         ),
-      //         Container(
-      //           padding: const EdgeInsets.fromLTRB(15, 0, 50, 0),
-      //           child: const Text('Tema'),
-      //         ),
-      //         SegmentedButton(
-      //           showSelectedIcon: false,
-      //           segments: const <ButtonSegment<ThemeModes>>[
-      //             ButtonSegment(
-      //               value: ThemeModes.light,
-      //               icon: Icon(Icons.light_mode_outlined),
-      //             ),
-      //             ButtonSegment(
-      //               value: ThemeModes.dark,
-      //               icon: Icon(Icons.dark_mode_outlined),
-      //             ),
-      //             ButtonSegment(
-      //               value: ThemeModes.system,
-      //               icon: Icon(Icons.terminal_outlined),
-      //             ),
-      //           ],
-      //           selected: themeModeSelected,
-      //           onSelectionChanged: (Set<ThemeModes> newSelection) {
-      //             setState(
-      //               () {
-      //                 themeModeSelected = newSelection;
-      //                 String themeModeName =
-      //                     themeModeSelected.first.toString().split('.').last;
-      //                 themeController.changeTheme(themeModeName);
-      //               },
-      //             );
-      //           },
-      //           style: const ButtonStyle(
-      //             tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-      //             visualDensity: VisualDensity(horizontal: -4, vertical: -4),
-      //           ),
-      //         ),
-      //       ],
-      //     ),
-      //   ],
-      // ),
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          UserAccountsDrawerHeader(
+            accountName: Text(
+              AuthService.to.user!.name,
+            ),
+            accountEmail: Text(
+              AuthService.to.user!.email,
+            ),
+            currentAccountPicture: CircleAvatar(
+              child: ClipOval(
+                child: Container(
+                    // child: photoURL != null
+                    //     ? Image.network(
+                    //         photoURL,
+                    //         fit: BoxFit.cover,
+                    //       )
+                    //     : const FittedBox(
+                    //         fit: BoxFit.fill,
+                    //         child: Icon(
+                    //           Icons.account_circle,
+                    //           size: 100,
+                    //         ),
+                    //       ),
+                    ),
+              ),
+            ),
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                  image: AssetImage('assets/images/appbar_image3.jpg'),
+                  fit: BoxFit.cover),
+            ),
+          ),
+          ListTile(
+            leading: const Icon(Icons.category),
+            title: const Text('Produtos'),
+            onTap: () => {},
+          ),
+          const Divider(),
+          ListTile(
+            leading: const Icon(Icons.exit_to_app_outlined),
+            title: const Text('Sair'),
+            onTap: () => controller.logout(),
+          ),
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.fromLTRB(16, 0, 0, 0),
+                child: const Icon(Icons.lightbulb_circle_outlined),
+              ),
+              Container(
+                padding: const EdgeInsets.fromLTRB(15, 0, 50, 0),
+                child: const Text('Tema'),
+              ),
+              SegmentedButton(
+                showSelectedIcon: false,
+                segments: const <ButtonSegment<ThemeModes>>[
+                  ButtonSegment(
+                    value: ThemeModes.light,
+                    icon: Icon(Icons.light_mode_outlined),
+                  ),
+                  ButtonSegment(
+                    value: ThemeModes.dark,
+                    icon: Icon(Icons.dark_mode_outlined),
+                  ),
+                  ButtonSegment(
+                    value: ThemeModes.system,
+                    icon: Icon(Icons.terminal_outlined),
+                  ),
+                ],
+                selected: themeModeSelected,
+                onSelectionChanged: (Set<ThemeModes> newSelection) {
+                  setState(
+                    () {
+                      themeModeSelected = newSelection;
+                      String themeModeName =
+                          themeModeSelected.first.toString().split('.').last;
+                      themeController.changeTheme(themeModeName);
+                    },
+                  );
+                },
+                style: const ButtonStyle(
+                  tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  visualDensity: VisualDensity(horizontal: -4, vertical: -4),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
     );
   }
 }
