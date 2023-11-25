@@ -3,7 +3,7 @@ import 'package:get/get.dart';
 import 'package:villabeachapp/config.dart';
 import 'package:villabeachapp/controllers/theme_controller.dart';
 import 'package:villabeachapp/theme/color_schemes.g.dart';
-import 'package:villabeachapp/widgets/check_auth.dart';
+import 'package:villabeachapp/security/check_auth.dart';
 
 void main() async {
   await initConfigurations();

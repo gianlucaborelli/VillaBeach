@@ -16,4 +16,5 @@ class WebServiceUrl {
 
   static String login = '$baseUserUrl/login';
   static String register = '$baseUserUrl/register';
+  static String logout = '$baseUserUrl/logout';
 }

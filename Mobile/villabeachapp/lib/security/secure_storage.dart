@@ -9,4 +9,19 @@ class TokenSecureStore {
 
     return true;
   }
+
+  Future<String?> getAccessTokens() async {
+    return await storage.read(key: 'accessToken');
+  }
+
+  Future<String?> getRefreshTokens() async {
+    String? token = await storage.read(key: 'refreshToken');
+    return token;
+  }
+
+  Future<bool> deleteTokens() async {
+    await storage.deleteAll();
+
+    return true;
+  }
 }

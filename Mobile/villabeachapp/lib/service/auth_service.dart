@@ -3,14 +3,35 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:villabeachapp/model/user.dart';
-import 'package:villabeachapp/utility/secure_storage.dart';
-import 'package:villabeachapp/utility/user_token_handler.dart';
+import 'package:villabeachapp/security/secure_storage.dart';
+import 'package:villabeachapp/security/user_token_handler.dart';
 import 'package:villabeachapp/utility/webservice_url.dart';
-import 'package:villabeachapp/widgets/snack_auth_error.dart';
+import 'package:villabeachapp/security/snack_auth_error.dart';
 
 class AuthService extends GetxController {
   final Rxn<User?> _user = Rxn<User?>();
   var userIsAuthenticated = false.obs;
+
+  @override
+  void onInit() {
+    super.onInit();
+
+    ever(_user, (User? user) {
+      if (user != null) {
+        userIsAuthenticated.value = true;
+      } else {
+        userIsAuthenticated.value = false;
+      }
+    });
+  }
+
+  userAuhenticade() {
+    if (user != null) {
+      userIsAuthenticated.value = true;
+    } else {
+      userIsAuthenticated.value = false;
+    }
+  }
 
   User? get user => _user.value;
 
@@ -48,7 +69,24 @@ class AuthService extends GetxController {
 
   resetPassword(String email) async {}
 
-  logout() async {
-    userIsAuthenticated.value = false;
+  Future logout() async {
+    String? token = await TokenSecureStore().getAccessTokens();
+
+    var url = Uri.parse(WebServiceUrl.logout);
+
+    var response = await post(
+      url,
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer $token'
+      },
+    );
+
+    if (response.statusCode != 200) {
+      SnackAuthError().show(json.decode("Erro ao deslogar do servidor"));
+    }
+
+    _user.value = null;
+    TokenSecureStore().deleteTokens();
   }
 }

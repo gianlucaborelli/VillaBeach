@@ -64,6 +64,24 @@ namespace Api.Service.Security
             return new LoginDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
         }
 
+        public async Task<bool> Logout(string id)
+        {
+            var result = await _repository.FindById(id);
+
+            if ( result is null)
+            {
+                throw new AuthenticationServiceException("User not found.", 404);
+            }
+
+            result.RefreshToken = string.Empty;
+            result.RefreshTokenExpires = null;
+            
+
+            await _repository.UpdateAsync(result);
+
+            return true;
+        }
+
         public async Task<Guid> Register(RegisterDtoRequest userRequest)
         {
             if (await _repository.UserExists(userRequest.Email))
@@ -163,6 +181,6 @@ namespace Api.Service.Security
                     hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }
+        }        
     }
 }

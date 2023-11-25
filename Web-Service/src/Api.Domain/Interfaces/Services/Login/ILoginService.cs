@@ -7,8 +7,11 @@ namespace Api.Domain.Interfaces.Services.Login
     {
         Task<Guid> Register(RegisterDtoRequest user);
         Task<LoginDtoResult> Login(string email, string password);
+        Task<bool> Logout(string id);
         Task<bool> ChangePassword(string userId, string newPassword);
         Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request);
+
+        
         //int GetUserId();
         //string GetUserEmail();        
     }

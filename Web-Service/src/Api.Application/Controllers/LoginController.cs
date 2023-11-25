@@ -35,6 +35,18 @@ namespace Api.Application.Controllers
             return Ok(response);
         }
 
+        [HttpPost("logout"), Authorize]
+        public async Task<ActionResult<bool>> Logout()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            if  (userId ==null){
+                return NotFound("Not found.");
+            }                 
+
+            return Ok(await _service.Logout(userId));
+        }
+
         [HttpPost("change-password"), Authorize]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
         {
