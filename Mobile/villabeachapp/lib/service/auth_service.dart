@@ -16,28 +16,37 @@ class AuthService extends GetxController {
   void onInit() {
     super.onInit();
 
-    ever(_user, (User? user) {
-      if (user != null) {
-        userIsAuthenticated.value = true;
-      } else {
-        userIsAuthenticated.value = false;
-      }
-    });
-  }
-
-  userAuhenticade() {
-    if (user != null) {
-      userIsAuthenticated.value = true;
-    } else {
-      userIsAuthenticated.value = false;
-    }
+    ever(_user, (User? user) => userIsAuthenticated.value = user != null);
   }
 
   User? get user => _user.value;
 
   static AuthService get to => Get.find<AuthService>();
 
-  createUser(String email, String password, String name) async {}
+  createUser(String email, String confirmPassword, String password,
+      String name) async {
+    final Map<String, dynamic> registerData = {
+      'name': name,
+      'email': email,
+      'password': password,
+      "confirmPassword": password
+    };
+
+    var url = Uri.parse(WebServiceUrl.register);
+
+    var response = await post(
+      url,
+      body: json.encode(registerData),
+      headers: {'Content-Type': 'application/json'},
+    );
+
+    if (response.statusCode == 200) {
+      SnackAuthError()
+          .show("Foi enviado um email de confirmação para o e-mail cadastrado");
+    } else {
+      SnackAuthError().show(json.decode(response.body)['title']);
+    }
+  }
 
   Future login(String email, String password) async {
     final Map<String, dynamic> loginData = {
@@ -83,7 +92,7 @@ class AuthService extends GetxController {
     );
 
     if (response.statusCode != 200) {
-      SnackAuthError().show(json.decode("Erro ao deslogar do servidor"));
+      SnackAuthError().show("Erro ao deslogar do servidor");
     }
 
     _user.value = null;

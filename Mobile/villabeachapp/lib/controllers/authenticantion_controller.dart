@@ -7,6 +7,7 @@ class AuthenticationController extends GetxController {
   final name = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
+  final confirmPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   var isLogin = true.obs;
@@ -27,7 +28,8 @@ class AuthenticationController extends GetxController {
 
   register() async {
     isLoading.value = true;
-    await AuthService.to.createUser(email.text, password.text, name.text);
+    await AuthService.to
+        .createUser(email.text, password.text, name.text, confirmPassword.text);
     isLoading.value = false;
   }
 

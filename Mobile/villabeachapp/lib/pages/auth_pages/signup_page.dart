@@ -18,8 +18,6 @@ class _SignupPageState extends State<SignupPage> {
   final FocusNode _focusNodeConfirmPassword = FocusNode();
 
   final controller = Get.put(AuthenticationController());
-  final TextEditingController _controllerConFirmPassword =
-      TextEditingController();
 
   bool _obscurePassword = true;
 
@@ -119,7 +117,7 @@ class _SignupPageState extends State<SignupPage> {
               ),
               const SizedBox(height: 10),
               TextFormField(
-                controller: _controllerConFirmPassword,
+                controller: controller.confirmPassword,
                 obscureText: _obscurePassword,
                 focusNode: _focusNodeConfirmPassword,
                 keyboardType: TextInputType.visiblePassword,
@@ -178,7 +176,6 @@ class _SignupPageState extends State<SignupPage> {
     _focusNodeEmail.dispose();
     _focusNodePassword.dispose();
     _focusNodeConfirmPassword.dispose();
-    _controllerConFirmPassword.dispose();
     super.dispose();
   }
 }
