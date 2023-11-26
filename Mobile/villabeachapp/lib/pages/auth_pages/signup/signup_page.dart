@@ -15,7 +15,7 @@ class SignupPage extends StatelessWidget {
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset: true,
       body: SizedBox(
         width: double.infinity,
         height: MediaQuery.of(context).size.height,

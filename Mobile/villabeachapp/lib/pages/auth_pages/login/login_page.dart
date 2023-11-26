@@ -11,7 +11,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Background(
         child: SingleChildScrollView(
-      child: Responsive(
+            child: Column(children: [
+      Responsive(
           mobile: MobileLoginScreen(),
           desktop: Row(children: [
             Expanded(
@@ -29,7 +30,7 @@ class LoginPage extends StatelessWidget {
               ),
             )
           ])),
-    ));
+    ])));
   }
 }
 
