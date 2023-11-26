@@ -107,9 +107,7 @@ class _LoginFormState extends State<LoginForm> {
                   minimumSize: const Size.fromHeight(50),
                 ),
                 onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    controller.login();
-                  }
+                  controller.login();
                 },
                 child: const Text("Entrar"),
               ),

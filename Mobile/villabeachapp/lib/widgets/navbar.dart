@@ -23,7 +23,7 @@ class _NavBarState extends State<NavBar> {
 
   @override
   Widget build(BuildContext context) {
-    // String? photoURL = AuthService.to.user?.photoURL;
+    String? photoURL = AuthService.to.user?.photoURL;
     Set<ThemeModes> themeModeSelected = <ThemeModes>{
       ThemeModes.values.byName(themeController.themeText.value)
     };
@@ -48,19 +48,19 @@ class _NavBarState extends State<NavBar> {
             currentAccountPicture: CircleAvatar(
               child: ClipOval(
                 child: Container(
-                    // child: photoURL != null
-                    //     ? Image.network(
-                    //         photoURL,
-                    //         fit: BoxFit.cover,
-                    //       )
-                    //     : const FittedBox(
-                    //         fit: BoxFit.fill,
-                    //         child: Icon(
-                    //           Icons.account_circle,
-                    //           size: 100,
-                    //         ),
-                    //       ),
-                    ),
+                  child: photoURL != null
+                      ? Image.network(
+                          photoURL,
+                          fit: BoxFit.cover,
+                        )
+                      : const FittedBox(
+                          fit: BoxFit.fill,
+                          child: Icon(
+                            Icons.account_circle,
+                            size: 100,
+                          ),
+                        ),
+                ),
               ),
             ),
             decoration: const BoxDecoration(

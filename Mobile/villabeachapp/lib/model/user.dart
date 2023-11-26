@@ -3,7 +3,7 @@ class User {
   String name;
   String email;
   String role;
-
+  String? photoURL;
   User(
       {required this.userId,
       required this.name,
