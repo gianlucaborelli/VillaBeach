@@ -32,12 +32,23 @@ namespace Api.Service.Security
             _refreshTokenService = refreshTokenService;
         }
 
-        // public int GetUserId()
-        // {
-        //     return int.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier));
-        // }
+        /// <summary>
+        /// Returns the ID of the currently authenticated user in the HTTP context.
+        /// </summary>
+        /// <returns cref="Guid"> User ID </returns>
+        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, which typically occurs when this method is accessed by an unauthenticated user.</exception>
+        public Guid GetUserId() =>
+                Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
+                        ?? throw new InvalidOperationException("User ID not found in claims."));
 
-        // public string GetUserEmail() => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Name);
+        /// <summary>
+        /// Returns the E-mail of the currently authenticated user in the HTTP context.
+        /// </summary>
+        /// <returns> User E-mail </returns>
+        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, which typically occurs when this method is accessed by an unauthenticated user.</exception>
+        public string GetUserEmail() =>
+                _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email)
+                    ?? throw new InvalidOperationException("User Email not found in claims.");
 
         public async Task<LoginDtoResult> Login(string email, string password)
         {
@@ -60,22 +71,21 @@ namespace Api.Service.Security
 
             await _repository.UpdateAsync(user);
 
-
             return new LoginDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
         }
 
-        public async Task<bool> Logout(string id)
+        public async Task<bool> Logout()
         {
-            var result = await _repository.FindById(id);
+            var result = await _repository.FindById(GetUserId());
 
-            if ( result is null)
+            if (result is null)
             {
                 throw new AuthenticationServiceException("User not found.", 404);
             }
 
             result.RefreshToken = string.Empty;
             result.RefreshTokenExpires = null;
-            
+
 
             await _repository.UpdateAsync(result);
 
@@ -85,10 +95,7 @@ namespace Api.Service.Security
         public async Task<Guid> Register(RegisterDtoRequest userRequest)
         {
             if (await _repository.UserExists(userRequest.Email))
-            {
                 throw new AuthenticationServiceException("User already exists.", 400);
-
-            }
 
             CreatePasswordHash(userRequest.Password, out byte[] passwordHash, out byte[] passwordSalt);
 
@@ -107,7 +114,7 @@ namespace Api.Service.Security
 
         public async Task<bool> ChangePassword(string userId, string newPassword)
         {
-            var user = await _repository.FindById(userId);
+            var user = await _repository.FindById(GetUserId());
             if (user == null)
             {
                 throw new AuthenticationServiceException("User not found.", 404);
@@ -133,7 +140,8 @@ namespace Api.Service.Security
                 throw new SecurityTokenException("Invalid access token/refresh token");
             }
 
-            string email = principal.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email).Value;
+            string email = principal.Claims.FirstOrDefault(e => e.Type == ClaimTypes.Email)?.Value 
+                        ?? throw new InvalidOperationException("User Email not found in claims.");
 
             var user = await _repository.FindByEmail(email);
 
@@ -159,7 +167,7 @@ namespace Api.Service.Security
                 user.RefreshTokenExpires = newRefreshToken.Expires;
 
                 await _repository.UpdateAsync(user);
-                return new RefreshTokenDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };                
+                return new RefreshTokenDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
             };
         }
 
@@ -181,6 +189,6 @@ namespace Api.Service.Security
                     hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
                 return computedHash.SequenceEqual(passwordHash);
             }
-        }        
+        }
     }
 }

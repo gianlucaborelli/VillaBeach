@@ -7,7 +7,7 @@ namespace Api.Domain.Repository
     {
         Task<IEnumerable<UserEntity>?> FindByName (string name);
 
-        Task<UserEntity?> FindById (string Id);
+        Task<UserEntity?> FindById (Guid Id);
 
         Task<UserEntity?> FindByEmail (string email);
 

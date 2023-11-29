@@ -1,5 +1,6 @@
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

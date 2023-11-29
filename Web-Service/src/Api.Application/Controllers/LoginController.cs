@@ -38,13 +38,7 @@ namespace Api.Application.Controllers
         [HttpPost("logout"), Authorize]
         public async Task<ActionResult<bool>> Logout()
         {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if  (userId ==null){
-                return NotFound("Not found.");
-            }                 
-
-            return Ok(await _service.Logout(userId));
+            return Ok(await _service.Logout());
         }
 
         [HttpPost("change-password"), Authorize]

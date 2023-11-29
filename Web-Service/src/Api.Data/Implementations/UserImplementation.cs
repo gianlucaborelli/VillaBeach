@@ -36,9 +36,9 @@ namespace Api.Data.Implementations
             return await _dataSet.Where(u => u.Name.Contains(name)).ToListAsync();
         }
 
-        public async Task<UserEntity?> FindById(string id)
+        public async Task<UserEntity?> FindById(Guid id)
         {
-            return await _dataSet.Where(user => user.Id == Guid.Parse(id)).SingleOrDefaultAsync();
+            return await _dataSet.Where(user => user.Id == id).SingleOrDefaultAsync();
         }
     }
 }
