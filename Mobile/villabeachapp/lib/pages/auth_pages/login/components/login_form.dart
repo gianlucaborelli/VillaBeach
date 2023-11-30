@@ -23,6 +23,7 @@ class _LoginFormState extends State<LoginForm> {
   @override
   Widget build(BuildContext context) {
     return Form(
+      key: _formKey,
       child: Column(
         children: [
           Text(
@@ -36,6 +37,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 60),
           TextFormField(
+            textInputAction: TextInputAction.next,
             controller: controller.email,
             keyboardType: TextInputType.emailAddress,
             decoration: const InputDecoration(
@@ -54,6 +56,7 @@ class _LoginFormState extends State<LoginForm> {
           ),
           const SizedBox(height: 10),
           TextFormField(
+            onEditingComplete: () => controller.login(),
             controller: controller.password,
             focusNode: _focusNodePassword,
             obscureText: _obscurePassword,
@@ -107,7 +110,9 @@ class _LoginFormState extends State<LoginForm> {
                   minimumSize: const Size.fromHeight(50),
                 ),
                 onPressed: () {
-                  controller.login();
+                  if (_formKey.currentState?.validate() ?? false) {
+                    controller.login();
+                  }
                 },
                 child: const Text("Entrar"),
               ),
