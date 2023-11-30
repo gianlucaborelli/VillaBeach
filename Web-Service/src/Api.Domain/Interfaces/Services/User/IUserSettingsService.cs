@@ -5,7 +5,7 @@ namespace Api.Domain.Interfaces.Services.User
     {
         Dictionary<string, int> GetSettingByUserId();
 
-        bool UpdateSetting(int userId, string key, int value);       
+        Task<bool> UpdateSetting(string key, int value);       
         
     }
 }

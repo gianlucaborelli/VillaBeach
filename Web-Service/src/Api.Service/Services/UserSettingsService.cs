@@ -26,9 +26,15 @@ namespace Api.Service.Services
             return _mapper.Map<Dictionary<string, int>>(response);
         }
 
-        public bool UpdateSetting(int userId, string key, int value)
+        public async Task<bool> UpdateSetting(string key, int value)
         {
-            throw new NotImplementedException();
+            var response = await _repository.GetSettingByUserId(_auth.GetUserId());
+
+            response.GetType().GetProperty(key).SetValue(response, value);
+
+            await _repository.UpdateAsync(response);
+
+            return true;            
         }
     }
 }
