@@ -8,6 +8,7 @@ using Api.Domain.Repository;
 using Api.Domain.Entities;
 using AutoMapper;
 using Api.Service.Exceptions;
+using Api.Domain.Dtos.User;
 
 namespace Api.Service.Security
 {
@@ -16,10 +17,12 @@ namespace Api.Service.Security
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly IUserRepository _repository;
+        private readonly IUserSettingsRepository _userSettingsRepository;
         private readonly ITokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
 
         public LoginService(IUserRepository repository,
+                            IUserSettingsRepository userSettingsRepository,
                             IMapper mapper,
                             IHttpContextAccessor httpContextAccessor,
                             ITokenService tokenService,
@@ -27,6 +30,7 @@ namespace Api.Service.Security
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = repository;
+            _userSettingsRepository = userSettingsRepository;
             _mapper = mapper;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
@@ -36,7 +40,8 @@ namespace Api.Service.Security
         /// Returns the ID of the currently authenticated user in the HTTP context.
         /// </summary>
         /// <returns cref="Guid"> User ID </returns>
-        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, which typically occurs when this method is accessed by an unauthenticated user.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, 
+        /// which typically occurs when this method is accessed by an unauthenticated user.</exception>
         public Guid GetUserId() =>
                 Guid.Parse(_httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier)
                         ?? throw new InvalidOperationException("User ID not found in claims."));
@@ -45,7 +50,8 @@ namespace Api.Service.Security
         /// Returns the E-mail of the currently authenticated user in the HTTP context.
         /// </summary>
         /// <returns> User E-mail </returns>
-        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, which typically occurs when this method is accessed by an unauthenticated user.</exception>
+        /// <exception cref="InvalidOperationException">Thrown when the user is null in HttpContext, 
+        /// which typically occurs when this method is accessed by an unauthenticated user.</exception>
         public string GetUserEmail() =>
                 _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.Email)
                     ?? throw new InvalidOperationException("User Email not found in claims.");
@@ -71,7 +77,14 @@ namespace Api.Service.Security
 
             await _repository.UpdateAsync(user);
 
-            return new LoginDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
+            var settings = await _userSettingsRepository.GetSettingByUserId(user.Id);
+
+            return new LoginDtoResult 
+                    { 
+                        AccessToken = newAccessToken, 
+                        RefreshToken = newRefreshToken.Token, 
+                        Settings = _mapper.Map<UserSettingsDto>(settings)
+                    };
         }
 
         public async Task<bool> Logout()
@@ -105,9 +118,16 @@ namespace Api.Service.Security
                 Email = userRequest.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
-            };
+            };            
 
             await _repository.InsertAsync(newUser);
+
+            var newUserSettings = new UserSettingsEntity
+            {
+                User = newUser                
+            };
+
+            await _userSettingsRepository.InsertAsync(newUserSettings);
 
             return newUser.Id;
         }

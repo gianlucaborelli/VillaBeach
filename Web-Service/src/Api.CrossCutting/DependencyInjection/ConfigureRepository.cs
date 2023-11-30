@@ -18,6 +18,7 @@ namespace Api.CrossCutting.DependencyInjection
         {
             serviceCollection.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
             serviceCollection.AddScoped<IUserRepository, UserImplementation>();
+            serviceCollection.AddScoped<IUserSettingsRepository, UserSettingsImplementation>();
             serviceCollection.AddScoped<IProductRepository, ProductImplementation>();
             serviceCollection.AddScoped<IProductPriceRepository, ProductPriceImplementation>();
             serviceCollection.AddScoped<IPurchaseRepository, PurchaseImplementation>();

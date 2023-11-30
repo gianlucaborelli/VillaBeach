@@ -11,6 +11,7 @@ namespace Api.Data.Context
     public class MyContext : DbContext
     {
         public DbSet<UserEntity> Users => Set<UserEntity>();
+        public DbSet<UserSettingsEntity> UserSettings => Set<UserSettingsEntity>();
         public DbSet<AddressEntity> Addresses => Set<AddressEntity>();
         public DbSet<ContactEntity> Contacts => Set<ContactEntity>();
         public DbSet<ProductPriceEntity> ProductPrices => Set<ProductPriceEntity>();

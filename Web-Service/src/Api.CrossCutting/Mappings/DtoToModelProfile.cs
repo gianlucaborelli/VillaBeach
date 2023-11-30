@@ -22,6 +22,9 @@ namespace Api.CrossCutting.Mappings
             CreateMap<UserModel, UserDtoUpdateRequest>()
                 .ReverseMap();
 
+            CreateMap<UserSettingsModel, UserSettingsDto>()
+                .ReverseMap();
+
             CreateMap<ProductModel, ProductDto>()
                 .ReverseMap();
             CreateMap<ProductModel, ProductDtoCreateRequest>()

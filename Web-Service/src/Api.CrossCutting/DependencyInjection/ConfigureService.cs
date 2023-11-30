@@ -14,6 +14,7 @@ namespace Api.CrossCutting.DependencyInjection
         public static void ConfigureDependenciesService(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddTransient<IUserService, UserService>();
+            serviceCollection.AddTransient<IUserSettingsService, UserSettingsService>();
             serviceCollection.AddTransient<IProductService, ProductService>();
             serviceCollection.AddTransient<IProductPriceService, ProductPriceService>();
             serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
