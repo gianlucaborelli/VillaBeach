@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:get/get.dart';
 import 'package:http/http.dart';
 import 'package:villabeachapp/model/user.dart';
+import 'package:villabeachapp/model/user_settings.dart';
 import 'package:villabeachapp/security/secure_storage.dart';
 import 'package:villabeachapp/security/user_token_handler.dart';
 import 'package:villabeachapp/utility/webservice_url.dart';
@@ -10,14 +11,16 @@ import 'package:villabeachapp/security/snack_auth_error.dart';
 
 class AuthService extends GetxController {
   final Rxn<User?> _user = Rxn<User?>();
+  final Rxn<UserSettings?> _settings = Rxn<UserSettings?>();
   var userIsAuthenticated = false.obs;
 
   @override
   void onInit() {
     super.onInit();
-
     ever(_user, (User? user) => userIsAuthenticated.value = user != null);
   }
+
+  UserSettings? get settings => _settings.value;
 
   User? get user => _user.value;
 
@@ -69,6 +72,7 @@ class AuthService extends GetxController {
           responseData['accessToken'], responseData['refreshToken']);
 
       _user.value = UserTokenHandler().createUser(responseData['accessToken']);
+      _settings.value = UserSettings.fromJson(responseData['settings']);
 
       userIsAuthenticated.value = true;
     } else {

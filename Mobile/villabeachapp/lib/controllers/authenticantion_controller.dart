@@ -16,7 +16,7 @@ class AuthenticationController extends GetxController {
   login() async {
     isLoading.value = true;
     await AuthService.to.login(email.text, password.text);
-    await ThemeController.to.loadThemeMode();
+    await ThemeController.to.loadThemeMode(AuthService.to.settings?.themeMode);
     isLoading.value = false;
   }
 

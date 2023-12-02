@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/controllers/theme_controller.dart';
+import 'package:villabeachapp/pages/users_page/users_page.dart';
 import 'package:villabeachapp/service/auth_service.dart';
 
 import '../controllers/authenticantion_controller.dart';
-
-enum ThemeModes { light, system, dark }
 
 class NavBar extends StatefulWidget {
   const NavBar({super.key});
@@ -19,14 +18,9 @@ class _NavBarState extends State<NavBar> {
 
   final ThemeController themeController = ThemeController.to;
 
-  late Set<ThemeModes> themeModeSelected;
-
   @override
   Widget build(BuildContext context) {
     String? photoURL = AuthService.to.user?.photoURL;
-    Set<ThemeModes> themeModeSelected = <ThemeModes>{
-      ThemeModes.values.byName(themeController.themeText.value)
-    };
 
     return Drawer(
       shape: const RoundedRectangleBorder(
@@ -70,6 +64,18 @@ class _NavBarState extends State<NavBar> {
             ),
           ),
           ListTile(
+            leading: const Icon(Icons.people_alt_outlined),
+            title: const Text('Usuários'),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const UsersPage(),
+                ),
+              );
+            },
+          ),
+          ListTile(
             leading: const Icon(Icons.category),
             title: const Text('Produtos'),
             onTap: () => {},
@@ -106,14 +112,11 @@ class _NavBarState extends State<NavBar> {
                     icon: Icon(Icons.terminal_outlined),
                   ),
                 ],
-                selected: themeModeSelected,
+                selected: {ThemeController.to.themeSelected},
                 onSelectionChanged: (Set<ThemeModes> newSelection) {
                   setState(
                     () {
-                      themeModeSelected = newSelection;
-                      String themeModeName =
-                          themeModeSelected.first.toString().split('.').last;
-                      themeController.changeTheme(themeModeName);
+                      themeController.changeTheme(newSelection.first);
                     },
                   );
                 },

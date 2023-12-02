@@ -1,51 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/service/auth_service.dart';
+import 'package:villabeachapp/service/user_settings/user_settings_service.dart';
+
+enum ThemeModes { light, system, dark }
 
 class ThemeController extends GetxController {
-  RxString themeText = ''.obs;
-  //late FirebaseFirestore db = DBFirestore.get();
+  static String settingsType = "ThemeMode";
   late AuthService authService = AuthService();
+  final Rx<ThemeModes> _themeSelected = Rx<ThemeModes>(ThemeModes.system);
 
-  Map<String, ThemeMode> themeModes = {
-    'light': ThemeMode.light,
-    'dark': ThemeMode.dark,
-    'system': ThemeMode.system,
+  Map<int, ThemeMode> themeModes = {
+    2: ThemeMode.light,
+    1: ThemeMode.dark,
+    0: ThemeMode.system,
   };
+
+  ThemeModes get themeSelected => _themeSelected.value;
 
   static ThemeController get to => Get.find();
 
-  loadThemeMode() async {
-    if (AuthService.to.userIsAuthenticated.value) {
-      // final snapshot = await db
-      //     .collection('user')
-      //     .doc(AuthService.to.user!.uid)
-      //     .collection('preferences')
-      //     .doc('settings')
-      //     .get();
-
-      // themeText.value = snapshot.get('themeMode');
-    } else {
-      themeText.value = 'system';
-    }
-    setMode(themeText.value);
+  loadThemeMode(int? theme) async {
+    setMode(theme);
   }
 
-  Future setMode(String theme) async {
+  Future setMode(int? theme) async {
+    _themeSelected.value = _getThemeEnum(theme);
     ThemeMode? themeMode = themeModes[theme];
     Get.changeThemeMode(themeMode ?? ThemeMode.system);
-    if (AuthService.to.userIsAuthenticated.value) {
-      // await db
-      //     .collection('user')
-      //     .doc(AuthService.to.user!.uid)
-      //     .collection('preferences')
-      //     .doc('settings')
-      //     .set({'themeMode': theme});
+  }
+
+  changeTheme(ThemeModes selectedTheme) {
+    var theme = _getThemeValue(selectedTheme);
+    UserSettingsService.to
+        .updateSettings(settingsType, _getThemeValue(selectedTheme));
+    setMode(theme);
+  }
+
+  int _getThemeValue(ThemeModes mode) {
+    switch (mode) {
+      case ThemeModes.system:
+        return 0;
+      case ThemeModes.dark:
+        return 1;
+      case ThemeModes.light:
+        return 2;
+      default:
+        return -1;
     }
   }
 
-  changeTheme(String theme) {
-    setMode(theme);
-    themeText.value = theme;
+  ThemeModes _getThemeEnum(int? mode) {
+    switch (mode) {
+      case 0:
+        return ThemeModes.system;
+      case 1:
+        return ThemeModes.dark;
+      case 2:
+        return ThemeModes.light;
+      default:
+        return ThemeModes.system; // Tratamento para um caso padrão ou erro
+    }
   }
 }
