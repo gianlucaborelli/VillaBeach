@@ -6,9 +6,19 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Service.Security
 {
-    public class TokenService: ITokenService
+    /// <summary>
+    /// Service responsible for creating access tokens using JWT (JSON Web Token) for a given UserEntity.
+    /// </summary>
+    public class AccessTokenService : IAccessTokenService
     {
-        public string CreateToken(UserEntity user)
+        /// <summary>
+        /// Creates an access token for the specified user entity by generating a JWT (JSON Web Token)
+        /// with the user's claims such as NameIdentifier, Name, Email, and Role.
+        /// </summary>
+        /// <param name="user">The UserEntity for whom the access token is generated.</param>
+        /// <returns>A string representation of the generated JWT access token.</returns>
+        /// <exception cref="ApplicationException">Thrown when the token key is not configured in the environment variables.</exception>
+        public string CreateAccessToken(UserEntity user)
         {
             List<Claim> claims = new()
             {
@@ -18,13 +28,9 @@ namespace Api.Service.Security
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY");
+            var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY") 
+                            ?? throw new ApplicationException("Token key is not configured.");
 
-            if (tokenKey == null)
-            {
-                throw new ApplicationException("Token key is not configured.");
-            }
-            
             var key = new SymmetricSecurityKey(System.Text.Encoding.UTF8
                 .GetBytes(tokenKey));
 

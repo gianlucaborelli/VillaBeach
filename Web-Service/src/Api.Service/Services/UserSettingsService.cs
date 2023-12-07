@@ -1,3 +1,4 @@
+using System.Security.Authentication;
 using Api.Domain.Interfaces.Services.Login;
 using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Repository;
@@ -9,11 +10,11 @@ namespace Api.Service.Services
     public class UserSettingsService : IUserSettingsService
     {
         private IUserSettingsRepository _repository;
-        private ILoginService _auth;
+        private IAuthenticationService _auth;
 
         private readonly IMapper _mapper;
 
-        public UserSettingsService(IUserSettingsRepository repository, IMapper mapper, ILoginService auth)
+        public UserSettingsService(IUserSettingsRepository repository, IMapper mapper, IAuthenticationService auth)
         {
             _repository = repository;
             _mapper = mapper;
@@ -28,7 +29,8 @@ namespace Api.Service.Services
 
         public async Task<bool> UpdateSetting(string key, int value)
         {
-            var response = await _repository.GetSettingByUserId(_auth.GetUserId());
+            var response = await _repository.GetSettingByUserId(_auth.GetUserId()) 
+                            ?? throw new AuthenticationException("User not found.") ;
 
             response.GetType().GetProperty(key).SetValue(response, value);
 

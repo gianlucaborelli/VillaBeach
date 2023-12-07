@@ -1,3 +1,5 @@
+using System.Net;
+using System.Security.Authentication;
 using System.Security.Claims;
 using Api.Domain.Dtos.Login;
 using Api.Domain.Interfaces.Services.Login;
@@ -8,13 +10,14 @@ namespace Api.Application.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class LoginController : ControllerBase
     {
 
         private readonly ILogger<LoginController> _logger;
-        private readonly ILoginService _service;
+        private readonly IAuthenticationService _service;
 
-        public LoginController(ILoginService service, ILogger<LoginController> logger)
+        public LoginController(IAuthenticationService service, ILogger<LoginController> logger)
         {
             _logger = logger;
             _service = service;
@@ -22,26 +25,58 @@ namespace Api.Application.Controllers
         }
         
         [HttpPost("register")]
+        [AllowAnonymous]
         public async Task<ActionResult<Guid>> Register(RegisterDtoRequest request)
         {
-            var response = await _service.Register(request);            
-            return Ok(response);
-        }
+            try
+            {
+                var response = await _service.Register(request);            
+                return Ok(response);
+            }
+            catch (AuthenticationException ex)
+            {
+                return Conflict(ex.Message);
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }                   
 
         [HttpPost("login")]
+        [AllowAnonymous]
         public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest request)
         {
-            var response = await _service.Login(request.Email, request.Password);
-            return Ok(response);
+            try
+            {
+                var response = await _service.Login(request.Email, request.Password);
+                return Ok(response);
+            }
+            catch( AuthenticationException)
+            {
+                return BadRequest("Wrong user or password.");
+            }
+            catch (ApplicationException ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }            
         }
 
-        [HttpPost("logout"), Authorize]
+        [HttpPost("logout")]
         public async Task<ActionResult<bool>> Logout()
         {
             return Ok(await _service.Logout());
         }
 
-        [HttpPost("change-password"), Authorize]
+        [HttpPost("change-password")]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
@@ -55,10 +90,18 @@ namespace Api.Application.Controllers
         }
 
         [HttpPost("refresh-token")]
+        [AllowAnonymous]
         public async Task<ActionResult<string>> RefreshToken([FromBody]RefreshTokenDtoRequest request)
         {
-            var token = await _service.RefreshToken(request);
-            return Ok(token);
+            try
+            {
+                var token = await _service.RefreshToken(request);
+                return Ok(token);
+            }
+            catch(Exception ex)
+            {
+                return Unauthorized(ex.Message);
+            }            
         }
     }
 }

@@ -9,7 +9,7 @@ namespace Api.CrossCutting.Configuration
     {
         public static void ConfigureMapperService(this IServiceCollection serviceCollection)
         {
-            var mapperConfiguration = new AutoMapper.MapperConfiguration(configuration =>
+            var mapperConfiguration = new MapperConfiguration(configuration =>
             {
                 configuration.AddProfile(new DtoToModelProfile());
                 configuration.AddProfile(new EntityToDtoProfile());
