@@ -103,7 +103,7 @@ namespace Api.Service.Security
             var result = await _repository.FindById(GetUserId())
                             ?? throw new AuthenticationException("User not found.");
 
-            UpdateUserRefreshToken(result, new RefreshTokenDto { Token = string.Empty, Expires = null });
+            await UpdateUserRefreshToken(result, new RefreshTokenDto { Token = string.Empty, Expires = null });
 
             return true;
         }
@@ -183,7 +183,7 @@ namespace Api.Service.Security
             string newAccessToken = _tokenService.CreateAccessToken(user);
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
 
-            UpdateUserRefreshToken(user, newRefreshToken);
+            await UpdateUserRefreshToken(user, newRefreshToken);
 
             return new RefreshTokenDtoResult { AccessToken = newAccessToken, RefreshToken = newRefreshToken.Token };
         }
@@ -200,7 +200,7 @@ namespace Api.Service.Security
             }
         }
 
-        private async void UpdateUserRefreshToken(UserEntity user, RefreshTokenDto newRefreshToken)
+        private async Task UpdateUserRefreshToken(UserEntity user, RefreshTokenDto newRefreshToken)
         {
             user.RefreshToken = newRefreshToken.Token;
             user.RefreshTokenExpires = newRefreshToken.Expires;

@@ -11,13 +11,13 @@ namespace Api.Application.Controllers
     [Route("api/users")]
     [ApiController]
     [Authorize]
-    public class LoginController : ControllerBase
+    public class AuthenticationController : ControllerBase
     {
 
-        private readonly ILogger<LoginController> _logger;
+        private readonly ILogger<AuthenticationController> _logger;
         private readonly IAuthenticationService _service;
 
-        public LoginController(IAuthenticationService service, ILogger<LoginController> logger)
+        public AuthenticationController(IAuthenticationService service, ILogger<AuthenticationController> logger)
         {
             _logger = logger;
             _service = service;
