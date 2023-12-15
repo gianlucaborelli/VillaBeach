@@ -15,6 +15,7 @@ class WebServiceUrl {
   static String baseUserUrl = '$baseUrl/users';
 
   static String login = '$baseUserUrl/login';
+  static String refresToken = '$baseUserUrl/refresh-token';
   static String register = '$baseUserUrl/register';
   static String logout = '$baseUserUrl/logout';
   static String settings = '$baseUserUrl/settings';

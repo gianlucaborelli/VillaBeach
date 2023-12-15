@@ -11,7 +11,8 @@ class TokenSecureStore {
   }
 
   Future<String?> getAccessTokens() async {
-    return await storage.read(key: 'accessToken');
+    String? accessToken = await storage.read(key: 'accessToken');
+    return accessToken;
   }
 
   Future<String?> getRefreshTokens() async {

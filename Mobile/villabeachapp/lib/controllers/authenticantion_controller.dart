@@ -10,7 +10,6 @@ class AuthenticationController extends GetxController {
   final confirmPassword = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
-  var isLogin = true.obs;
   var isLoading = false.obs;
 
   login() async {

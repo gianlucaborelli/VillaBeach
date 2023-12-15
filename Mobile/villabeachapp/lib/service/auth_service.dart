@@ -1,18 +1,29 @@
 import 'dart:convert';
 
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
-import 'package:http/http.dart';
 import 'package:villabeachapp/model/user.dart';
 import 'package:villabeachapp/model/user_settings.dart';
 import 'package:villabeachapp/security/secure_storage.dart';
 import 'package:villabeachapp/security/user_token_handler.dart';
+import 'package:villabeachapp/utility/dio_interceptor/onerror_interceptor.dart';
+import 'package:villabeachapp/utility/dio_interceptor/onrequest_interceptor.dart';
 import 'package:villabeachapp/utility/webservice_url.dart';
 import 'package:villabeachapp/security/snack_auth_error.dart';
 
 class AuthService extends GetxController {
+  late final Dio _dio;
   final Rxn<User?> _user = Rxn<User?>();
   final Rxn<UserSettings?> _settings = Rxn<UserSettings?>();
   var userIsAuthenticated = false.obs;
+
+  AuthService() {
+    _dio = Dio(BaseOptions(
+      connectTimeout: const Duration(milliseconds: 5000),
+    ));
+    _dio.interceptors.add(OnRequestInterceptor());
+    _dio.interceptors.add(OnErrorInterceptor());
+  }
 
   @override
   void onInit() {
@@ -20,10 +31,8 @@ class AuthService extends GetxController {
     ever(_user, (User? user) => userIsAuthenticated.value = user != null);
   }
 
-  UserSettings? get settings => _settings.value;
-
   User? get user => _user.value;
-
+  UserSettings? get settings => _settings.value;
   static AuthService get to => Get.find<AuthService>();
 
   createUser(String email, String confirmPassword, String password,
@@ -35,19 +44,16 @@ class AuthService extends GetxController {
       "confirmPassword": password
     };
 
-    var url = Uri.parse(WebServiceUrl.register);
-
-    var response = await post(
-      url,
-      body: json.encode(registerData),
-      headers: {'Content-Type': 'application/json'},
+    var response = await _dio.post(
+      WebServiceUrl.register,
+      data: registerData,
     );
 
     if (response.statusCode == 200) {
       SnackAuthError()
           .show("Foi enviado um email de confirmação para o e-mail cadastrado");
     } else {
-      SnackAuthError().show(json.decode(response.body)['title']);
+      SnackAuthError().show(json.decode(response.data)['title']);
     }
   }
 
@@ -57,16 +63,10 @@ class AuthService extends GetxController {
       'password': password
     };
 
-    var url = Uri.parse(WebServiceUrl.login);
-
-    var response = await post(
-      url,
-      body: json.encode(loginData),
-      headers: {'Content-Type': 'application/json'},
-    );
+    var response = await _dio.post(WebServiceUrl.login, data: loginData);
 
     if (response.statusCode == 200) {
-      final Map<String, dynamic> responseData = json.decode(response.body);
+      final Map<String, dynamic> responseData = response.data;
 
       TokenSecureStore().saveTokens(
           responseData['accessToken'], responseData['refreshToken']);
@@ -76,23 +76,34 @@ class AuthService extends GetxController {
 
       userIsAuthenticated.value = true;
     } else {
-      SnackAuthError().show(json.decode(response.body)['title']);
+      SnackAuthError().show(json.decode(response.data)['title']);
+    }
+  }
+
+  Future refreshToken() async {
+    final Map<String, dynamic> refreshTokenData = {
+      'accessToken': TokenSecureStore().getAccessTokens(),
+      'refresToken': TokenSecureStore().getRefreshTokens()
+    };
+
+    var response =
+        await _dio.post(WebServiceUrl.refresToken, data: refreshTokenData);
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> responseData = response.data;
+
+      TokenSecureStore().saveTokens(
+          responseData['accessToken'], responseData['refreshToken']);
+    } else {
+      SnackAuthError().show(json.decode(response.data)['title']);
     }
   }
 
   resetPassword(String email) async {}
 
   Future logout() async {
-    String? token = await TokenSecureStore().getAccessTokens();
-
-    var url = Uri.parse(WebServiceUrl.logout);
-
-    var response = await post(
-      url,
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer $token'
-      },
+    var response = await _dio.post(
+      WebServiceUrl.logout,
     );
 
     if (response.statusCode != 200) {
