@@ -9,7 +9,9 @@ class OnRequestInterceptor extends Interceptor {
   ) async {
     var accessToken = await TokenSecureStore().getAccessTokens();
 
-    options.headers['Authorization'] = 'Bearer $accessToken';
+    if (accessToken != null) {
+      options.headers['Authorization'] = 'Bearer $accessToken';
+    }
     options.headers['Content-Type'] = 'application/json';
 
     return handler.next(options);

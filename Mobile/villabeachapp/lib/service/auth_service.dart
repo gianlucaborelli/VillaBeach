@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/model/user.dart';
@@ -9,7 +7,7 @@ import 'package:villabeachapp/security/user_token_handler.dart';
 import 'package:villabeachapp/utility/dio_interceptor/onerror_interceptor.dart';
 import 'package:villabeachapp/utility/dio_interceptor/onrequest_interceptor.dart';
 import 'package:villabeachapp/utility/webservice_url.dart';
-import 'package:villabeachapp/security/snack_auth_error.dart';
+import 'package:villabeachapp/utility/message_snackbar.dart';
 
 class AuthService extends GetxController {
   late final Dio _dio;
@@ -43,17 +41,20 @@ class AuthService extends GetxController {
       'password': password,
       "confirmPassword": password
     };
+    try {
+      var response = await _dio.post(
+        WebServiceUrl.register,
+        data: registerData,
+      );
 
-    var response = await _dio.post(
-      WebServiceUrl.register,
-      data: registerData,
-    );
-
-    if (response.statusCode == 200) {
-      SnackAuthError()
-          .show("Foi enviado um email de confirmação para o e-mail cadastrado");
-    } else {
-      SnackAuthError().show(json.decode(response.data)['title']);
+      if (response.statusCode == 200) {
+        MessageSnackBar(
+                message:
+                    'Foi enviado um email de confirmação para o e-mail cadastrado')
+            .show();
+      }
+    } on DioException catch (e) {
+      MessageSnackBar(message: e.response!.data.toString()).show();
     }
   }
 
@@ -63,54 +64,58 @@ class AuthService extends GetxController {
       'password': password
     };
 
-    var response = await _dio.post(WebServiceUrl.login, data: loginData);
+    try {
+      var response = await _dio.post(WebServiceUrl.login, data: loginData);
 
-    if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = response.data;
 
       TokenSecureStore().saveTokens(
-          responseData['accessToken'], responseData['refreshToken']);
+        responseData['accessToken'],
+        responseData['refreshToken'],
+      );
 
       _user.value = UserTokenHandler().createUser(responseData['accessToken']);
       _settings.value = UserSettings.fromJson(responseData['settings']);
 
       userIsAuthenticated.value = true;
-    } else {
-      SnackAuthError().show(json.decode(response.data)['title']);
+    } on DioException catch (e) {
+      MessageSnackBar(message: e.response!.data.toString()).show();
     }
   }
 
   Future refreshToken() async {
-    final Map<String, dynamic> refreshTokenData = {
-      'accessToken': TokenSecureStore().getAccessTokens(),
-      'refresToken': TokenSecureStore().getRefreshTokens()
-    };
+    try {
+      final Map<String, dynamic> refreshTokenData = {
+        'accessToken': TokenSecureStore().getAccessTokens(),
+        'refresToken': TokenSecureStore().getRefreshTokens()
+      };
 
-    var response =
-        await _dio.post(WebServiceUrl.refresToken, data: refreshTokenData);
+      var response = await _dio.post(
+        WebServiceUrl.refresToken,
+        data: refreshTokenData,
+      );
 
-    if (response.statusCode == 200) {
       final Map<String, dynamic> responseData = response.data;
 
       TokenSecureStore().saveTokens(
-          responseData['accessToken'], responseData['refreshToken']);
-    } else {
-      SnackAuthError().show(json.decode(response.data)['title']);
+        responseData['accessToken'],
+        responseData['refreshToken'],
+      );
+    } on DioException catch (e) {
+      MessageSnackBar(message: e.response!.data.toString()).show();
     }
   }
 
   resetPassword(String email) async {}
 
   Future logout() async {
-    var response = await _dio.post(
-      WebServiceUrl.logout,
-    );
-
-    if (response.statusCode != 200) {
-      SnackAuthError().show("Erro ao deslogar do servidor");
+    try {
+      await _dio.post(WebServiceUrl.logout);
+    } on DioException catch (e) {
+      MessageSnackBar(message: e.response!.data.toString()).show();
+    } finally {
+      _user.value = null;
+      TokenSecureStore().deleteTokens();
     }
-
-    _user.value = null;
-    TokenSecureStore().deleteTokens();
   }
 }

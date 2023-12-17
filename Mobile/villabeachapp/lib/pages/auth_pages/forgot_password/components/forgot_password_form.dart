@@ -60,7 +60,11 @@ class _ForgotPasswordFormState extends State<ForgotPasswordForm> {
                 controller.resetPassword();
               }
             },
-            child: const Text("Enviar"),
+            child: Obx(
+              () => controller.isLoading.value
+                  ? const CircularProgressIndicator()
+                  : const Text("Enviar"),
+            ),
           ),
         ],
       ),

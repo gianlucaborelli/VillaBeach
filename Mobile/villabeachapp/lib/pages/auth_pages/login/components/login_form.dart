@@ -106,16 +106,19 @@ class _LoginFormState extends State<LoginForm> {
           Column(
             children: [
               FilledButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size.fromHeight(50),
-                ),
-                onPressed: () {
-                  if (_formKey.currentState?.validate() ?? false) {
-                    controller.login();
-                  }
-                },
-                child: const Text("Entrar"),
-              ),
+                  style: ElevatedButton.styleFrom(
+                    minimumSize: const Size.fromHeight(50),
+                  ),
+                  onPressed: () {
+                    if (_formKey.currentState?.validate() ?? false) {
+                      controller.login();
+                    }
+                  },
+                  child: Obx(
+                    () => controller.isLoading.value
+                        ? const CircularProgressIndicator()
+                        : const Text("Entrar"),
+                  )),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [

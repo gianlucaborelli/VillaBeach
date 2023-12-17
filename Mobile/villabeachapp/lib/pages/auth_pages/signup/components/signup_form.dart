@@ -148,7 +148,11 @@ class _SignupFormState extends State<SignupForm> {
                     controller.register();
                   }
                 },
-                child: const Text("Registre-se"),
+                child: Obx(
+                  () => controller.isLoading.value
+                      ? const CircularProgressIndicator()
+                      : const Text("Registrar-se"),
+                ),
               ),
             ],
           ),
