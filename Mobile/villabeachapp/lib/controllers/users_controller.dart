@@ -1,25 +1,22 @@
-import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:villabeachapp/model/user_model.dart';
 import 'package:villabeachapp/service/user_service.dart';
 
 class UsersController extends GetxController {
-  final state =
-      ValueNotifier<UsersControllerState>(UsersControllerState.starting);
+  final Rx<UsersControllerState> _state = Rx(UsersControllerState.starting);
   List<UserModel> users = [];
 
   static UsersController get to => Get.find<UsersController>();
 
+  UsersControllerState get state => _state.value;
+
   Future start() async {
-    state.value = UsersControllerState.loading;
-    update();
+    _state.value = UsersControllerState.loading;
     try {
       users = await UserService.to.getAllUsers();
-      state.value = UsersControllerState.ready;
-      update();
+      _state.value = UsersControllerState.ready;
     } catch (ex) {
-      state.value = UsersControllerState.onError;
-      update();
+      _state.value = UsersControllerState.onError;
     }
   }
 }

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:villabeachapp/controllers/users_controller.dart';
+import 'package:villabeachapp/pages/users_page/components/list_of_users.dart';
 
 class UsersPage extends StatefulWidget {
   const UsersPage({super.key});
@@ -9,64 +12,29 @@ class UsersPage extends StatefulWidget {
 }
 
 class _UsersPageState extends State<UsersPage> {
-  final UsersController _controller = UsersController();
-
   @override
   initState() {
     super.initState();
-    _controller.start();
+    UsersController.to.start();
   }
 
-  _start() {
+  Widget _start() {
     return Container();
   }
 
-  _loading() {
+  Widget _loading() {
     return const Center(child: CircularProgressIndicator());
   }
 
-  _onError() {}
-
-  _ready() {
-    return RefreshIndicator(
-      onRefresh: () => _controller.start(),
-      child: ListView.builder(
-        itemCount: _controller.users.length,
-        itemBuilder: (context, index) {
-          var user = _controller.users[index];
-          return Column(
-            children: <Widget>[
-              ListTile(
-                leading: CircleAvatar(
-                  child: ClipOval(
-                    child: Container(
-                      child: user.photoURL != null
-                          ? Image.network(
-                              user.photoURL!,
-                              fit: BoxFit.cover,
-                            )
-                          : const FittedBox(
-                              fit: BoxFit.fill,
-                              child: Icon(
-                                Icons.account_circle,
-                                size: 100,
-                              ),
-                            ),
-                    ),
-                  ),
-                ),
-                title: Text(user.name ?? "err"),
-                subtitle: Text(user.email ?? 'err'),
-              ),
-              const Divider()
-            ],
-          );
-        },
-      ),
-    );
+  Widget _onError() {
+    return Container();
   }
 
-  stateManagement(UsersControllerState state) {
+  Widget _ready() {
+    return const ListOfUsers();
+  }
+
+  Widget stateManagement(UsersControllerState state) {
     switch (state) {
       case UsersControllerState.starting:
         return _start();
@@ -92,10 +60,9 @@ class _UsersPageState extends State<UsersPage> {
           onPressed: () => Navigator.pop(context, false),
         ),
       ),
-      body: AnimatedBuilder(
-        animation: _controller.state,
-        builder: (context, child) {
-          return stateManagement(_controller.state.value);
+      body: Obx(
+        () {
+          return stateManagement(UsersController.to.state);
         },
       ),
     );
