@@ -6,7 +6,7 @@ class MessageSnackBar {
   late String? title;
   late Icon? icon;
 
-  MessageSnackBar({required this.message, title});
+  MessageSnackBar({required this.message, this.title});
 
   show() {
     return Get.showSnackbar(
