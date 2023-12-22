@@ -3,6 +3,8 @@ import 'package:get/get.dart';
 import 'package:get/get_state_manager/src/rx_flutter/rx_obx_widget.dart';
 import 'package:villabeachapp/controllers/users_controller.dart';
 import 'package:villabeachapp/pages/users_page/components/list_of_users.dart';
+import 'package:villabeachapp/pages/users_page/users_details/users_detail_page.dart';
+import 'package:villabeachapp/utility/responsive.dart';
 
 class UsersPage extends StatefulWidget {
   const UsersPage({super.key});
@@ -31,7 +33,36 @@ class _UsersPageState extends State<UsersPage> {
   }
 
   Widget _ready() {
-    return const ListOfUsers();
+    Size size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Responsive(
+        mobile: const ListOfUsers(),
+        tablet: const Row(
+          children: [
+            Expanded(
+              flex: 6,
+              child: ListOfUsers(),
+            ),
+            Expanded(
+              flex: 9,
+              child: UserDetailPage(),
+            ),
+          ],
+        ),
+        desktop: Row(
+          children: [
+            Expanded(
+              flex: size.width > 1120 ? 3 : 5,
+              child: const ListOfUsers(),
+            ),
+            Expanded(
+              flex: size.width > 1120 ? 6 : 10,
+              child: const UserDetailPage(),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Widget stateManagement(UsersControllerState state) {

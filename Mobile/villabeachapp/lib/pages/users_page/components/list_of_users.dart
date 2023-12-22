@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:villabeachapp/controllers/user_detail_controller.dart';
 import 'package:villabeachapp/controllers/users_controller.dart';
 import 'package:villabeachapp/pages/users_page/components/users_card.dart';
+import 'package:villabeachapp/pages/users_page/users_details/users_detail_page.dart';
+import 'package:villabeachapp/utility/responsive.dart';
 
 class ListOfUsers extends StatefulWidget {
   const ListOfUsers({super.key});
@@ -18,8 +21,21 @@ class _ListOfUsersState extends State<ListOfUsers> {
       onRefresh: () => UsersController.to.start(),
       child: ListView.builder(
         itemCount: UsersController.to.users.length,
-        itemBuilder: (context, index) =>
-            UsersCard(user: UsersController.to.users[index]),
+        itemBuilder: (context, index) => UsersCard(
+          user: UsersController.to.users[index],
+          press: () {
+            Responsive.isMobile(context)
+                ? Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => UserDetailPage(
+                          user: UsersController.to.users[index].id),
+                    ),
+                  )
+                : UserDetailController.to
+                    .loadUser(UsersController.to.users[index].id!);
+          },
+        ),
       ),
     );
   }
