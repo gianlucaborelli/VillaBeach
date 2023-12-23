@@ -33,7 +33,7 @@ class AuthService extends GetxController {
   UserSettings? get settings => _settings.value;
   static AuthService get to => Get.find<AuthService>();
 
-  createUser(String email, String confirmPassword, String password,
+  createUser(String email, String password, String confirmPassword,
       String name) async {
     final Map<String, dynamic> registerData = {
       'name': name,

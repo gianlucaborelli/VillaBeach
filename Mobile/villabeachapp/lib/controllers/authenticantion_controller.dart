@@ -28,7 +28,7 @@ class AuthenticationController extends GetxController {
   register() async {
     isLoading.value = true;
     await AuthService.to
-        .createUser(email.text, password.text, name.text, confirmPassword.text);
+        .createUser(email.text, password.text, confirmPassword.text, name.text);
     isLoading.value = false;
   }
 
