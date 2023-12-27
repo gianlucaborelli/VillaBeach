@@ -31,6 +31,18 @@ if (app.Environment.IsDevelopment())
         opt.SwaggerEndpoint("/swagger/v1/swagger.json", "WebService V1");
     });
 }
+
+app.Use(async (context, next) =>
+    {
+        if (context.Request.Path == "/" && app.Environment.IsDevelopment())
+        {
+            context.Response.Redirect("/swagger/index.html");
+            return;
+        }
+
+        await next();
+    });
+
 app.UseSerilogRequestLogging();
 
 app.UseProblemDetailsExceptionHandler();
