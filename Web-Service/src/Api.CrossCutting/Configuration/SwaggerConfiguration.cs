@@ -10,20 +10,25 @@ namespace Api.CrossCutting.Configuration
         {
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { 
-                    Title = "villabeach_webservice", 
+                var xmlFile = "Application.xml";
+                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+                c.IncludeXmlComments(xmlPath);
+
+                c.SwaggerDoc("v1", new OpenApiInfo
+                {
+                    Title = "villabeach_webservice",
                     Version = "v1",
                     Contact = new OpenApiContact()
-                        {
-                            Name = "Gianluca Borelli",
-                            Url = new Uri("https://github.com/gianlucaborelli"),
-                        },
+                    {
+                        Name = "Gianluca Borelli",
+                        Url = new Uri("https://github.com/gianlucaborelli"),
+                    },
                     License = new OpenApiLicense()
-                        {
-                            Name = "MIT",
-                            Url = new Uri("http://opensource.org/licenses/MIT"),
-                        }
+                    {
+                        Name = "MIT",
+                        Url = new Uri("http://opensource.org/licenses/MIT"),
                     }
+                }
                 );
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
@@ -48,11 +53,7 @@ namespace Api.CrossCutting.Configuration
                         },
                         new string[] {}
                     }
-                });
-
-                var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-                var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-                c.IncludeXmlComments(xmlPath);
+                });                
             });
         }
     }
