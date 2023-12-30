@@ -1,5 +1,5 @@
 using System.Security.Authentication;
-using Api.Domain.Interfaces.Services.Login;
+using Api.Domain.Interfaces.Services.Authentication;
 using Api.Domain.Interfaces.Services.User;
 using Api.Domain.Repository;
 using AutoMapper;

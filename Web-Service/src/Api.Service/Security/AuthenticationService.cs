@@ -2,7 +2,7 @@ using Api.Domain.Dtos.Login;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using Api.Domain.Interfaces.Services.Login;
+using Api.Domain.Interfaces.Services.Authentication;
 using Microsoft.AspNetCore.Http;
 using Api.Domain.Repository;
 using Api.Domain.Entities;
@@ -142,7 +142,7 @@ namespace Api.Service.Security
             return newUser.Id;
         }
 
-        public async Task<bool> ChangePassword(string userId, string newPassword)
+        public async Task<bool> ChangePassword(string newPassword)
         {
             var user = await _repository.FindById(GetUserId())
                                 ?? throw new AuthenticationException("User not found.");

@@ -3,7 +3,7 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Api.Domain.Dtos.Login;
-using Api.Domain.Interfaces.Services.Login;
+using Api.Domain.Interfaces.Services.Authentication;
 using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Service.Security

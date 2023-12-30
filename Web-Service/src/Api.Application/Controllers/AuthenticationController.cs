@@ -2,7 +2,7 @@ using System.Net;
 using System.Security.Authentication;
 using System.Security.Claims;
 using Api.Domain.Dtos.Login;
-using Api.Domain.Interfaces.Services.Login;
+using Api.Domain.Interfaces.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -114,14 +114,8 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPut("change-password")]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
-        {
-            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            if (userId == null)
-            {
-                return NotFound("Not found.");
-            }
-            var response = await _service.ChangePassword(userId, newPassword);
+        {            
+            var response = await _service.ChangePassword(newPassword);
 
             return Ok(response);
         }

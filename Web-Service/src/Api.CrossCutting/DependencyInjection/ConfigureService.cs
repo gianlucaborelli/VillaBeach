@@ -1,4 +1,4 @@
-using Api.Domain.Interfaces.Services.Login;
+using Api.Domain.Interfaces.Services.Authentication;
 using Api.Domain.Interfaces.Services.Product;
 using Api.Domain.Interfaces.Services.ProductPrice;
 using Api.Domain.Interfaces.Services.Purchase;
