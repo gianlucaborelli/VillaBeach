@@ -1,6 +1,6 @@
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Api.Domain.EmailSettings;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +13,7 @@ builder.Services.ConfigureMapperService();
 builder.Services.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
 builder.Services.AddLogging();
 builder.Services.AddControllers();

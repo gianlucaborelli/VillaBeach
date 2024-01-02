@@ -6,6 +6,8 @@ using Api.Domain.Interfaces.Services.User;
 using Api.Service.Services;
 using Api.Service.Security;
 using Microsoft.Extensions.DependencyInjection;
+using Api.Domain.Interfaces.Services.Email;
+using Api.Service.Helpers;
 
 namespace Api.CrossCutting.DependencyInjection
 {
@@ -21,6 +23,8 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddTransient<IAuthenticationService, AuthenticationService>();
             serviceCollection.AddTransient<IRefreshTokenService, RefreshTokenService>();
             serviceCollection.AddTransient<IAccessTokenService, AccessTokenService>();
+            serviceCollection.AddTransient<IEmailSender, EmailSender>();
+            serviceCollection.AddTransient<IEmailService, EmailService>();
         }
     }
 }
