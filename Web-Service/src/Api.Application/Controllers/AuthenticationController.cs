@@ -58,6 +58,31 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
+        /// Verifies an email token to complete the verification process.
+        /// </summary>
+        /// <param name="token">Email verification token.</param>
+        /// <returns>
+        /// Redirects to "EmailVerificationSuccess.html" if the email is successfully verified,
+        /// or redirects to "EmailVerificationFailed.html" in case of verification error.
+        /// </returns>
+        [HttpGet("verify_email")]
+        [AllowAnonymous]
+        public async Task<ActionResult> EmailVerification([FromQuery] string token)
+        {
+            try
+            {
+                if (await _service.EmailVerificationToken(token))
+                    return Redirect("/EmailVerificationSuccess.html");
+
+                return Redirect("/EmailVerificationFailed.html");
+            }
+            catch (Exception ex)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+            }
+        }
+
+        /// <summary>
         /// Performs user authentication.
         /// </summary>
         /// <param name="request">Object containing login credentials (email and password).</param>
@@ -114,7 +139,7 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPut("change-password")]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
-        {            
+        {
             var response = await _service.ChangePassword(newPassword);
 
             return Ok(response);

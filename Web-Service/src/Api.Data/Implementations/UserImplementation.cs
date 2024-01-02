@@ -40,5 +40,10 @@ namespace Api.Data.Implementations
         {
             return await _dataSet.Where(user => user.Id == id).SingleOrDefaultAsync();
         }
+
+        public async Task<UserEntity?> FindByEmailVerificationToken(string token)
+        {
+            return await _dataSet.Where(user => user.EmailVerificationToken == token).SingleOrDefaultAsync();
+        }
     }
 }

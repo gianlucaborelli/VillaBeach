@@ -42,20 +42,28 @@ namespace Api.Domain.Models
         {
             get { return _passwordSalt; }
             set { _passwordSalt = value; }
+        }        
+
+        private bool _emailIsVerified;
+        public bool EmailIsVerified
+        {
+            get { return _emailIsVerified; }
+            set { _emailIsVerified = value; }
+        }
+        
+
+        private string? _emailVerificationToken;
+        public string? EmailVerificationToken
+        {
+            get { return _emailVerificationToken; }
+            set { _emailVerificationToken = value; }
         }
 
-        private string? _verificationToken;
-        public string? VerificationToken
+        private DateTime? _emailVerifiedAt;
+        public DateTime? EmailVerifiedAt
         {
-            get { return _verificationToken; }
-            set { _verificationToken = value; }
-        }
-
-        private DateTime? _verifiedAt;
-        public DateTime? VerifiedAt
-        {
-            get { return _verifiedAt; }
-            set { _verifiedAt = value; }
+            get { return _emailVerifiedAt; }
+            set { _emailVerifiedAt = value; }
         }
 
         private string? _passwordResetToken;

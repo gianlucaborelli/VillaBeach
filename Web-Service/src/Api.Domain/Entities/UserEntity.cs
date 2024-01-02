@@ -16,9 +16,11 @@ namespace Api.Domain.Entities
 
         public byte[] PasswordSalt { get; set; } = new byte[32];
 
-        public string? VerificationToken { get; set; }
+        public bool EmailIsVerified { get; set; } = false;
+        
+        public string? EmailVerificationToken { get; set; }
 
-        public DateTime? VerifiedAt { get; set; }
+        public DateTime? EmailVerifiedAt { get; set; }
 
         public string? PasswordResetToken { get; set; }
 

@@ -9,6 +9,7 @@ using Api.Domain.Entities;
 using AutoMapper;
 using Api.Domain.Dtos.User;
 using System.Security.Authentication;
+using Api.Domain.Interfaces.Services.Email;
 
 namespace Api.Service.Security
 {
@@ -23,13 +24,15 @@ namespace Api.Service.Security
         private readonly IUserSettingsRepository _userSettingsRepository;
         private readonly IAccessTokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
+        private readonly IEmailService _emailService;
 
         public AuthenticationService(IUserRepository repository,
                             IUserSettingsRepository userSettingsRepository,
                             IMapper mapper,
                             IHttpContextAccessor httpContextAccessor,
                             IAccessTokenService tokenService,
-                            IRefreshTokenService refreshTokenService)
+                            IRefreshTokenService refreshTokenService,
+                            IEmailService emailService)
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = repository;
@@ -37,6 +40,7 @@ namespace Api.Service.Security
             _mapper = mapper;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
+            _emailService = emailService;
         }
 
         /// <summary>
@@ -71,6 +75,8 @@ namespace Api.Service.Security
         {
             var user = await _repository.FindByEmail(email)
                             ?? throw new AuthenticationException("User not found.");
+
+            if(!user.EmailIsVerified)throw new AuthenticationException("Email has not been verified.");
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 throw new AuthenticationException("Wrong password.");
@@ -128,6 +134,7 @@ namespace Api.Service.Security
                 Email = userRequest.Email,
                 PasswordHash = passwordHash,
                 PasswordSalt = passwordSalt,
+                EmailVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
             };
 
             await _repository.InsertAsync(newUser);
@@ -139,7 +146,23 @@ namespace Api.Service.Security
 
             await _userSettingsRepository.InsertAsync(newUserSettings);
 
+            await _emailService.SendEmailVerification(newUser.Email, newUser.Name, newUser.EmailVerificationToken);
+
             return newUser.Id;
+        }
+
+        public async Task<bool> EmailVerificationToken(string emailVerificationToken){
+            var user = await _repository.FindByEmailVerificationToken(emailVerificationToken);
+
+            if(user != null){
+                user.EmailVerifiedAt = DateTime.UtcNow;
+                user.EmailIsVerified = true;
+                user.EmailVerificationToken = null;
+                await _repository.UpdateAsync(user);
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> ChangePassword(string newPassword)

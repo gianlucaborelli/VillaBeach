@@ -45,6 +45,7 @@ app.Use(async (context, next) =>
     });
 
 app.UseSerilogRequestLogging();
+app.UseStaticFiles();
 
 app.UseProblemDetailsExceptionHandler();
 app.UseHttpsRedirection();

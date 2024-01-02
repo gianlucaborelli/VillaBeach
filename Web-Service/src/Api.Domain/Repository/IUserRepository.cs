@@ -12,5 +12,7 @@ namespace Api.Domain.Repository
         Task<UserEntity?> FindByEmail (string email);
 
         Task<bool> UserExists (string email);
+        
+        Task<UserEntity?> FindByEmailVerificationToken(string token);
     }
 }
