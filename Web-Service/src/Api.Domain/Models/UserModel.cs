@@ -66,18 +66,18 @@ namespace Api.Domain.Models
             set { _emailVerifiedAt = value; }
         }
 
-        private string? _passwordResetToken;
-        public string? PasswordResetToken
+        private string? _forgotPasswordToken;
+        public string? ForgotPasswordToken
         {
-            get { return _passwordResetToken; }
-            set { _passwordResetToken = value; }
+            get { return _forgotPasswordToken; }
+            set { _forgotPasswordToken = value; }
         }
         
-        private DateTime? _resetTokenExpires;
-        public DateTime? ResetTokenExpires
+        private DateTime? _forgotPasswordExpires;
+        public DateTime? ForgotPasswordExpires
         {
-            get { return _resetTokenExpires; }
-            set { _resetTokenExpires = value; }
+            get { return _forgotPasswordExpires; }
+            set { _forgotPasswordExpires = value; }
         }        
 
         private string _refreshToken = string.Empty;
@@ -92,8 +92,7 @@ namespace Api.Domain.Models
         {
             get { return _refreshTokenExpires; }
             set { _refreshTokenExpires = value; }
-        }
-        
+        }        
 
         private string _role = "Customer";
         public string Role

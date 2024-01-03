@@ -22,9 +22,9 @@ namespace Api.Domain.Entities
 
         public DateTime? EmailVerifiedAt { get; set; }
 
-        public string? PasswordResetToken { get; set; }
+        public string? ForgotPasswordToken { get; set; }
 
-        public DateTime? ResetTokenExpires { get; set; }
+        public DateTime? ForgotPasswordExpires { get; set; }
 
         public string RefreshToken { get; set; } = string.Empty;
 

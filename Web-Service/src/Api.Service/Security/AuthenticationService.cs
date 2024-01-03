@@ -243,5 +243,19 @@ namespace Api.Service.Security
                 hmac.ComputeHash(System.Text.Encoding.UTF8.GetBytes(password));
             return computedHash.SequenceEqual(passwordHash);
         }
+
+        public async Task ForgotPasswordRequest(string userEmail)
+        {
+            var user = await _repository.FindByEmail(userEmail);
+
+            if (user == null) return;
+            
+            user.ForgotPasswordExpires = DateTime.UtcNow.AddDays(1);
+            user.ForgotPasswordToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+
+            await _repository.UpdateAsync(user);   
+
+            await _emailService.SendForgotPasswordEmail(user.Email, user.Name, user.ForgotPasswordToken);
+        }
     }
 }

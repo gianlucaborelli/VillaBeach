@@ -4,13 +4,14 @@ namespace Api.Domain.Interfaces.Services.Authentication
 {
     public interface IAuthenticationService
     {
-        Task<Guid> Register(RegisterDtoRequest user);
-        Task<LoginDtoResult> Login(string email, string password);
-        Task<bool> Logout();
-        Task EmailVerificationToken(string emailVerificationToken);
-        Task<bool> ChangePassword(string newPassword);
-        Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request);        
         Guid GetUserId();
-        string GetUserEmail();        
+        string GetUserEmail();      
+        Task<Guid> Register(RegisterDtoRequest user);
+        Task EmailVerificationToken(string emailVerificationToken);
+        Task<LoginDtoResult> Login(string email, string password);
+        Task<bool> Logout();        
+        Task<bool> ChangePassword(string newPassword);
+        Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request);
+        Task ForgotPasswordRequest(string userEmail);          
     }
 }

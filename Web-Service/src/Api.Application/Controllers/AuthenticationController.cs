@@ -170,5 +170,20 @@ namespace Api.Application.Controllers
                 return Unauthorized(ex.Message);
             }
         }
+
+        [HttpGet("forgot-password-request")]
+        [AllowAnonymous]
+        public async Task<ActionResult<RefreshTokenDtoResult>> ForgotPassword([FromQuery] string userEmail)
+        {
+            try
+            {                
+                await _service.ForgotPasswordRequest(userEmail);
+                return Ok();                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

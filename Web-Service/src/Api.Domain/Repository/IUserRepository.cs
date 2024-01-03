@@ -14,5 +14,7 @@ namespace Api.Domain.Repository
         Task<bool> UserExists (string email);
         
         Task<UserEntity?> FindByEmailVerificationToken(string token);
+
+        Task<UserEntity?> FindByForgotPasswordToken(string token);
     }
 }

@@ -21,5 +21,12 @@ namespace Api.Service.Services
 
             return _emailSender.SendEmailAsync(toEmail, "Verificação de Email", message) ;
         }
+
+        public Task SendForgotPasswordEmail(string toEmail, string toName, string verificationLink )
+        {
+            var message = EmailModels.ForgotPassword.Replace("{{USER_NAME}}", toName).Replace("{{FORGOT_TOKEN}}", verificationLink);
+
+            return _emailSender.SendEmailAsync(toEmail, "Verificação de Email", message) ;
+        }
     }
 }
