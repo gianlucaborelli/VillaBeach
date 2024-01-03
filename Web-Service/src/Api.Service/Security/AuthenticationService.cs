@@ -76,7 +76,7 @@ namespace Api.Service.Security
             var user = await _repository.FindByEmail(email)
                             ?? throw new AuthenticationException("User not found.");
 
-            if(!user.EmailIsVerified)throw new AuthenticationException("Email has not been verified.");
+            if (!user.EmailIsVerified) throw new AuthenticationException("Email has not been verified.");
 
             if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
                 throw new AuthenticationException("Wrong password.");
@@ -151,18 +151,15 @@ namespace Api.Service.Security
             return newUser.Id;
         }
 
-        public async Task<bool> EmailVerificationToken(string emailVerificationToken){
-            var user = await _repository.FindByEmailVerificationToken(emailVerificationToken);
+        public async Task EmailVerificationToken(string emailVerificationToken)
+        {
+            var user = await _repository.FindByEmailVerificationToken(emailVerificationToken)
+                            ?? throw new SecurityTokenException("Invalid Token");
 
-            if(user != null){
-                user.EmailVerifiedAt = DateTime.UtcNow;
-                user.EmailIsVerified = true;
-                user.EmailVerificationToken = null;
-                await _repository.UpdateAsync(user);
-                return true;
-            }
-
-            return false;
+            user.EmailVerifiedAt = DateTime.UtcNow;
+            user.EmailIsVerified = true;
+            user.EmailVerificationToken = null;
+            await _repository.UpdateAsync(user);            
         }
 
         public async Task<bool> ChangePassword(string newPassword)

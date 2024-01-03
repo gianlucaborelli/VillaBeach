@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmação de Cadastro - VillaBeach</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        .confirmation-box,
+        .error-box {
+            max-width: 400px;
+            width: 100%;
+            border: 1px solid #ccc;
+            padding: 20px;
+            margin-top: 20px;
+            box-sizing: border-box;
+        }
+       
+        .error-message {
+            border: 1px solid #ff0000;
+            background-color: #ffe6e6;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <h1>Confirmação de Cadastro - VillaBeach</h1>
+
+        <script>
+            // Substitua "VARIAVEL_BOOLEANA" pelo valor booleano no servidor
+            var confirmacao = "STATUS";
+
+            if (confirmacao === 'true') {
+                // Se a confirmação for verdadeira, exibe a mensagem de boas-vindas
+                document.write('<div class="confirmation-box">');
+                document.write('<h2>Obrigado por se cadastrar no VillaBeach!</h2>');
+                document.write('<p>Ficamos felizes em tê-lo conosco. Aproveite todas as funcionalidades do aplicativo!</p>');
+                document.write('<p>Para começar a usar, retorne ao aplicativo e faça login.</p>');
+                document.write('</div>');
+            } else {
+                // Se a confirmação for falsa, exibe uma mensagem de erro e orientações
+                document.write('<div class="error-box">');                
+                document.write('<h2>Ocorreu um erro ao validar o seu e-mail.</h2>');
+                document.write('<p>Por favor, entre no APP VillaBeach e tente reenviar uma nova solicitação de validação de e-mail.</p>');
+                document.write('<div class="error-message">');
+                document.write('<p> ERROR_TYPE </p>');
+                document.write('</div>');
+                document.write('</div>');
+            }
+        </script>
+    </div>
+</body>
+</html>

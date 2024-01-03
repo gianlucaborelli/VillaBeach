@@ -5,6 +5,7 @@ using Api.Domain.Dtos.Login;
 using Api.Domain.Interfaces.Services.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Application.Controllers
 {
@@ -58,12 +59,12 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Verifies an email token to complete the verification process.
+        /// Verifies an email token to complete the email verification process.
         /// </summary>
         /// <param name="token">Email verification token.</param>
         /// <returns>
-        /// Redirects to "EmailVerificationSuccess.html" if the email is successfully verified,
-        /// or redirects to "EmailVerificationFailed.html" in case of verification error.
+        /// Redirects to "EmailVerification.html" with a message if the email is successfully verified
+        /// or verification error.
         /// </returns>
         [HttpGet("verify_email")]
         [AllowAnonymous]
@@ -71,14 +72,14 @@ namespace Api.Application.Controllers
         {
             try
             {
-                if (await _service.EmailVerificationToken(token))
-                    return Redirect("/EmailVerificationSuccess.html");
-
-                return Redirect("/EmailVerificationFailed.html");
+                await _service.EmailVerificationToken(token);
+                return Redirect("/EmailVerification.html".Replace("STATUS", "true"));
             }
-            catch (Exception ex)
+            catch (SecurityTokenException ex)
             {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
+                return Redirect("/EmailVerification.html"
+                            .Replace("STATUS", "false")
+                            .Replace("ERROR_TYPE", ex.Message));
             }
         }
 
