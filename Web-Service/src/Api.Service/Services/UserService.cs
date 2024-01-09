@@ -76,5 +76,10 @@ namespace Api.Service.Services
         {
             return await _repository.DeleteAsync(id);
         }
+
+        public Task<bool> Exists(string email)
+        {
+            return _repository.UserExists(email);
+        }
     }
 }

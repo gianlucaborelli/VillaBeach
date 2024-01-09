@@ -4,6 +4,8 @@ namespace Api.Domain.Interfaces.Services.User
 {
     public interface IUserService
     {
+        Task<bool> Exists (string email);
+
         Task<UserDto> Get (Guid id);
 
         Task<IEnumerable<UserDto>> GetAll ();
