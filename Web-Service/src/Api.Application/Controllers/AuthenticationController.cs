@@ -185,5 +185,20 @@ namespace Api.Application.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("set-role")]
+        [Authorize( Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> SetRule([FromBody] SetRoleDto request )
+        {
+            try
+            {                
+                await _service.SetRoler(request.UserId, request.NewRole);
+                return Ok();                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

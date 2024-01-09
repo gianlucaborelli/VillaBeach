@@ -8,7 +8,7 @@ namespace Api.Application.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    [Authorize(Roles = "admin")]
+    [Authorize(Roles = RolesModels.Admin)]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;

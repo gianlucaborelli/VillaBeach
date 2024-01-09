@@ -30,7 +30,7 @@ namespace Api.Domain.Entities
 
         public DateTime? RefreshTokenExpires {get; set;}
 
-        public string Role { get; set; } = "Customer";
+        public string Role { get; set; } = RolesModels.Customer;
 
         public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
 

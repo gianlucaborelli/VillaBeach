@@ -159,7 +159,7 @@ namespace Api.Service.Security
             user.EmailVerifiedAt = DateTime.UtcNow;
             user.EmailIsVerified = true;
             user.EmailVerificationToken = null;
-            await _repository.UpdateAsync(user);            
+            await _repository.UpdateAsync(user);
         }
 
         public async Task<bool> ChangePassword(string newPassword)
@@ -249,13 +249,29 @@ namespace Api.Service.Security
             var user = await _repository.FindByEmail(userEmail);
 
             if (user == null) return;
-            
+
             user.ForgotPasswordExpires = DateTime.UtcNow.AddDays(1);
             user.ForgotPasswordToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
-            await _repository.UpdateAsync(user);   
+            await _repository.UpdateAsync(user);
 
             await _emailService.SendForgotPasswordEmail(user.Email, user.Name, user.ForgotPasswordToken);
+        }
+
+        public async Task<bool> SetRoler(Guid userId, string newRole)
+        {
+            var user = await _repository.FindById(userId);
+
+            if (user == null) 
+                throw new ArgumentException("User not found");
+
+            if (!RolesModels.IsValidRole(newRole)) 
+                throw new ArgumentNullException($"The role '{newRole}' is not defined in the system. Make sure to use a valid role.");
+
+            user.Role = newRole;
+            await _repository.UpdateAsync(user);
+            
+            return true;
         }
     }
 }

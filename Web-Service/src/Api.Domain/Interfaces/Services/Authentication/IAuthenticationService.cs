@@ -12,6 +12,7 @@ namespace Api.Domain.Interfaces.Services.Authentication
         Task<bool> Logout();        
         Task<bool> ChangePassword(string newPassword);
         Task<RefreshTokenDtoResult> RefreshToken(RefreshTokenDtoRequest request);
-        Task ForgotPasswordRequest(string userEmail);          
+        Task ForgotPasswordRequest(string userEmail);       
+        Task<bool> SetRoler(Guid userId, string newRole);   
     }
 }

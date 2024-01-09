@@ -94,7 +94,7 @@ namespace Api.Domain.Models
             set { _refreshTokenExpires = value; }
         }        
 
-        private string _role = "Customer";
+        private string _role = RolesModels.Customer;
         public string Role
         {
             get { return _role; }
