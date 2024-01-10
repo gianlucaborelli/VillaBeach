@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
@@ -16,11 +12,14 @@ namespace Api.Data.Mapping
 
             builder.HasKey(u => u.Id);
 
-            builder.HasIndex(u => u.Email)
+            builder.HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.Property(u => u.Email)
-                    .HasMaxLength(100);            
+            builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");  
+                    
+            builder.OwnsOne(e => e.Settings).ToTable("UserSettings");  
+
+            builder.OwnsOne(e => e.Email).ToTable("UserEmails");   
         }
     }
 }

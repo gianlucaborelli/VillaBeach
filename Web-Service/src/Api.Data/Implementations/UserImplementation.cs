@@ -17,13 +17,13 @@ namespace Api.Data.Implementations
 
         public async Task<UserEntity?> FindByEmail(string email)
         {
-            return await _dataSet.Where(user => user.Email.ToLower()
+            return await _dataSet.Where(user => user.Email.Address.ToLower()
                  .Equals(email.ToLower())).SingleOrDefaultAsync();
         }
 
         public async Task<bool> UserExists(string email)
         {
-            if (await _dataSet.AnyAsync(user => user.Email.ToLower()
+            if (await _dataSet.AnyAsync(user => user.Email.Address.ToLower()
                  .Equals(email.ToLower())))
             {
                 return true;
@@ -43,12 +43,12 @@ namespace Api.Data.Implementations
 
         public async Task<UserEntity?> FindByEmailVerificationToken(string token)
         {
-            return await _dataSet.Where(user => user.EmailVerificationToken == token).SingleOrDefaultAsync();
+            return await _dataSet.Where(user => user.Email.EmailVerificationToken == token).SingleOrDefaultAsync();
         }
 
         public async Task<UserEntity?> FindByForgotPasswordToken(string token)
         {
-            return await _dataSet.Where(user => user.ForgotPasswordToken == token).SingleOrDefaultAsync();
+            return await _dataSet.Where(user => user.Authentication!.ForgotPasswordToken == token).SingleOrDefaultAsync();
         }
     }
 }

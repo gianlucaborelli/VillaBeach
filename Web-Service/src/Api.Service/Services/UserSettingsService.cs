@@ -9,12 +9,12 @@ namespace Api.Service.Services
 {
     public class UserSettingsService : IUserSettingsService
     {
-        private IUserSettingsRepository _repository;
+        private IUserRepository _repository;
         private IAuthenticationService _auth;
 
         private readonly IMapper _mapper;
 
-        public UserSettingsService(IUserSettingsRepository repository, IMapper mapper, IAuthenticationService auth)
+        public UserSettingsService(IUserRepository repository, IMapper mapper, IAuthenticationService auth)
         {
             _repository = repository;
             _mapper = mapper;
@@ -23,16 +23,16 @@ namespace Api.Service.Services
 
         public Dictionary<string, int> GetSettingByUserId()
         {
-            var response = _repository.GetSettingByUserId(_auth.GetUserId());
+            var response = _repository.FindById(_auth.GetUserId());
             return _mapper.Map<Dictionary<string, int>>(response);
         }
 
         public async Task<bool> UpdateSetting(string key, int value)
         {
-            var response = await _repository.GetSettingByUserId(_auth.GetUserId()) 
+            var response = await _repository.FindById(_auth.GetUserId()) 
                             ?? throw new AuthenticationException("User not found.") ;
 
-            response.GetType().GetProperty(key).SetValue(response, value);
+            response.GetType().GetProperty(key)!.SetValue(response, value);
 
             await _repository.UpdateAsync(response);
 

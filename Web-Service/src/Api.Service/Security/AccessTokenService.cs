@@ -24,8 +24,8 @@ namespace Api.Service.Security
             {
                 new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(ClaimTypes.Name, user.Name),
-                new Claim(ClaimTypes.Email, user.Email),
-                new Claim(ClaimTypes.Role, user.Role)
+                new Claim(ClaimTypes.Email, user.Email.Address),
+                new Claim(ClaimTypes.Role, user.Authentication!.Role)
             };
 
             var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY") 

@@ -21,13 +21,11 @@ namespace Api.Service.Security
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IMapper _mapper;
         private readonly IUserRepository _repository;
-        private readonly IUserSettingsRepository _userSettingsRepository;
         private readonly IAccessTokenService _tokenService;
         private readonly IRefreshTokenService _refreshTokenService;
         private readonly IEmailService _emailService;
 
         public AuthenticationService(IUserRepository repository,
-                            IUserSettingsRepository userSettingsRepository,
                             IMapper mapper,
                             IHttpContextAccessor httpContextAccessor,
                             IAccessTokenService tokenService,
@@ -36,7 +34,6 @@ namespace Api.Service.Security
         {
             _httpContextAccessor = httpContextAccessor;
             _repository = repository;
-            _userSettingsRepository = userSettingsRepository;
             _mapper = mapper;
             _tokenService = tokenService;
             _refreshTokenService = refreshTokenService;
@@ -76,26 +73,24 @@ namespace Api.Service.Security
             var user = await _repository.FindByEmail(email)
                             ?? throw new AuthenticationException("User not found.");
 
-            if (!user.EmailIsVerified) throw new AuthenticationException("Email has not been verified.");
+            if (!user.Email.EmailIsVerified) throw new AuthenticationException("Email has not been verified.");
 
-            if (!VerifyPasswordHash(password, user.PasswordHash, user.PasswordSalt))
+            if (!VerifyPasswordHash(password, user.Authentication!.PasswordHash, user.Authentication!.PasswordSalt))
                 throw new AuthenticationException("Wrong password.");
 
             string newAccessToken = _tokenService.CreateAccessToken(user);
             var newRefreshToken = _refreshTokenService.GenerateRefreshToken();
 
-            user.RefreshToken = newRefreshToken.Token;
-            user.RefreshTokenExpires = newRefreshToken.Expires;
+            user.Authentication!.RefreshToken = newRefreshToken.Token;
+            user.Authentication!.RefreshTokenExpires = newRefreshToken.Expires;
 
             await _repository.UpdateAsync(user);
-
-            var settings = await _userSettingsRepository.GetSettingByUserId(user.Id);
 
             return new LoginDtoResult
             {
                 AccessToken = newAccessToken,
                 RefreshToken = newRefreshToken.Token,
-                Settings = _mapper.Map<UserSettingsDto>(settings)
+                Settings = _mapper.Map<UserSettingsDto>(user.Settings)
             };
         }
 
@@ -131,22 +126,23 @@ namespace Api.Service.Security
             var newUser = new UserEntity
             {
                 Name = userRequest.Name,
-                Email = userRequest.Email,
-                PasswordHash = passwordHash,
-                PasswordSalt = passwordSalt,
-                EmailVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                Email = new UserEmailEntity
+                {
+                    EmailVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
+                    Address = userRequest.Email,
+                },
+                
+                Authentication = new UserAuthenticationEntity
+                {
+                    PasswordHash = passwordHash,
+                    PasswordSalt = passwordSalt,
+
+                },
             };
 
             await _repository.InsertAsync(newUser);
 
-            var newUserSettings = new UserSettingsEntity
-            {
-                User = newUser
-            };
-
-            await _userSettingsRepository.InsertAsync(newUserSettings);
-
-            await _emailService.SendEmailVerification(newUser.Email, newUser.Name, newUser.EmailVerificationToken);
+            await _emailService.SendEmailVerification(newUser.Email.Address, newUser.Name, newUser.Email.EmailVerificationToken);
 
             return newUser.Id;
         }
@@ -156,9 +152,9 @@ namespace Api.Service.Security
             var user = await _repository.FindByEmailVerificationToken(emailVerificationToken)
                             ?? throw new SecurityTokenException("Invalid Token");
 
-            user.EmailVerifiedAt = DateTime.UtcNow;
-            user.EmailIsVerified = true;
-            user.EmailVerificationToken = null;
+            user.Email.EmailVerifiedAt = DateTime.UtcNow;
+            user.Email.EmailIsVerified = true;
+            user.Email.EmailVerificationToken = null;
             await _repository.UpdateAsync(user);
         }
 
@@ -169,8 +165,8 @@ namespace Api.Service.Security
 
             CreatePasswordHash(newPassword, out byte[] passwordHash, out byte[] passwordSalt);
 
-            user.PasswordHash = passwordHash;
-            user.PasswordSalt = passwordSalt;
+            user.Authentication!.PasswordHash = passwordHash;
+            user.Authentication!.PasswordSalt = passwordSalt;
 
             await _repository.UpdateAsync(user);
 
@@ -210,11 +206,11 @@ namespace Api.Service.Security
 
         private static void ValidateRefreshToken(UserEntity user, string refreshToken)
         {
-            if (!user.RefreshToken.Equals(refreshToken))
+            if (!user.Authentication!.RefreshToken.Equals(refreshToken))
             {
                 throw new SecurityTokenException("Invalid Refresh Token.");
             }
-            else if (user.RefreshTokenExpires < DateTime.Now)
+            else if (user.Authentication!.RefreshTokenExpires < DateTime.Now)
             {
                 throw new SecurityTokenException("Refresh Token expired.");
             }
@@ -222,8 +218,8 @@ namespace Api.Service.Security
 
         private async Task UpdateUserRefreshToken(UserEntity user, RefreshTokenDto newRefreshToken)
         {
-            user.RefreshToken = newRefreshToken.Token;
-            user.RefreshTokenExpires = newRefreshToken.Expires;
+            user.Authentication!.RefreshToken = newRefreshToken.Token;
+            user.Authentication!.RefreshTokenExpires = newRefreshToken.Expires;
 
             await _repository.UpdateAsync(user);
         }
@@ -250,12 +246,12 @@ namespace Api.Service.Security
 
             if (user == null) return;
 
-            user.ForgotPasswordExpires = DateTime.UtcNow.AddDays(1);
-            user.ForgotPasswordToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+            user.Authentication!.ForgotPasswordExpires = DateTime.UtcNow.AddDays(1);
+            user.Authentication!.ForgotPasswordToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
             await _repository.UpdateAsync(user);
 
-            await _emailService.SendForgotPasswordEmail(user.Email, user.Name, user.ForgotPasswordToken);
+            await _emailService.SendForgotPasswordEmail(user.Email.Address, user.Name, user.Authentication!.ForgotPasswordToken);
         }
 
         public async Task<bool> SetRoler(Guid userId, string newRole)
@@ -266,7 +262,7 @@ namespace Api.Service.Security
             if (!RolesModels.IsValidRole(newRole))
                 throw new ArgumentNullException($"The role '{newRole}' is not defined in the system. Make sure to use a valid role.");
 
-            user.Role = newRole;
+            user.Authentication!.Role = newRole;
             await _repository.UpdateAsync(user);
 
             return true;
@@ -277,8 +273,8 @@ namespace Api.Service.Security
             var user = await _repository.FindById(id)
                             ?? throw new ArgumentException("User not found");
 
-            user.RefreshToken = string.Empty;
-            user.RefreshTokenExpires = null;
+            user.Authentication!.RefreshToken = string.Empty;
+            user.Authentication!.RefreshTokenExpires = null;
 
             await _repository.UpdateAsync(user);
         }
@@ -290,13 +286,13 @@ namespace Api.Service.Security
 
             foreach (var user in userList)
             {
-                if (!string.IsNullOrEmpty(user.RefreshToken))
+                if (!string.IsNullOrEmpty(user.Authentication!.RefreshToken))
                 {
-                    user.RefreshToken = string.Empty;
-                    user.RefreshTokenExpires = null;
+                    user.Authentication!.RefreshToken = string.Empty;
+                    user.Authentication!.RefreshTokenExpires = null;
                     await _repository.UpdateAsync(user);
                 }
-            }            
+            }
         }
     }
 }

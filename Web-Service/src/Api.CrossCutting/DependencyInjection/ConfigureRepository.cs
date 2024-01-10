@@ -17,8 +17,7 @@ namespace Api.CrossCutting.DependencyInjection
         public static void ConfigureDependenciesRepository(this IServiceCollection serviceCollection)
         {
             serviceCollection.AddScoped(typeof(IRepository<>), typeof(BaseRepository<>));
-            serviceCollection.AddScoped<IUserRepository, UserImplementation>();
-            serviceCollection.AddScoped<IUserSettingsRepository, UserSettingsImplementation>();
+            serviceCollection.AddScoped<IUserRepository, UserImplementation>();            
             serviceCollection.AddScoped<IProductRepository, ProductImplementation>();
             serviceCollection.AddScoped<IProductPriceRepository, ProductPriceImplementation>();
             serviceCollection.AddScoped<IPurchaseRepository, PurchaseImplementation>();

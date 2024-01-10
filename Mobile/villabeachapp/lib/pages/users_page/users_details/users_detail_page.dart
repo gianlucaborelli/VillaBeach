@@ -21,25 +21,31 @@ class _UserDetailPageState extends State<UserDetailPage> {
     super.initState();
   }
 
+  _ready() {
+    return UserDetailController.to.user == null
+        ? Container()
+        : Responsive(
+            mobile: Scaffold(
+              appBar: AppBar(
+                title: const Text('Usuário'),
+                centerTitle: true,
+              ),
+              body: Text(UserDetailController.to.user!.name!),
+            ),
+            desktop: Scaffold(
+              body: Text(UserDetailController.to.user!.name!),
+            ),
+          );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Obx(
-      () {
-        return UserDetailController.to.user == null
-            ? Container()
-            : Responsive(
-                mobile: Scaffold(
-                  appBar: AppBar(
-                    title: const Text('Usuário'),
-                    centerTitle: true,
-                  ),
-                  body: Text(UserDetailController.to.user!.name!),
-                ),
-                desktop: Scaffold(
-                  body: Text(UserDetailController.to.user!.name!),
-                ),
-              );
-      },
+      () => UserDetailController.to.isLoading.value
+          ? const Center(
+              child: CircularProgressIndicator(),
+            )
+          : _ready(),
     );
   }
 }

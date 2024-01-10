@@ -3,12 +3,12 @@ import 'dart:io';
 class WebServiceUrl {
   static String get baseUrl {
     if (Platform.isAndroid) {
-      return 'http://10.0.2.2:5251/api';
+      return 'https://villabeachwebservice1-1wjapvsj.b4a.run/api';
     } else if (Platform.isWindows) {
       // URL para Windows
-      return 'http://localhost:5251/api';
+      return 'https://villabeachwebservice1-1wjapvsj.b4a.run/api';
     } else {
-      return 'http://10.0.2.2:5251/api';
+      return 'https://villabeachwebservice1-1wjapvsj.b4a.run/api';
     }
   }
 

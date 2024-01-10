@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Entities
@@ -10,29 +6,13 @@ namespace Api.Domain.Entities
     {
         public string Name { get; set; } = string.Empty;
 
-        public string Email { get; set; } = string.Empty;
-
-        public byte[] PasswordHash { get; set; } = new byte[32];
-
-        public byte[] PasswordSalt { get; set; } = new byte[32];
-
-        public bool EmailIsVerified { get; set; } = false;
-        
-        public string? EmailVerificationToken { get; set; }
-
-        public DateTime? EmailVerifiedAt { get; set; }
-
-        public string? ForgotPasswordToken { get; set; }
-
-        public DateTime? ForgotPasswordExpires { get; set; }
-
-        public string RefreshToken { get; set; } = string.Empty;
-
-        public DateTime? RefreshTokenExpires {get; set;}
-
-        public string Role { get; set; } = RolesModels.Customer;
-
         public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
+
+        public UserEmailEntity Email { get; set; } = new UserEmailEntity();         
+
+        public UserAuthenticationEntity? Authentication {get; set;}
+
+        public UserSettingsEntity Settings {get;set;} = new UserSettingsEntity();
 
         public List<ContactEntity> ContactList { get; set; }
 
@@ -43,5 +23,5 @@ namespace Api.Domain.Entities
         public List<PurchaseEntity> PurchasesList { get; set; }
 
         public List<SaleEntity> SalesList { get; set; }
-    }
+    }    
 }

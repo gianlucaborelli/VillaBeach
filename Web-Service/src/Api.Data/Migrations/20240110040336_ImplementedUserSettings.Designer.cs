@@ -3,6 +3,7 @@ using System;
 using Api.Data.Context;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Data.Migrations
 {
     [DbContext(typeof(MyContext))]
-    partial class MyContextModelSnapshot : ModelSnapshot
+    [Migration("20240110040336_ImplementedUserSettings")]
+    partial class ImplementedUserSettings
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -438,6 +441,11 @@ namespace Data.Migrations
                     b.Property<DateTime?>("CreateAt")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)");
+
                     b.Property<int>("Gender")
                         .HasColumnType("integer");
 
@@ -450,7 +458,7 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id")
+                    b.HasIndex("Email")
                         .IsUnique();
 
                     b.ToTable("Users", (string)null);
@@ -635,6 +643,15 @@ namespace Data.Migrations
                             b1.Property<Guid>("UserEntityId")
                                 .HasColumnType("uuid");
 
+                            b1.Property<bool>("EmailIsVerified")
+                                .HasColumnType("boolean");
+
+                            b1.Property<string>("EmailVerificationToken")
+                                .HasColumnType("text");
+
+                            b1.Property<DateTime?>("EmailVerifiedAt")
+                                .HasColumnType("timestamp with time zone");
+
                             b1.Property<DateTime?>("ForgotPasswordExpires")
                                 .HasColumnType("timestamp with time zone");
 
@@ -668,36 +685,7 @@ namespace Data.Migrations
                                 .HasForeignKey("UserEntityId");
                         });
 
-                    b.OwnsOne("Api.Domain.Entities.UserEmailEntity", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("UserEntityId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Address")
-                                .IsRequired()
-                                .HasColumnType("text");
-
-                            b1.Property<bool>("EmailIsVerified")
-                                .HasColumnType("boolean");
-
-                            b1.Property<string>("EmailVerificationToken")
-                                .HasColumnType("text");
-
-                            b1.Property<DateTime?>("EmailVerifiedAt")
-                                .HasColumnType("timestamp with time zone");
-
-                            b1.HasKey("UserEntityId");
-
-                            b1.ToTable("UserEmails", (string)null);
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserEntityId");
-                        });
-
                     b.Navigation("Authentication");
-
-                    b.Navigation("Email")
-                        .IsRequired();
 
                     b.Navigation("Settings")
                         .IsRequired();
