@@ -200,5 +200,35 @@ namespace Api.Application.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpPut("revoke")]
+        [Authorize( Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> Revoke([FromBody] Guid id )
+        {
+            try
+            {                
+                await _service.Revoke(id);
+                return Ok();                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpPut("revoke-all")]
+        [Authorize( Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> RevokeAll( )
+        {
+            try
+            {                
+                await _service.RevokeAll();
+                return Ok();                
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

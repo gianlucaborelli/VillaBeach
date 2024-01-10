@@ -260,18 +260,43 @@ namespace Api.Service.Security
 
         public async Task<bool> SetRoler(Guid userId, string newRole)
         {
-            var user = await _repository.FindById(userId);
+            var user = await _repository.FindById(userId)
+                            ?? throw new ArgumentException("User not found");
 
-            if (user == null) 
-                throw new ArgumentException("User not found");
-
-            if (!RolesModels.IsValidRole(newRole)) 
+            if (!RolesModels.IsValidRole(newRole))
                 throw new ArgumentNullException($"The role '{newRole}' is not defined in the system. Make sure to use a valid role.");
 
             user.Role = newRole;
             await _repository.UpdateAsync(user);
-            
+
             return true;
+        }
+
+        public async Task Revoke(Guid id)
+        {
+            var user = await _repository.FindById(id)
+                            ?? throw new ArgumentException("User not found");
+
+            user.RefreshToken = string.Empty;
+            user.RefreshTokenExpires = null;
+
+            await _repository.UpdateAsync(user);
+        }
+
+        public async Task RevokeAll()
+        {
+            var userList = await _repository.SelectAsync()
+                            ?? throw new ArgumentException("User not found");
+
+            foreach (var user in userList)
+            {
+                if (!string.IsNullOrEmpty(user.RefreshToken))
+                {
+                    user.RefreshToken = string.Empty;
+                    user.RefreshTokenExpires = null;
+                    await _repository.UpdateAsync(user);
+                }
+            }            
         }
     }
 }
