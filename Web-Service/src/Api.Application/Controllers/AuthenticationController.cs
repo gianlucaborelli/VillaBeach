@@ -26,10 +26,15 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Registers a new user from the application.
+        /// Registers a new user with the provided registration details.
+        /// This HTTP POST endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="request">Object containing registration details.</param>
-        /// <returns>An ActionResult containing the unique identifier (Guid) for the newly registered user on success.</returns>
+        /// <param name="request">A data transfer object (DTO) containing the registration information for the new user.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response if the registration is successful.</para>
+        ///   <para>HTTP 409 (Conflict) response if a conflict, such as duplicate registration, occurs.</para>
+        ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
+        /// </returns>
         /// <remarks>
         /// This endpoint is intended for user self-registration from the client application.
         /// If registration fails due to duplicate user information, it returns Conflict with the corresponding error message.
@@ -59,12 +64,13 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Verifies an email token to complete the email verification process.
+        /// Verifies a user's email address using the provided verification token.
+        /// This HTTP GET endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="token">Email verification token.</param>
+        /// <param name="token">The verification token associated with the user's email address.</param>
         /// <returns>
-        /// Redirects to "EmailVerification.html" with a message if the email is successfully verified
-        /// or verification error.
+        ///   <para>HTTP redirection to "/EmailVerification.html" with a status parameter set to "true" if email verification is successful.</para>
+        ///   <para>HTTP redirection to "/EmailVerification.html" with a status parameter set to "false" and an error type parameter if a security token exception occurs during the process.</para>
         /// </returns>
         [HttpGet("verify_email")]
         [AllowAnonymous]
@@ -84,14 +90,15 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Performs user authentication.
+        /// Authenticates a user by validating the provided login credentials.
+        /// This HTTP POST endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="request">Object containing login credentials (email and password).</param>
-        /// <returns>An ActionResult containing a LoginDtoResult object on successful authentication.</returns>
-        /// <remarks>
-        /// If invalid credentials are provided, it returns BadRequest with the message "Wrong user or password.".
-        /// In case of application errors, it returns InternalServerError with the corresponding message.
-        /// </remarks>    
+        /// <param name="request">A data transfer object (DTO) containing the user's email and password for authentication.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response with a login result if authentication is successful.</para>
+        ///   <para>HTTP 400 (Bad Request) response with an error message if the provided user or password is incorrect.</para>
+        ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
+        /// </returns>   
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest request)
@@ -116,13 +123,12 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Logs the current user out.
+        /// Logs out the currently authenticated user.
+        /// This HTTP POST endpoint requires the caller to be authenticated.
         /// </summary>
-        /// <returns>An ActionResult indicating the success of the logout operation (true if successful).</returns>
-        /// <remarks>
-        /// This endpoint is used to log out the currently authenticated user.
-        /// It returns Ok with a boolean value indicating the success of the logout operation.
-        /// </remarks>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response with a boolean indicating successful logout.</para>
+        /// </returns>
         [HttpPost("logout")]
         public async Task<ActionResult<bool>> Logout()
         {
@@ -130,14 +136,13 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Changes the password for the currently logged-in user.
+        /// Changes the password for the currently authenticated user.
+        /// This HTTP PUT endpoint requires the caller to be authenticated.
         /// </summary>
         /// <param name="newPassword">The new password to be set for the user.</param>
-        /// <returns>An ActionResult indicating the success of the password change operation (true if successful).</returns>
-        /// <remarks>
-        /// This endpoint is used to change the password for the user currently logged in.
-        /// It returns Ok with a boolean value indicating the success of the password change operation.        
-        /// </remarks>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response with a boolean indicating successful password change.</para>
+        /// </returns>
         [HttpPut("change-password")]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
         {
@@ -147,15 +152,14 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Refreshes an expired Access Token using a Refresh Token.
+        /// Refreshes the authentication token for a user by exchanging a valid refresh token.
+        /// This HTTP POST endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="request">Object containing the expired Access Token and Refresh Token for authentication.</param>
-        /// <returns>An ActionResult containing both the new Access Token and Refresh Token on successful refresh.</returns>
-        /// <remarks>
-        /// This endpoint is used to refresh an expired Access Token using a valid Refresh Token.
-        /// It returns Ok with both the new Access Token and Refresh Token on success.
-        /// If the Refresh Token is invalid or the operation fails, it returns Unauthorized with an error message.
-        /// </remarks>
+        /// <param name="request">A data transfer object (DTO) containing the refresh token information.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response with a new authentication token if the refresh token is valid.</para>
+        ///   <para>HTTP 401 (Unauthorized) response with an error message if an exception occurs during the token refresh process.</para>
+        /// </returns>
         [HttpPost("refresh-token")]
         [AllowAnonymous]
         public async Task<ActionResult<RefreshTokenDtoResult>> RefreshToken([FromBody] RefreshTokenDtoRequest request)
@@ -171,14 +175,23 @@ namespace Api.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Initiates a password reset request for a user with the specified email address.
+        /// This HTTP GET endpoint is accessible without authentication.
+        /// </summary>
+        /// <param name="userEmail">The email address of the user requesting a password reset.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response if the password reset request is successful.</para>
+        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
+        /// </returns>
         [HttpGet("forgot-password-request")]
         [AllowAnonymous]
         public async Task<ActionResult<RefreshTokenDtoResult>> ForgotPassword([FromQuery] string userEmail)
         {
             try
-            {                
+            {
                 await _service.ForgotPasswordRequest(userEmail);
-                return Ok();                
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -186,14 +199,23 @@ namespace Api.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Updates the role of a user identified by the provided user ID.
+        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
+        /// </summary>
+        /// <param name="request">A data transfer object (DTO) containing the user ID and the new role to be assigned.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response if the role update is successful.</para>
+        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
+        /// </returns>
         [HttpPut("set-role")]
-        [Authorize( Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> SetRule([FromBody] SetRoleDto request )
+        [Authorize(Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> SetRule([FromBody] SetRoleDto request)
         {
             try
-            {                
+            {
                 await _service.SetRoler(request.UserId, request.NewRole);
-                return Ok();                
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -201,14 +223,23 @@ namespace Api.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Revokes a specific authorization or access by the provided identifier.
+        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
+        /// </summary>
+        /// <param name="id">The unique identifier associated with the authorization or access to be revoked.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response if the revocation is successful.</para>
+        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
+        /// </returns>
         [HttpPut("revoke")]
-        [Authorize( Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> Revoke([FromBody] Guid id )
+        [Authorize(Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> Revoke([FromBody] Guid id)
         {
             try
-            {                
+            {
                 await _service.Revoke(id);
-                return Ok();                
+                return Ok();
             }
             catch (Exception ex)
             {
@@ -216,14 +247,22 @@ namespace Api.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Revokes all authorizations or accesses for users.
+        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
+        /// </summary>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response if the revocation of all authorizations is successful.</para>
+        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
+        /// </returns>
         [HttpPut("revoke-all")]
-        [Authorize( Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> RevokeAll( )
+        [Authorize(Roles = RolesModels.Admin)]
+        public async Task<ActionResult<RefreshTokenDtoResult>> RevokeAll()
         {
             try
-            {                
+            {
                 await _service.RevokeAll();
-                return Ok();                
+                return Ok();
             }
             catch (Exception ex)
             {
