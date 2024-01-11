@@ -9,6 +9,14 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Application.Controllers
 {
+    /// <summary>
+    /// Controller responsible for handling user authentication and related operations.
+    /// </summary>
+    /// <remarks>
+    /// This controller provides endpoints for user registration, login, email verification,
+    /// password management, token refresh, and administrative operations like role assignment
+    /// and revocation of access.
+    /// </remarks>
     [Route("api/users")]
     [ApiController]
     [Authorize]
@@ -46,19 +54,24 @@ namespace Api.Application.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to register a new user.");
                 var response = await _service.Register(request);
+                _logger.LogInformation($"User {request} registration successful.");
                 return Ok();
             }
             catch (AuthenticationException ex)
             {
+                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
                 return Conflict(ex.Message);
             }
             catch (ApplicationException ex)
             {
+                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
             catch (Exception ex)
             {
+                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
                 return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
             }
         }

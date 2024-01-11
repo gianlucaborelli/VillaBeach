@@ -33,7 +33,7 @@ namespace Api.CrossCutting.Configuration
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme()
                 {
                     Name = "Authorization",
-                    Type = SecuritySchemeType.Http,
+                    Type = SecuritySchemeType.ApiKey,
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
@@ -47,7 +47,7 @@ namespace Api.CrossCutting.Configuration
                             Reference = new OpenApiReference
                             {
                                 Type = ReferenceType.SecurityScheme,
-                                Id = "bearer"
+                                Id = "Bearer"
                             }
                         },
                         new string[] {}

@@ -32,7 +32,10 @@ namespace Api.Service.Services
             var response = await _repository.FindById(_auth.GetUserId()) 
                             ?? throw new AuthenticationException("User not found.") ;
 
-            response.GetType().GetProperty(key)!.SetValue(response, value);
+            var settingsProperty = response.Settings.GetType().GetProperty(key) 
+                            ?? throw new ArgumentException("Property not found");
+
+            settingsProperty.SetValue(response.Settings, value);
 
             await _repository.UpdateAsync(response);
 
