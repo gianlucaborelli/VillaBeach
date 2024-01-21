@@ -6,7 +6,7 @@ using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Models
 {
-    public class ContactModel : BaseModel
+    public class ContactModel 
     {
 
         private ContactTypeEnum _contactType;
@@ -28,8 +28,6 @@ namespace Api.Domain.Models
         {
             get { return _description; }
             set { _description = value; }
-        }        
-        
-        public Guid UserId;
+        }                
     }
 }

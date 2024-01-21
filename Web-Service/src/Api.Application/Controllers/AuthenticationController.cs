@@ -22,7 +22,6 @@ namespace Api.Application.Controllers
     [Authorize]
     public class AuthenticationController : ControllerBase
     {
-
         private readonly ILogger<AuthenticationController> _logger;
         private readonly IAuthenticationService _service;
 
@@ -56,7 +55,7 @@ namespace Api.Application.Controllers
             {
                 _logger.LogInformation("Attempting to register a new user.");
                 var response = await _service.Register(request);
-                _logger.LogInformation($"User {request} registration successful.");
+                _logger.LogInformation($"User {response} registration successful.");
                 return Ok();
             }
             catch (AuthenticationException ex)

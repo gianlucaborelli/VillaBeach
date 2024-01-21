@@ -16,12 +16,13 @@ namespace Api.CrossCutting.Mappings
     {
         public EntityToDtoProfile()
         {
-            CreateMap<UserDto, UserEntity>()
-                .ReverseMap();
+            CreateMap<UserEntity, UserDto>()
+                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Address))
+                    .ReverseMap();             
             CreateMap<UserDtoCreateResult, UserEntity>()
                 .ReverseMap();
             CreateMap<UserDtoUpdateResult, UserEntity>()
-                .ReverseMap();
+                .ReverseMap();            
 
             CreateMap<UserSettingsDto, UserSettingsEntity>()
                 .ReverseMap();

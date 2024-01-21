@@ -14,14 +14,14 @@ namespace Api.Domain.Entities
 
         public UserSettingsEntity Settings {get;set;} = new UserSettingsEntity();
 
-        public List<ContactEntity> ContactList { get; set; }
+        public ICollection<ContactEntity>? ContactList { get; set; }
 
-        public List<AddressEntity> AddressList { get; set; }
+        public ICollection<AddressEntity>? AddressList { get; set; }
 
-        public List<EnrollmentEntity> EnrollmentList { get; set; }
+        public List<EnrollmentEntity>? EnrollmentList { get; set; }
 
-        public List<PurchaseEntity> PurchasesList { get; set; }
+        public List<PurchaseEntity>? PurchasesList { get; set; }
 
-        public List<SaleEntity> SalesList { get; set; }
+        public List<SaleEntity>? SalesList { get; set; }
     }    
 }

@@ -10,10 +10,7 @@ namespace Api.Data.Context
 {
     public class MyContext : DbContext
     {
-        public DbSet<UserEntity> Users => Set<UserEntity>();
-        public DbSet<UserSettingsEntity> UserSettings => Set<UserSettingsEntity>();
-        public DbSet<AddressEntity> Addresses => Set<AddressEntity>();
-        public DbSet<ContactEntity> Contacts => Set<ContactEntity>();
+        public DbSet<UserEntity> Users => Set<UserEntity>();        
         public DbSet<ProductPriceEntity> ProductPrices => Set<ProductPriceEntity>();
         public DbSet<PlanPriceEntity> PlanPrices => Set<PlanPriceEntity>();
         public DbSet<PurchasedProductEntity> PurchasedProducts => Set<PurchasedProductEntity>();
@@ -33,9 +30,7 @@ namespace Api.Data.Context
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-            modelBuilder.Entity<AddressEntity>(new AddressMap().Configure);
-            modelBuilder.Entity<ContactEntity>(new ContactMap().Configure);
+            
             modelBuilder.Entity<EnrollmentEntity>(new EnrollmentMap().Configure);
             modelBuilder.Entity<PlanEntity>(new PlanMap().Configure);
             modelBuilder.Entity<PlanPriceEntity>(new PlanPriceMap().Configure);

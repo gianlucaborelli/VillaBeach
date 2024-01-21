@@ -7,17 +7,12 @@ using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Entities
 {
-    public class ContactEntity: BaseEntity
-    {
-        
+    public class ContactEntity
+    {        
         public ContactTypeEnum ContactType {get;set;}
 
-        public string ContactForm {get;set;}
+        public required string ContactForm {get;set;}
         
         public string? Description {get;set;}
-        
-        public Guid UserId;
-        public UserEntity User {get; set;} = new();
-
     }
 }

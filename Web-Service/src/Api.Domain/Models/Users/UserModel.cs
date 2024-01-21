@@ -48,15 +48,15 @@ namespace Api.Domain.Models
             set { _gender = value; }
         }
 
-        private List<ContactModel> _contactList = new();
-        public List<ContactModel> ContactList
+        private ICollection<ContactModel>? _contactList;
+        public ICollection<ContactModel>? ContactList
         {
             get { return _contactList; }
             set { _contactList = value; }
         }
 
-        private List<AddressModel> _addressList = new();
-        public List<AddressModel> AddressList
+        private ICollection<AddressModel>? _addressList;
+        public ICollection<AddressModel>? AddressList
         {
             get { return _addressList; }
             set { _addressList = value; }

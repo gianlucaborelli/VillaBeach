@@ -15,11 +15,29 @@ namespace Api.Data.Mapping
             builder.HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");  
-                    
-            builder.OwnsOne(e => e.Settings).ToTable("UserSettings");  
+            builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");
 
-            builder.OwnsOne(e => e.Email).ToTable("UserEmails");   
+            builder.OwnsOne(u => u.Settings).ToTable("UserSettings");
+
+            builder.OwnsOne(u => u.Email).ToTable("UserEmails");
+
+            builder.OwnsMany(u => u.AddressList, a =>
+                {
+                    a.WithOwner().HasForeignKey("OwnerId");
+                    a.Property<Guid>("Id");
+                    a.HasKey("Id");
+                    a.ToTable("UserAddresses");
+                }
+            );
+
+            builder.OwnsMany(u => u.ContactList, a =>
+                {
+                    a.WithOwner().HasForeignKey("OwnerId");
+                    a.Property<Guid>("Id");
+                    a.HasKey("Id");
+                    a.ToTable("UserContacts");
+                }
+            );
         }
     }
 }
