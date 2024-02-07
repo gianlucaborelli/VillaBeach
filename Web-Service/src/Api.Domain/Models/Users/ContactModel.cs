@@ -6,7 +6,7 @@ using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Models
 {
-    public class ContactModel 
+    public class ContactModel: OwnerBaseModel
     {
 
         private ContactTypeEnum _contactType;

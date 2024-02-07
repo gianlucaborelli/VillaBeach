@@ -23,18 +23,16 @@ namespace Api.Data.Mapping
 
             builder.OwnsMany(u => u.AddressList, a =>
                 {
-                    a.WithOwner().HasForeignKey("OwnerId");
-                    a.Property<Guid>("Id");
-                    a.HasKey("Id");
+                    a.WithOwner().HasForeignKey(a => a.OwnerId);
+                    a.HasKey(a => a.Id);
                     a.ToTable("UserAddresses");
                 }
             );
 
             builder.OwnsMany(u => u.ContactList, a =>
                 {
-                    a.WithOwner().HasForeignKey("OwnerId");
-                    a.Property<Guid>("Id");
-                    a.HasKey("Id");
+                    a.WithOwner().HasForeignKey(a => a.OwnerId);
+                    a.HasKey(a => a.Id);
                     a.ToTable("UserContacts");
                 }
             );

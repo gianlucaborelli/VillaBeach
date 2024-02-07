@@ -1,6 +1,6 @@
 namespace Api.Domain.Models
 {
-    public class AddressModel
+    public class AddressModel : OwnerBaseModel
     {
 
         private string _postalCode = string.Empty;

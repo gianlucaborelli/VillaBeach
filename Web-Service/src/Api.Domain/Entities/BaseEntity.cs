@@ -1,8 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Api.Domain.Entities
 {
@@ -15,7 +11,7 @@ namespace Api.Domain.Entities
         public DateTime? CreateAt
         {
             get { return _createAt; }
-            set { _createAt = (value == null ? DateTime.UtcNow : value); }
+            set { _createAt = value == null ? DateTime.UtcNow : value; }
         }
         
         public DateTime? UpdateAt { get; set; }

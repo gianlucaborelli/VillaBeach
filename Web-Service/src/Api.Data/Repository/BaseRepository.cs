@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Data.Context;
 using Api.Domain.Entities;
 using Api.Domain.Interfaces;
@@ -66,11 +62,12 @@ namespace Api.Data.Repository
             return await _dataSet.AnyAsync(p => p.Id.Equals(id));
         }
 
-        public async Task<T> SelectAsync(Guid id)
+        public async Task<T?> SelectAsync(Guid id)
         {
             try
             {
-                return await _dataSet.SingleOrDefaultAsync(p => p.Id.Equals(id));
+                return await _dataSet.SingleOrDefaultAsync(p => p.Id.Equals(id)) 
+                                ?? throw new ArgumentException("Invalid Argument");
             }
             catch (Exception)
             {

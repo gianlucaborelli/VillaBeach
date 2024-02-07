@@ -1,13 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace Api.Domain.Entities
+namespace Api.Domain.Dtos.User
 {
-    public class AddressEntity :OwnerBaseEntity
-    {        
+    public class UserAddressDtoCreateRequest
+    {
         public required string PostalCode {get; set;}
         
         public required string Street {get; set;}
@@ -20,6 +14,6 @@ namespace Api.Domain.Entities
         
         public required string State{get; set;}        
         
-        public string? Description{get; set;}          
+        public string? Description{get; set;} 
     }
 }
