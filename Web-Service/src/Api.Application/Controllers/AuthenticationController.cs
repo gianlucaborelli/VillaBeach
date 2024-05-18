@@ -1,8 +1,12 @@
-using System.Net;
-using System.Security.Authentication;
-using System.Security.Claims;
+using Api.Application.Controllers.Abstraction;
+using Api.CrossCutting.Identity.Authentication;
+using Api.CrossCutting.Identity.Roles;
+using Api.Domain.Commands.AuthenticationCommands;
 using Api.Domain.Dtos.Login;
-using Api.Domain.Interfaces.Services.Authentication;
+using Api.Domain.Dtos.User;
+using Api.Domain.Interface;
+using AutoMapper;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
@@ -18,25 +22,35 @@ namespace Api.Application.Controllers
     /// and revocation of access.
     /// </remarks>
     [Route("api/users")]
-    [ApiController]
     [Authorize]
-    public class AuthenticationController : ControllerBase
+    public class AuthenticationController : ApiController
     {
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly IAuthenticationService _service;
+        private readonly IAuthenticationService _authenticationService;
+        private readonly IUserRepository _userRepository;
+        private readonly IMediator _mediator;
+        private readonly IMapper _mapper;
 
-        public AuthenticationController(IAuthenticationService service, ILogger<AuthenticationController> logger)
+        public AuthenticationController(
+            ILogger<AuthenticationController> logger,
+            IAuthenticationService service,
+            IUserRepository userRepository,
+            IMediator mediator,
+            IMapper mapper)
         {
             _logger = logger;
-            _service = service;
+            _mapper = mapper;
+            _authenticationService = service;
+            _mediator = mediator;
+            _userRepository = userRepository;
             _logger.LogInformation("Login controller called");
         }
 
         /// <summary>
         /// Registers a new user with the provided registration details.
         /// This HTTP POST endpoint is accessible without authentication.
-        /// </summary>
-        /// <param name="request">A data transfer object (DTO) containing the registration information for the new user.</param>
+        /// </summary>        
+        /// <param name="requestDto">A data transfer object (DTO) containing the registration information for the new user.</param>
         /// <returns>
         ///   <para>HTTP 200 (OK) response if the registration is successful.</para>
         ///   <para>HTTP 409 (Conflict) response if a conflict, such as duplicate registration, occurs.</para>
@@ -49,30 +63,23 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<Guid>> Register(RegisterDtoRequest request)
+        public async Task<ActionResult<Guid>> Register(RegisterDtoRequest requestDto)
         {
-            try
+            var request = _mapper.Map<RegisterNewUserCommand>(requestDto);
+
+            var result = await _mediator.Send(request);
+
+            if (result.IsValid)
             {
-                _logger.LogInformation("Attempting to register a new user.");
-                var response = await _service.Register(request);
-                _logger.LogInformation($"User {response} registration successful.");
-                return Ok();
+                return CustomResponse();
             }
-            catch (AuthenticationException ex)
+
+            foreach (var error in result.Errors)
             {
-                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
-                return Conflict(ex.Message);
+                AddError(error.ErrorMessage);
             }
-            catch (ApplicationException ex)
-            {
-                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Registration failed due to unexpected exception: {ex.Message}");
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+
+            return CustomResponse();
         }
 
         /// <summary>
@@ -90,7 +97,7 @@ namespace Api.Application.Controllers
         {
             try
             {
-                await _service.EmailVerificationToken(token);
+                //await _service.EmailVerificationToken(token);
                 return Redirect("/EmailVerification.html".Replace("STATUS", "true"));
             }
             catch (SecurityTokenException ex)
@@ -105,7 +112,7 @@ namespace Api.Application.Controllers
         /// Authenticates a user by validating the provided login credentials.
         /// This HTTP POST endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="request">A data transfer object (DTO) containing the user's email and password for authentication.</param>
+        /// <param name="requestDto">A data transfer object (DTO) containing the user's email and password for authentication.</param>
         /// <returns>
         ///   <para>HTTP 200 (OK) response with a login result if authentication is successful.</para>
         ///   <para>HTTP 400 (Bad Request) response with an error message if the provided user or password is incorrect.</para>
@@ -113,25 +120,31 @@ namespace Api.Application.Controllers
         /// </returns>   
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest request)
+        public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest requestDto)
         {
-            try
+            var request = _mapper.Map<LoginRequestCommand>(requestDto);
+
+            var result = await _mediator.Send(request);
+
+            if (result.IsValid)
             {
-                var response = await _service.Login(request.Email, request.Password);
-                return Ok(response);
+                var user = await _userRepository.GetByEmailAsync(requestDto.Email);
+
+                var jwt = new LoginDtoResult
+                {
+                    AccessToken = _authenticationService.CreateAccessToken(user.Id, user.Name, user.Email.Address, user.Authentication.Role),
+                    RefreshToken = user.Authentication.RefreshToken,
+                    Settings = _mapper.Map<UserSettingsDto>(user.Settings),
+                };
+                return CustomResponse(jwt);
             }
-            catch (AuthenticationException)
+
+            foreach (var error in result.Errors)
             {
-                return BadRequest("Wrong user or password.");
+                AddError(error.ErrorMessage);
             }
-            catch (ApplicationException ex)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode((int)HttpStatusCode.InternalServerError, ex.Message);
-            }
+
+            return CustomResponse();
         }
 
         /// <summary>
@@ -144,7 +157,8 @@ namespace Api.Application.Controllers
         [HttpPost("logout")]
         public async Task<ActionResult<bool>> Logout()
         {
-            return Ok(await _service.Logout());
+            return Ok(true);
+            //return Ok(await _service.Logout());
         }
 
         /// <summary>
@@ -158,9 +172,9 @@ namespace Api.Application.Controllers
         [HttpPut("change-password")]
         public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
         {
-            var response = await _service.ChangePassword(newPassword);
+            //var response = await _service.ChangePassword(newPassword);
 
-            return Ok(response);
+            return Ok(true);
         }
 
         /// <summary>
@@ -176,15 +190,17 @@ namespace Api.Application.Controllers
         [AllowAnonymous]
         public async Task<ActionResult<RefreshTokenDtoResult>> RefreshToken([FromBody] RefreshTokenDtoRequest request)
         {
-            try
-            {
-                var token = await _service.RefreshToken(request);
-                return Ok(token);
-            }
-            catch (Exception ex)
-            {
-                return Unauthorized(ex.Message);
-            }
+            // try
+            // {
+            //     var token = await _service.RefreshToken(request);
+            //     return Ok(token);
+            // }
+            // catch (Exception ex)
+            // {
+            //     return Unauthorized(ex.Message);
+            // }
+
+            return new RefreshTokenDtoResult();
         }
 
         /// <summary>
@@ -198,11 +214,11 @@ namespace Api.Application.Controllers
         /// </returns>
         [HttpGet("forgot-password-request")]
         [AllowAnonymous]
-        public async Task<ActionResult<RefreshTokenDtoResult>> ForgotPassword([FromQuery] string userEmail)
+        public async Task<ActionResult<bool>> ForgotPassword([FromQuery] string userEmail)
         {
             try
             {
-                await _service.ForgotPasswordRequest(userEmail);
+                //await _service.ForgotPasswordRequest(userEmail);
                 return Ok();
             }
             catch (Exception ex)
@@ -222,11 +238,11 @@ namespace Api.Application.Controllers
         /// </returns>
         [HttpPut("set-role")]
         [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> SetRule([FromBody] SetRoleDto request)
+        public async Task<ActionResult<bool>> SetRule([FromBody] SetRoleDto request)
         {
             try
             {
-                await _service.SetRoler(request.UserId, request.NewRole);
+                //await _service.SetRoler(request.UserId, request.NewRole);
                 return Ok();
             }
             catch (Exception ex)
@@ -246,11 +262,11 @@ namespace Api.Application.Controllers
         /// </returns>
         [HttpPut("revoke")]
         [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> Revoke([FromBody] Guid id)
+        public async Task<ActionResult<bool>> Revoke([FromBody] Guid id)
         {
             try
             {
-                await _service.Revoke(id);
+                //await _service.Revoke(id);
                 return Ok();
             }
             catch (Exception ex)
@@ -269,11 +285,11 @@ namespace Api.Application.Controllers
         /// </returns>
         [HttpPut("revoke-all")]
         [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<RefreshTokenDtoResult>> RevokeAll()
+        public async Task<ActionResult<bool>> RevokeAll()
         {
             try
             {
-                await _service.RevokeAll();
+                //await _service.RevokeAll();
                 return Ok();
             }
             catch (Exception ex)

@@ -1,6 +1,7 @@
 using System.Net;
+using Api.CrossCutting.Identity.Roles;
 using Api.Domain.Dtos.User;
-using Api.Domain.Interfaces.Services.User;
+using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -130,7 +131,7 @@ namespace Api.Application.Controllers
 
             try
             {
-                return Ok(await _service.Delete(id));
+                return Ok(_service.Delete(id));
             }
             catch (ArgumentException e)
             {

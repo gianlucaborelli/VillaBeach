@@ -1,7 +1,7 @@
 using System.Net;
+using Api.CrossCutting.Identity.Roles;
 using Api.Domain.Dtos.User;
-using Api.Domain.Interfaces.Services.User;
-using Api.Service.Services;
+using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -32,7 +32,7 @@ namespace Api.Application.Controllers
             {
                 var result = await _service.Post(user);
 
-                if (result != null)
+                if (result)
                 {
                     return Ok();
                 }
@@ -46,7 +46,5 @@ namespace Api.Application.Controllers
                 return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
             }
         }
-
-
     }
 }

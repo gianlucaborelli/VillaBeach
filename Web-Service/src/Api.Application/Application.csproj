@@ -1,15 +1,22 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14" />
+  <ItemGroup>    
+    <PackageReference Include="AutoMapper" Version="13.0.1" />    
+    <PackageReference Include="MediatR" Version="12.2.0" />    
+    <PackageReference Include="MediatR.Extensions.Microsoft.DependencyInjection" Version="11.1.0" />    
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.14" />    
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.14">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Serilog.AspNetCore" Version="8.0.0" />
     <PackageReference Include="Serilog.Enrichers.ClientInfo" Version="2.0.3" />
     <PackageReference Include="Serilog.Exceptions" Version="8.4.0" />
@@ -21,6 +28,8 @@
     <ProjectReference Include="..\Api.Domain\Domain.csproj" />
     <ProjectReference Include="..\Api.Service\Service.csproj" />
     <ProjectReference Include="..\Api.CrossCutting\CrossCutting.csproj" />
+    <ProjectReference Include="..\Api.Crosscutting.Identity\Crosscutting.Identity.csproj" />
+    <ProjectReference Include="..\Api.CrossCutting.Communication\CrossCutting.Communication.csproj" />
   </ItemGroup>
 
 </Project>

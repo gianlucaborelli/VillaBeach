@@ -1,8 +1,8 @@
 using System.Security.Authentication;
-using Api.Domain.Interfaces.Services.Authentication;
-using Api.Domain.Interfaces.Services.User;
-using Api.Domain.Repository;
+using Api.Service.Interfaces;
+using Api.Domain.Interface;
 using AutoMapper;
+using Api.CrossCutting.Identity.Authentication;
 
 
 namespace Api.Service.Services
@@ -23,13 +23,13 @@ namespace Api.Service.Services
 
         public Dictionary<string, int> GetSettingByUserId()
         {
-            var response = _repository.FindById(_auth.GetUserId());
+            var response = _repository.GetByIdAsync(_auth.GetUserId());
             return _mapper.Map<Dictionary<string, int>>(response);
         }
 
         public async Task<bool> UpdateSetting(string key, int value)
         {
-            var response = await _repository.FindById(_auth.GetUserId()) 
+            var response = await _repository.GetByIdAsync(_auth.GetUserId()) 
                             ?? throw new AuthenticationException("User not found.") ;
 
             var settingsProperty = response.Settings.GetType().GetProperty(key) 
@@ -37,7 +37,7 @@ namespace Api.Service.Services
 
             settingsProperty.SetValue(response.Settings, value);
 
-            await _repository.UpdateAsync(response);
+            _repository.Update(response);
 
             return true;            
         }

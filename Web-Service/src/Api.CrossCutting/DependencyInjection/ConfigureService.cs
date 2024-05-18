@@ -1,13 +1,10 @@
-using Api.Domain.Interfaces.Services.Authentication;
-using Api.Domain.Interfaces.Services.Product;
-using Api.Domain.Interfaces.Services.ProductPrice;
-using Api.Domain.Interfaces.Services.Purchase;
-using Api.Domain.Interfaces.Services.User;
+using Api.Service.Interfaces;
 using Api.Service.Services;
-using Api.Service.Security;
 using Microsoft.Extensions.DependencyInjection;
-using Api.Domain.Interfaces.Services.Email;
-using Api.Service.Helpers;
+using Api.CrossCutting.Identity.Authentication;
+using Api.CrossCutting.Communication.Interfaces;
+using Api.CrossCutting.Communication.Sender;
+using Api.CrossCutting.Communication.Services;
 
 namespace Api.CrossCutting.DependencyInjection
 {
@@ -18,12 +15,9 @@ namespace Api.CrossCutting.DependencyInjection
             serviceCollection.AddTransient<IUserService, UserService>();
             serviceCollection.AddTransient<IUserSettingsService, UserSettingsService>();
             serviceCollection.AddTransient<IUserAddressService, UserAddressService>();
-            serviceCollection.AddTransient<IProductService, ProductService>();
-            serviceCollection.AddTransient<IProductPriceService, ProductPriceService>();
-            serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
             serviceCollection.AddTransient<IAuthenticationService, AuthenticationService>();
-            serviceCollection.AddTransient<IRefreshTokenService, RefreshTokenService>();
-            serviceCollection.AddTransient<IAccessTokenService, AccessTokenService>();
+            serviceCollection.AddTransient<IProductService, ProductService>();
+            serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
             serviceCollection.AddTransient<IEmailSender, EmailSender>();
             serviceCollection.AddTransient<IEmailService, EmailService>();
         }

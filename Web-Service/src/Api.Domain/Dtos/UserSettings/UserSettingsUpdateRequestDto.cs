@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Dtos.User
 {

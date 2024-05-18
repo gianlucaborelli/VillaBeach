@@ -1,6 +1,7 @@
+using Api.CrossCutting.Communication.Settings;
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
-using Api.Domain.EmailSettings;
+using MediatR;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +13,7 @@ builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureMapperService();
 builder.Services.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
+builder.Services.RegisterServices();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
 
@@ -20,6 +22,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddHttpContextAccessor();
+
+builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 var app = builder.Build();
 

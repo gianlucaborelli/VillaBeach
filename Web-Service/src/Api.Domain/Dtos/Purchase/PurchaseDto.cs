@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Api.Domain.Entities;
 
 namespace Api.Domain.Dtos.Purchase
@@ -14,6 +10,6 @@ namespace Api.Domain.Dtos.Purchase
 
         public bool IsComplete {get; set;} = false;
 
-        public List<PurchasedProductEntity> PurchasedProducts {get;set;}
+        public List<PurchasedProduct> PurchasedProducts {get;set;}
     }
 }

@@ -11,9 +11,8 @@ namespace Api.CrossCutting.Configuration
         {
             var mapperConfiguration = new MapperConfiguration(configuration =>
             {
-                configuration.AddProfile(new DtoToModelProfile());
+                configuration.AddProfile(new DtoToCommand());
                 configuration.AddProfile(new EntityToDtoProfile());
-                configuration.AddProfile(new EntityToModelProfile());
             });
 
             IMapper mapper = mapperConfiguration.CreateMapper();

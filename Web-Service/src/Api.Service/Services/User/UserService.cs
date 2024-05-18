@@ -1,81 +1,48 @@
-using System;
-using System.Collections.Generic;
+using Api.Service.Interfaces;
 using Api.Domain.Dtos.User;
-using Api.Domain.Entities;
-using Api.Domain.Interfaces.Services.User;
-using Api.Domain.Models;
-using Api.Domain.Repository;
-using AutoMapper;
 
 namespace Api.Service.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _repository;
-        private readonly IMapper _mapper;
-
-        public UserService(IUserRepository repository, IMapper mapper)
+        public Task Delete(Guid id)
         {
-            _repository = repository;
-            _mapper = mapper;
-        }
-        
-        public async Task<UserDto> Get(Guid id)
-        {
-            var entity =  await _repository.SelectAsync(id);
-            return _mapper.Map<UserDto>(entity);
-        }
-
-        public async Task<IEnumerable<UserDto>> GetAll()
-        {
-            var entity =  await _repository.SelectAsync();
-            return _mapper.Map<IEnumerable<UserDto>>(entity);
-        }
-
-        public async Task<IEnumerable<UserDto>?> FindByName(string name)
-        {
-            if (string.IsNullOrWhiteSpace(name))
-                return null;
-
-            var entityList= await _repository.FindByName(name);
-
-            return _mapper.Map<IEnumerable<UserDto>?>(entityList);            
-        }
-
-        public async Task<UserDto?> FindByEmail(string email)
-        {
-            if (string.IsNullOrWhiteSpace(email))
-                return null;
-
-            var entityList= await _repository.FindByName(email);
-
-            return _mapper.Map<UserDto>(entityList);            
-        }
-
-        public async Task<UserDtoCreateResult> Post(UserDtoCreate user)
-        {
-            var model= _mapper.Map<UserModel>(user);
-            var entity = _mapper.Map<UserEntity>(model);
-            var result = await _repository.InsertAsync(entity);
-            return _mapper.Map<UserDtoCreateResult>(result);
-        }
-
-        public async Task<UserDtoUpdateResult> Put(UserDtoUpdateRequest user)
-        {
-            var model= _mapper.Map<UserModel>(user);
-            var entity = _mapper.Map<UserEntity>(model);
-            var result = await _repository.UpdateAsync(entity);
-            return _mapper.Map<UserDtoUpdateResult>(result);
-        }
-
-        public async Task<bool> Delete(Guid id)
-        {
-            return await _repository.DeleteAsync(id);
+            throw new NotImplementedException();
         }
 
         public Task<bool> Exists(string email)
         {
-            return _repository.UserExists(email);
+            throw new NotImplementedException();
+        }
+
+        public Task<UserDto?> FindByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<UserDto>?> FindByName(string name)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserDto> Get(Guid id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<IEnumerable<UserDto>> GetAll()
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserDtoCreateResult> Post(UserDtoCreate user)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<UserDtoUpdateResult> Put(UserDtoUpdateRequest user)
+        {
+            throw new NotImplementedException();
         }
     }
 }

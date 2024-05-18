@@ -1,10 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 using Api.Domain.Dtos.Purchase;
-using Api.Domain.Interfaces.Services.Purchase;
+using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Application.Controllers

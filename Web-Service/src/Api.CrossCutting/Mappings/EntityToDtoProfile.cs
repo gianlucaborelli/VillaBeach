@@ -16,49 +16,49 @@ namespace Api.CrossCutting.Mappings
     {
         public EntityToDtoProfile()
         {
-            CreateMap<UserEntity, UserDto>()
+            CreateMap<User, UserDto>()
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Address))
                     .ReverseMap();
-            CreateMap<UserDtoCreateResult, UserEntity>()
+            CreateMap<UserDtoCreateResult, User>()
                 .ReverseMap();
-            CreateMap<UserDtoUpdateResult, UserEntity>()
-                .ReverseMap();
-
-            CreateMap<UserAddressDtoCreateRequest, AddressEntity>()
-                .ReverseMap();
-            CreateMap<UserAddressDtoCreateResult, AddressEntity>()
-                .ReverseMap();
-            CreateMap<UserAddressDtoUpdateRequest, AddressEntity>()
-                .ReverseMap();
-            CreateMap<UserAddressDtoUpdateResult, AddressEntity>()
+            CreateMap<UserDtoUpdateResult, User>()
                 .ReverseMap();
 
-            CreateMap<UserSettingsDto, UserSettingsEntity>()
+            CreateMap<UserAddressDtoCreateRequest, Address>()
+                .ReverseMap();
+            CreateMap<UserAddressDtoCreateResult, Address>()
+                .ReverseMap();
+            CreateMap<UserAddressDtoUpdateRequest, Address>()
+                .ReverseMap();
+            CreateMap<UserAddressDtoUpdateResult, Address>()
                 .ReverseMap();
 
-            CreateMap<ProductEntity, ProductDto>()
-                .ReverseMap();
-            CreateMap<ProductEntity, ProductDtoCreateResult>()
-                .ReverseMap();
-            CreateMap<ProductEntity, ProductDtoUpdateResult>()
+            CreateMap<UserSettingsDto, Settings>()
                 .ReverseMap();
 
-            CreateMap<ProductEntity, ProductDtoAvailableResult>()
+            CreateMap<Product, ProductDto>()
+                .ReverseMap();
+            CreateMap<Product, ProductDtoCreateResult>()
+                .ReverseMap();
+            CreateMap<Product, ProductDtoUpdateResult>()
+                .ReverseMap();
+
+            CreateMap<Product, ProductDtoAvailableResult>()
                 .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Prices.FirstOrDefault(x => x.Current == true)))
                 .ReverseMap();
 
-            CreateMap<ProductPriceEntity, ProductPriceDto>()
+            CreateMap<ProductPrice, ProductPriceDto>()
                 .ReverseMap();
-            CreateMap<ProductPriceEntity, ProductPriceDtoCreateResult>()
+            CreateMap<ProductPrice, ProductPriceDtoCreateResult>()
                 .ReverseMap();
-            CreateMap<ProductPriceEntity, ProductPriceDtoUpdateResult>()
+            CreateMap<ProductPrice, ProductPriceDtoUpdateResult>()
                 .ReverseMap();
 
-            CreateMap<PurchaseEntity, PurchaseDto>()
+            CreateMap<Purchase, PurchaseDto>()
                 .ReverseMap();
-            CreateMap<PurchaseEntity, PurchaseDtoCreateRequest>()
+            CreateMap<Purchase, PurchaseDtoCreateRequest>()
                 .ReverseMap();
-            CreateMap<PurchaseEntity, PurchaseDtoUpdateRequest>()
+            CreateMap<Purchase, PurchaseDtoUpdateRequest>()
                 .ReverseMap();
         }
     }
