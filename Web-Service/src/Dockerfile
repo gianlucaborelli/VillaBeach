@@ -9,7 +9,7 @@ RUN dotnet restore "./Api.Application/Application.csproj" --disable-parallel
 RUN dotnet publish "./Api.Application/Application.csproj" -c release -o /app --no-restore
 
 # final stage/image
-FROM mcr.microsoft.com/dotnet/aspnet:7.0 AS runtime
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app ./
 
