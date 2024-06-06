@@ -1,5 +1,4 @@
 using System.Net;
-using Api.CrossCutting.Identity.Roles;
 using Api.Domain.Dtos.User;
 using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,7 @@ namespace Api.Application.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    [Authorize(Roles = RolesModels.Admin)]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;
@@ -131,7 +130,7 @@ namespace Api.Application.Controllers
 
             try
             {
-                return Ok(_service.Delete(id));
+                return Ok( _service.Delete(id));
             }
             catch (ArgumentException e)
             {

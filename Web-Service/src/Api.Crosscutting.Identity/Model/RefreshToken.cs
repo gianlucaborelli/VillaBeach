@@ -2,8 +2,10 @@ namespace Api.CrossCutting.Identity.Authentication.Model
 {
     public class RefreshToken
     {        
-        public string Token { get; set; } = string.Empty;
-        public DateTime? Expires { get; set; }
-        public DateTime Created { get; set; }
+        public Guid Id { get; private set; } = Guid.NewGuid();
+        public required Guid UserId { get; set; }
+        public required string Token { get; set; }
+        public DateTime ExpiresAt { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

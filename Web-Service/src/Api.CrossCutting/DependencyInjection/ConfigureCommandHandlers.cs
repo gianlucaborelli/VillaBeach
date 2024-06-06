@@ -11,8 +11,6 @@ namespace Api.CrossCutting.DependencyInjection
         public static void RegisterServices(this IServiceCollection services)
         {
             services.AddScoped<IRequestHandler<RegisterNewUserCommand, ValidationResult>, AuthenticationCommandsHandler>();
-            
-            services.AddTransient<IAuthenticationService, AuthenticationService>();
         }
     }
 }

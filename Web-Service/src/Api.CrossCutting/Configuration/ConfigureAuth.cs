@@ -13,16 +13,11 @@ namespace Api.CrossCutting.Configuration
             serviceCollection.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
-                var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY");
-
-                if (tokenKey == null)
-                {
-                    throw new ApplicationException("Token key is not configured.");
-                }
+                var tokenKey = Environment.GetEnvironmentVariable("VILLABEACH_TOKEN_KEY") 
+                        ?? throw new ApplicationException("Token key is not configured.");
 
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
-
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8
                     .GetBytes(tokenKey)),

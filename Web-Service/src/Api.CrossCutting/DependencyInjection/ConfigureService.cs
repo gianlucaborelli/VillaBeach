@@ -1,7 +1,6 @@
 using Api.Service.Interfaces;
 using Api.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
-using Api.CrossCutting.Identity.Authentication;
 using Api.CrossCutting.Communication.Interfaces;
 using Api.CrossCutting.Communication.Sender;
 using Api.CrossCutting.Communication.Services;

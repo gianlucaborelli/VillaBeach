@@ -1,4 +1,3 @@
-using System.Net;
 using Api.Domain.Dtos.User;
 using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;

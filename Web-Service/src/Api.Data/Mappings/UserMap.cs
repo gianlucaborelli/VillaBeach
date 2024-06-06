@@ -15,11 +15,11 @@ namespace Api.Data.Mapping
             builder.HasIndex(u => u.Id)
                    .IsUnique();
 
-            builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");
+            //builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");
 
             builder.OwnsOne(u => u.Settings).ToTable("UserSettings");
 
-            builder.OwnsOne(u => u.Email).ToTable("UserEmails");
+            //builder.OwnsOne(u => u.Email).ToTable("UserEmails");
 
             builder.OwnsMany(u => u.AddressList, a =>
                 {

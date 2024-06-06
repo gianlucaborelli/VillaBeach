@@ -1,93 +1,79 @@
-using System.Security.Cryptography;
+using Microsoft.AspNetCore.Identity;
+
 using Api.Core.Events.Messaging;
-using Api.CrossCutting.Identity.Authentication;
-using Api.CrossCutting.Identity.Authentication.Exceptions;
-using Api.CrossCutting.Identity.Authentication.Model;
 using Api.Domain.Entities;
 using Api.Domain.Events;
 using Api.Domain.Interface;
+
 using FluentValidation.Results;
 using MediatR;
+using System.Net;
+using Api.CrossCutting.Identity.Authentication.Model;
 
 namespace Api.Domain.Commands.AuthenticationCommands
 {
-    public class AuthenticationCommandsHandler : CommandHandler,
-        IRequestHandler<RegisterNewUserCommand, ValidationResult>,
-        IRequestHandler<LoginRequestCommand, ValidationResult>
+    public class AuthenticationCommandsHandler(
+        IUserRepository userRepository,
+        UserManager<AppUser> userManager,
+        RoleManager<IdentityRole<Guid>> roleManager) : CommandHandler,
+        IRequestHandler<RegisterNewUserCommand, ValidationResult>
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IAuthenticationService _authenticationService;
-
-        public AuthenticationCommandsHandler(
-            IUserRepository userRepository,
-            IAuthenticationService authenticationService)
-        {
-            _userRepository = userRepository;
-            _authenticationService = authenticationService;
-        }
+        private readonly IUserRepository _userRepository = userRepository;
+        private readonly UserManager<AppUser> _userManager = userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
 
         public async Task<ValidationResult> Handle(RegisterNewUserCommand request, CancellationToken cancellationToken)
         {
-            if (!request.IsValid()) return request.ValidationResult;
+            if (!request.IsValid()) return request.ValidationResult;            
 
-            _authenticationService.CreatePasswordHash(request.Password, out byte[] passwordHash, out byte[] passwordSalt);
-
-            var newUser = new User
+            var user = new AppUser
             {
                 Name = request.Name,
-                Email = new Email
-                {
-                    EmailVerificationToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64)),
-                    Address = request.Email,
-                },
-
-                Authentication = new Authentication
-                {
-                    PasswordHash = passwordHash,
-                    PasswordSalt = passwordSalt,
-                },
+                Email = request.Email,
+                UserName = (request.Name + Guid.NewGuid().ToString()[..8])
+                    .Replace(" ", string.Empty)
+                    .Replace("-", string.Empty)
             };
 
-            if (await _userRepository.GetByEmailAsync(newUser.Email.Address) != null)
+            var role = await _roleManager.FindByNameAsync("User");            
+
+            var result = await _userManager.CreateAsync(user, request.Password);
+
+            if (result.Succeeded is false)
             {
-                AddError("The user e-mail has already been taken.");
-                return ValidationResult;
-            }
+                foreach (var error in result.Errors)
+                    AddError(error.Description);
 
-            newUser.AddDomainEvent(new NewUserRegisteredEvent(newUser.Id, newUser.Name, newUser.Email.Address));
-
-            _userRepository.Add(newUser);
-
-            return await Commit(_userRepository.UnitOfWork);
-        }
-
-        public async Task<ValidationResult> Handle(LoginRequestCommand request, CancellationToken cancellationToken)
-        {
-            if (!request.IsValid()) return request.ValidationResult;
-
-            var user = await _userRepository.GetByEmailAsync(request.Email)
-                            ?? throw new AuthenticationException("User not found.");
-
-            if (!user.Email.EmailIsVerified)
-            {
-                AddError("Email has not been verified.");
-                return ValidationResult;
-            }
-
-            if (!_authenticationService.VerifyPasswordHash(request.Password, user.Authentication!.PasswordHash, user.Authentication!.PasswordSalt))
-            {
-                AddError("Wrong password.");
                 return ValidationResult;
             }
             
-            var newRefreshToken = _authenticationService.GenerateRefreshToken();
+            var addRoleResult = await _userManager.AddToRoleAsync(user, role!.Name!);
+            if (addRoleResult.Succeeded is false)
+            {
+                foreach (var error in addRoleResult.Errors)
+                    AddError(error.Description);
 
-            user.Authentication!.RefreshToken = newRefreshToken.Token;
-            user.Authentication!.RefreshTokenExpires = newRefreshToken.Expires;
+                await _userManager.DeleteAsync(user);
 
-            _userRepository.Update(user);            
-                     
-            
+                return ValidationResult;
+            }
+
+            var userEntity = new User
+            {
+                Name = user.UserName,
+                IdentityId = user.Id
+            };
+
+            _userRepository.Add(userEntity);
+
+            userEntity.AddDomainEvent(
+                new NewUserRegisteredEvent(
+                    user.Id,
+                    user.Name,
+                    user.Email,
+                    $"{user.Email},{WebUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user))}"
+                ));
+
             return await Commit(_userRepository.UnitOfWork);
         }
     }

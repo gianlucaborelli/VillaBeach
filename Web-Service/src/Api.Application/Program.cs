@@ -1,7 +1,8 @@
 using Api.CrossCutting.Communication.Settings;
 using Api.CrossCutting.Configuration;
 using Api.CrossCutting.DependencyInjection;
-using MediatR;
+using Api.CrossCutting.Identity.Extensions;
+using Api.CrossCutting.Identity.JWT.Settings;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 // Add services to the container.
+builder.Services.AddRazorPages();
 builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureMapperService();
 builder.Services.ConfigureDependenciesRepository();
@@ -16,14 +18,16 @@ builder.Services.ConfigureDependenciesService();
 builder.Services.RegisterServices();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
 builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
 builder.Services.AddLogging();
 builder.Services.AddControllers();
+builder.Services.AddAuthenticationUserConfiguration();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddHttpContextAccessor();
 
-builder.Services.AddMediatR(cfg=>cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssemblies(AppDomain.CurrentDomain.GetAssemblies()));
 
 var app = builder.Build();
 
@@ -37,16 +41,23 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-app.Use(async (context, next) =>
-    {
-        if (context.Request.Path == "/" && app.Environment.IsDevelopment())
-        {
-            context.Response.Redirect("/swagger/index.html");
-            return;
-        }
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
-        await next();
-    });
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/swagger" && app.Environment.IsDevelopment())
+    {
+        context.Response.Redirect("/swagger/index.html");
+        return;
+    }
+
+    await next();
+});
 
 app.UseSerilogRequestLogging();
 app.UseStaticFiles();
@@ -57,6 +68,10 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
+app.UseRouting();
+
 app.MapControllers();
+
+app.MapRazorPages();
 
 app.Run();

@@ -9,24 +9,41 @@ namespace Api.CrossCutting.Communication.Services
         private readonly ILogger<EmailService> _logger;
         private readonly IEmailSender _emailSender;
 
+        private readonly string _templateDirectory;
+
         public EmailService(ILogger<EmailService> logger, IEmailSender emailSender)
         {
             _logger = logger;
             _emailSender = emailSender;
+            _templateDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "Api.CrossCutting.Communication", "Templates");            
         }
 
-        public Task SendEmailVerification(string toEmail, string toName, string verificationLink )
+        public async Task SendEmailVerification(string toEmail, string toName, string verificationLink)
         {
-            var message = EmailModels.EmailValidation.Replace("{{USER_NAME}}", toName).Replace("{{LINK_VALIDATION}}", verificationLink);
+            var templatePath = Path.Combine(_templateDirectory, $"EmailValidationModel.html");
 
-            return _emailSender.SendEmailAsync(toEmail, "Verificação de Email", message) ;
+            if (!File.Exists(templatePath))
+            {
+                throw new FileNotFoundException($"Template not found at {templatePath}");
+            }
+
+            var emailTemplate = await File.ReadAllTextAsync(templatePath);
+
+            
+            emailTemplate = emailTemplate.Replace("{{USER_NAME}}", toName)
+                                         .Replace("{{LINK_VALIDATION}}", verificationLink);
+
+            await _emailSender.SendEmailAsync(toEmail, "Verificação de Email", emailTemplate);
+            return ;
         }
 
-        public Task SendForgotPasswordEmail(string toEmail, string toName, string verificationLink )
+        public async Task SendForgotPasswordEmail(string toEmail, string toName, string verificationLink)
         {
-            var message = EmailModels.ForgotPassword.Replace("{{USER_NAME}}", toName).Replace("{{FORGOT_TOKEN}}", verificationLink);
+            //var message = EmailModels.ForgotPassword.Replace("{{USER_NAME}}", toName).Replace("{{FORGOT_TOKEN}}", verificationLink);
 
-            return _emailSender.SendEmailAsync(toEmail, "Verificação de Email", message) ;
+            string message = string.Empty;
+            await _emailSender.SendEmailAsync(toEmail, "Verificação de Email", message);
+            return ;
         }
     }
 }

@@ -1,58 +1,54 @@
+using System.Net;
+using System.Security.Authentication;
 using Api.Application.Controllers.Abstraction;
 using Api.CrossCutting.Identity.Authentication;
-using Api.CrossCutting.Identity.Roles;
-using Api.Domain.Commands.AuthenticationCommands;
-using Api.Domain.Dtos.Login;
-using Api.Domain.Dtos.User;
-using Api.Domain.Interface;
-using AutoMapper;
-using MediatR;
+using Api.CrossCutting.Identity.Authentication.Model;
+using Api.CrossCutting.Identity.JWT.Manager;
+using Api.CrossCutting.Identity.User;
+using Api.Domain.Dtos.Authentication;
+using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
 
 namespace Api.Application.Controllers
 {
     /// <summary>
-    /// Controller responsible for handling user authentication and related operations.
+    /// This controller contains endpoints used for user authentication and account control.
     /// </summary>
-    /// <remarks>
-    /// This controller provides endpoints for user registration, login, email verification,
-    /// password management, token refresh, and administrative operations like role assignment
-    /// and revocation of access.
-    /// </remarks>
-    [Route("api/users")]
-    [Authorize]
+    [Route("api/users")]    
     public class AuthenticationController : ApiController
     {
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly IAuthenticationService _authenticationService;
-        private readonly IUserRepository _userRepository;
-        private readonly IMediator _mediator;
-        private readonly IMapper _mapper;
+        private readonly IAuthenticationService _authService;
+        private readonly SignInManager<AppUser> _signInManager;        
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ILoggedInUser _loggedInUser;
+        private readonly IJwtAuthManager _jwtManager;
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
-            IAuthenticationService service,
-            IUserRepository userRepository,
-            IMediator mediator,
-            IMapper mapper)
+            IAuthenticationService authService,
+            ILoggedInUser loggedInUser,
+            SignInManager<AppUser> signInManager,
+            UserManager<AppUser> userManager,
+            IJwtAuthManager jwtManager)
         {
             _logger = logger;
-            _mapper = mapper;
-            _authenticationService = service;
-            _mediator = mediator;
-            _userRepository = userRepository;
+            _jwtManager = jwtManager;
+            _signInManager = signInManager;
+            _userManager = userManager;
+            _authService = authService;
+            _loggedInUser = loggedInUser;
             _logger.LogInformation("Login controller called");
         }
 
         /// <summary>
-        /// Registers a new user with the provided registration details.
-        /// This HTTP POST endpoint is accessible without authentication.
+        /// Registers a new user identity for the application. This endpoint is accessible without authentication.
         /// </summary>        
-        /// <param name="requestDto">A data transfer object (DTO) containing the registration information for the new user.</param>
+        /// <param name="registerRequest">A data transfer object (DTO) containing the registration information for the new user.</param>
         /// <returns>
-        ///   <para>HTTP 200 (OK) response if the registration is successful.</para>
+        ///   <para>HTTP 204 (OK) response if the registration is successful.</para>
         ///   <para>HTTP 409 (Conflict) response if a conflict, such as duplicate registration, occurs.</para>
         ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
         /// </returns>
@@ -63,21 +59,17 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult<Guid>> Register(RegisterDtoRequest requestDto)
+        public async Task<ActionResult> Register(RegisterDtoRequest registerRequest)
         {
-            var request = _mapper.Map<RegisterNewUserCommand>(requestDto);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _mediator.Send(request);
+            var result = await _authService.Register(registerRequest);
 
             if (result.IsValid)
-            {
                 return CustomResponse();
-            }
 
             foreach (var error in result.Errors)
-            {
                 AddError(error.ErrorMessage);
-            }
 
             return CustomResponse();
         }
@@ -95,17 +87,16 @@ namespace Api.Application.Controllers
         [AllowAnonymous]
         public async Task<ActionResult> EmailVerification([FromQuery] string token)
         {
-            try
-            {
-                //await _service.EmailVerificationToken(token);
+            string[] request = token.Split(",");
+
+            var user = await _userManager.FindByEmailAsync(request[0]);
+
+            var result = await _userManager.ConfirmEmailAsync(user!, WebUtility.UrlDecode(request[1]));
+
+            if (result.Succeeded)
                 return Redirect("/EmailVerification.html".Replace("STATUS", "true"));
-            }
-            catch (SecurityTokenException ex)
-            {
-                return Redirect("/EmailVerification.html"
-                            .Replace("STATUS", "false")
-                            .Replace("ERROR_TYPE", ex.Message));
-            }
+
+            return Redirect("/EmailVerification.html".Replace("STATUS", "false"));
         }
 
         /// <summary>
@@ -116,65 +107,34 @@ namespace Api.Application.Controllers
         /// <returns>
         ///   <para>HTTP 200 (OK) response with a login result if authentication is successful.</para>
         ///   <para>HTTP 400 (Bad Request) response with an error message if the provided user or password is incorrect.</para>
-        ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
         /// </returns>   
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<ActionResult<LoginDtoResult>> Login(LoginDtoRequest requestDto)
+        public async Task<ActionResult> Login(LoginDtoRequest requestDto)
         {
-            var request = _mapper.Map<LoginRequestCommand>(requestDto);
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _mediator.Send(request);
+            var user = await _userManager.FindByEmailAsync(requestDto.Email);
+            var role = await _userManager.GetRolesAsync(user!) ?? throw new AuthenticationException();
 
-            if (result.IsValid)
+            var result = await _signInManager.PasswordSignInAsync(user!.UserName!, requestDto.Password, false, true);
+
+            if (result.Succeeded)
             {
-                var user = await _userRepository.GetByEmailAsync(requestDto.Email);
+                var accessToken = _jwtManager.GenerateAccessToken(user, role);
+                var refreshToken = await _jwtManager.GenerateRefreshToken(user.Id);
 
-                var jwt = new LoginDtoResult
-                {
-                    AccessToken = _authenticationService.CreateAccessToken(user.Id, user.Name, user.Email.Address, user.Authentication.Role),
-                    RefreshToken = user.Authentication.RefreshToken,
-                    Settings = _mapper.Map<UserSettingsDto>(user.Settings),
-                };
-                return CustomResponse(jwt);
+                return CustomResponse(new { AccessToken = accessToken, RefreshToken = refreshToken });
             }
 
-            foreach (var error in result.Errors)
+            if (result.IsLockedOut)
             {
-                AddError(error.ErrorMessage);
+                AddError("This user is temporarily blocked");
+                return CustomResponse();
             }
 
+            AddError("Incorrect user or password");
             return CustomResponse();
-        }
-
-        /// <summary>
-        /// Logs out the currently authenticated user.
-        /// This HTTP POST endpoint requires the caller to be authenticated.
-        /// </summary>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response with a boolean indicating successful logout.</para>
-        /// </returns>
-        [HttpPost("logout")]
-        public async Task<ActionResult<bool>> Logout()
-        {
-            return Ok(true);
-            //return Ok(await _service.Logout());
-        }
-
-        /// <summary>
-        /// Changes the password for the currently authenticated user.
-        /// This HTTP PUT endpoint requires the caller to be authenticated.
-        /// </summary>
-        /// <param name="newPassword">The new password to be set for the user.</param>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response with a boolean indicating successful password change.</para>
-        /// </returns>
-        [HttpPut("change-password")]
-        public async Task<ActionResult<bool>> ChangePassword([FromBody] string newPassword)
-        {
-            //var response = await _service.ChangePassword(newPassword);
-
-            return Ok(true);
         }
 
         /// <summary>
@@ -188,19 +148,70 @@ namespace Api.Application.Controllers
         /// </returns>
         [HttpPost("refresh-token")]
         [AllowAnonymous]
-        public async Task<ActionResult<RefreshTokenDtoResult>> RefreshToken([FromBody] RefreshTokenDtoRequest request)
+        public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenDtoRequest request)
         {
-            // try
-            // {
-            //     var token = await _service.RefreshToken(request);
-            //     return Ok(token);
-            // }
-            // catch (Exception ex)
-            // {
-            //     return Unauthorized(ex.Message);
-            // }
+            var principal = _jwtManager.GetPrincipalFromExpiredToken(request.AccessToken);
+            var result = await _jwtManager.ValidateRefresToken(request.RefreshToken, principal.GetUserId());
+            
 
-            return new RefreshTokenDtoResult();
+            if (result.IsValid)
+            {
+                var user = await _userManager.FindByEmailAsync(principal.GetUserEmail());
+
+                var role = await _userManager.GetRolesAsync(user!) ?? throw new AuthenticationException();
+
+                var accessToken = _jwtManager.GenerateAccessToken(user!, role);
+                var refreshToken = await _jwtManager.GenerateRefreshToken(user!.Id);
+
+                return CustomResponse(new { AccessToken = accessToken, RefreshToken = refreshToken });
+            }
+
+            ICollection<string> errors = [];
+
+            foreach (var error in result.Errors)
+            {
+                errors.Add(error.ErrorMessage);
+            }
+
+            return Unauthorized(errors);
+        }
+
+        /// <summary>
+        /// Logs out the currently authenticated user.
+        /// This HTTP POST endpoint requires the caller to be authenticated.
+        /// </summary>
+        /// <returns>
+        ///   <para>HTTP 204 (No Content) response indicating successful logout.</para>
+        /// </returns>
+        [HttpPost("logout")]
+        public async Task<ActionResult> Logout()
+        {
+            await _signInManager.SignOutAsync();
+            return NoContent();
+        }
+
+        /// <summary>
+        /// Changes the password for the currently authenticated user.
+        /// This HTTP PUT endpoint requires the caller to be authenticated.
+        /// </summary>
+        /// <param name="request">The new password to be set for the user.</param>
+        /// <returns>
+        ///   <para>HTTP 200 (OK) response with a boolean indicating successful password change.</para>
+        /// </returns>
+        [HttpPut("change-password")]
+        [Authorize]
+        public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
+
+            var user = await _userManager.FindByEmailAsync(_loggedInUser.GetUserEmail());
+
+            var result = await _userManager.ChangePasswordAsync(user!, request.CurrentPassword, request.NewPassword);
+
+            if (result.Succeeded)
+                return Ok();
+
+            return BadRequest();
         }
 
         /// <summary>
@@ -237,65 +248,24 @@ namespace Api.Application.Controllers
         ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
         /// </returns>
         [HttpPut("set-role")]
-        [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<bool>> SetRule([FromBody] SetRoleDto request)
+        [Authorize(Roles = "Admin, SuperAdmin")]
+        public async Task<ActionResult> SetRule([FromBody] SetRoleDto request)
         {
-            try
-            {
-                //await _service.SetRoler(request.UserId, request.NewRole);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-        /// <summary>
-        /// Revokes a specific authorization or access by the provided identifier.
-        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
-        /// </summary>
-        /// <param name="id">The unique identifier associated with the authorization or access to be revoked.</param>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response if the revocation is successful.</para>
-        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
-        /// </returns>
-        [HttpPut("revoke")]
-        [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<bool>> Revoke([FromBody] Guid id)
-        {
-            try
+            if (_loggedInUser.IsInRole("Admin") || _loggedInUser.IsInRole("SuperUser"))
             {
-                //await _service.Revoke(id);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
+                var user = await _userManager.FindByEmailAsync(request.UserEmail);
 
-        /// <summary>
-        /// Revokes all authorizations or accesses for users.
-        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
-        /// </summary>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response if the revocation of all authorizations is successful.</para>
-        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
-        /// </returns>
-        [HttpPut("revoke-all")]
-        [Authorize(Roles = RolesModels.Admin)]
-        public async Task<ActionResult<bool>> RevokeAll()
-        {
-            try
-            {
-                //await _service.RevokeAll();
-                return Ok();
+                var result = await _userManager.AddToRoleAsync(user!, request.NewRole);
+
+                if (result.Succeeded)
+                    return Ok();
+
+                return BadRequest();
             }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+
+            return Forbid();
         }
     }
 }

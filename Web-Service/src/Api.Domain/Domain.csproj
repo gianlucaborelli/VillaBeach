@@ -2,11 +2,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Api.Core\Core.csproj" />
+    <ProjectReference Include="..\Api.CrossCutting.Communication\CrossCutting.Communication.csproj" />
     <ProjectReference Include="..\Api.Crosscutting.Identity\Crosscutting.Identity.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="FluentValidation" Version="11.9.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.6" />
   </ItemGroup>
 
   <PropertyGroup>

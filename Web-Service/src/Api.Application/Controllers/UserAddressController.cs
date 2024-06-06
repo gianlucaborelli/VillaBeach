@@ -1,5 +1,4 @@
 using System.Net;
-using Api.CrossCutting.Identity.Roles;
 using Api.Domain.Dtos.User;
 using Api.Service.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -9,7 +8,7 @@ namespace Api.Application.Controllers
 {
     [Route("api/users/address")]
     [ApiController]
-    [Authorize(Roles = RolesModels.Admin)]
+    [Authorize]
     public class UserAddressController : ControllerBase
     {
         private readonly ILogger<UsersController> _logger;

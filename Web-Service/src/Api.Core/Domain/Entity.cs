@@ -1,4 +1,4 @@
-using Api.Core.Events.Messaging;
+using Api.Core.Events.Messaging; 
 
 namespace Api.Core.Domain
 {
@@ -11,12 +11,12 @@ namespace Api.Core.Domain
 
         public Guid Id { get; set; }
 
-        private List<Event> _domainEvents;
-        public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly();
+        private List<Event> _domainEvents ;
+        public IReadOnlyCollection<Event> DomainEvents => _domainEvents?.AsReadOnly()!;
 
         public void AddDomainEvent(Event domainEvent)
         {
-            _domainEvents = _domainEvents ?? new List<Event>();
+            _domainEvents ??= [];
             _domainEvents.Add(domainEvent);
         }
 

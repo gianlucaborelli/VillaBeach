@@ -5,15 +5,13 @@ namespace Api.Domain.Entities
 {
     public class User : Entity, IAggregateRoot
     {
-        public string Name { get; set; } = string.Empty;
+        public required string Name { get; set; }
+
+        public required Guid IdentityId { get; set; }
 
         public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
 
-        public Email Email { get; set; } = new Email();         
-
-        public Authentication? Authentication {get; set;}
-
-        public Settings Settings {get;set;} = new Settings();
+        public Settings Settings { get; set; } = new Settings();
 
         public ICollection<Contact>? ContactList { get; set; }
 
@@ -24,5 +22,5 @@ namespace Api.Domain.Entities
         public List<Purchase>? PurchasesList { get; set; }
 
         public List<Sale>? SalesList { get; set; }
-    }    
+    }
 }

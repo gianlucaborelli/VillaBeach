@@ -19,13 +19,13 @@ namespace Api.Data.Repository
 
         public IUnitOfWork UnitOfWork => Db;
 
-        public async Task<bool> ExistsByEmailAsync(string email)
-        {
-            var result = await DbSet.AnyAsync(user => user.Email.Address.ToLower()
-                  .Equals(email.ToLower()));
+        // public async Task<bool> ExistsByEmailAsync(string email)
+        // {
+        //     var result = await DbSet.AnyAsync(user => user.Address.ToLower()
+        //           .Equals(email.ToLower()));
 
-                  return result;            
-        }
+        //           return result;            
+        // }
 
         public async Task<bool> ExistAsync(Guid id)
         {
@@ -48,20 +48,20 @@ namespace Api.Data.Repository
         }
 
 
-        public async Task<User?> GetByEmailAsync(string email)
-        {
-            return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.Address == email);
-        }
+        // public async Task<User?> GetByEmailAsync(string email)
+        // {
+        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.Address == email);
+        // }
 
-        public async Task<User?> GetByEmailVerificationTokenAsync(string token)
-        {
-            return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.EmailVerificationToken == token);
-        }
+        // public async Task<User?> GetByEmailVerificationTokenAsync(string token)
+        // {
+        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.VerificationToken == token);
+        // }
 
-        public async Task<User?> GetByForgotPasswordTokenAsync(string token)
-        {
-            return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Authentication!.ForgotPasswordToken == token);
-        }
+        // public async Task<User?> GetByForgotPasswordTokenAsync(string token)
+        // {
+        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Authentication!.ForgotPasswordToken == token);
+        // }
 
         public void Add(User user)
         {

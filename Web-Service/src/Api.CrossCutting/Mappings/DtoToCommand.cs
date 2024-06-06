@@ -1,5 +1,5 @@
 using Api.Domain.Commands.AuthenticationCommands;
-using Api.Domain.Dtos.Login;
+using Api.Domain.Dtos.Authentication;
 using AutoMapper;
 
 namespace Api.CrossCutting.Mappings
@@ -9,8 +9,6 @@ namespace Api.CrossCutting.Mappings
         public DtoToCommand()
         {
             CreateMap<RegisterDtoRequest, RegisterNewUserCommand>()
-                .ReverseMap();
-            CreateMap<LoginDtoRequest, LoginRequestCommand>()
                 .ReverseMap();
         }
     }
