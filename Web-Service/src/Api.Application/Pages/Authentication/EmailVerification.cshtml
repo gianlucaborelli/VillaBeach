@@ -1,0 +1,39 @@
+﻿@page "{email?}/{token?}"
+
+@model EmailVerificationModel
+@{
+    ViewData["Title"] = "Confirmação de Cadastro - VillaBeach";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>    
+</head>
+<body>
+    <div>
+        <h1>Confirmação de Cadastro - VillaBeach</h1>
+
+        @if (Model.Confirmed)
+        {
+            <div class="confirmation-box">
+                <h2>Obrigado por se cadastrar no VillaBeach!</h2>
+                <p>Ficamos felizes em tê-lo conosco. Aproveite todas as funcionalidades do aplicativo!</p>
+                <p>Para começar a usar, retorne ao aplicativo e faça login.</p>
+            </div>
+        }
+        else
+        {
+            <div class="error-box">
+                <h2>Ocorreu um erro ao validar o seu e-mail.</h2>
+                <p>Por favor, entre no APP VillaBeach e tente reenviar uma nova solicitação de validação de e-mail.</p>
+                <div class="error-message">
+                    <p>@Model.ErrorMessage</p>
+                </div>
+            </div>
+        }
+    </div>
+</body>
+</html>

@@ -20,25 +20,25 @@ namespace Api.Application.Controllers
     public class AuthenticationController : ApiController
     {
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly IAuthenticationService _authService;
-        private readonly SignInManager<AppUser> _signInManager;        
-        private readonly UserManager<AppUser> _userManager;
-        private readonly ILoggedInUser _loggedInUser;
+        private readonly SignInManager<AppUser> _signInManager;     
+        private readonly IAuthenticationService _authService;           
+        private readonly UserManager<AppUser> _userManager;        
         private readonly IJwtAuthManager _jwtManager;
+        private readonly ILoggedInUser _loggedInUser;
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
-            IAuthenticationService authService,
-            ILoggedInUser loggedInUser,
             SignInManager<AppUser> signInManager,
+            IAuthenticationService authService,
             UserManager<AppUser> userManager,
-            IJwtAuthManager jwtManager)
+            IJwtAuthManager jwtManager,
+            ILoggedInUser loggedInUser)
         {
             _logger = logger;
-            _jwtManager = jwtManager;
             _signInManager = signInManager;
             _userManager = userManager;
             _authService = authService;
+            _jwtManager = jwtManager;
             _loggedInUser = loggedInUser;
             _logger.LogInformation("Login controller called");
         }
@@ -46,9 +46,9 @@ namespace Api.Application.Controllers
         /// <summary>
         /// Registers a new user identity for the application. This endpoint is accessible without authentication.
         /// </summary>        
-        /// <param name="registerRequest">A data transfer object (DTO) containing the registration information for the new user.</param>
+        /// <param name="request">A data transfer object (DTO) containing the registration information for the new user.</param>
         /// <returns>
-        ///   <para>HTTP 204 (OK) response if the registration is successful.</para>
+        ///   <para>HTTP 201 (Created) response if the registration is successful.</para>
         ///   <para>HTTP 409 (Conflict) response if a conflict, such as duplicate registration, occurs.</para>
         ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
         /// </returns>
@@ -59,14 +59,21 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult> Register(RegisterDtoRequest registerRequest)
+        public async Task<ActionResult> Register(RegisterDtoRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _authService.Register(registerRequest);
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user is not null)
+            {
+                return Conflict("User already exists.");
+            }
+
+            var result = await _authService.Register(request);
 
             if (result.IsValid)
-                return CustomResponse();
+                return Created();
 
             foreach (var error in result.Errors)
                 AddError(error.ErrorMessage);
@@ -76,27 +83,30 @@ namespace Api.Application.Controllers
 
         /// <summary>
         /// Verifies a user's email address using the provided verification token.
-        /// This HTTP GET endpoint is accessible without authentication.
+        /// This endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="token">The verification token associated with the user's email address.</param>
-        /// <returns>
-        ///   <para>HTTP redirection to "/EmailVerification.html" with a status parameter set to "true" if email verification is successful.</para>
-        ///   <para>HTTP redirection to "/EmailVerification.html" with a status parameter set to "false" and an error type parameter if a security token exception occurs during the process.</para>
-        /// </returns>
-        [HttpGet("verify_email")]
+        /// <param name="request">The verification token associated with the user's email address.</param>        
+        [HttpPost("verify_email")]
         [AllowAnonymous]
-        public async Task<ActionResult> EmailVerification([FromQuery] string token)
+        public async Task<ActionResult> EmailVerification([FromBody]EmailConfirmationRequest  request)
         {
-            string[] request = token.Split(",");
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var user = await _userManager.FindByEmailAsync(request[0]);
+            var user = await _userManager.FindByEmailAsync(request.Email);
+            if(user is null){
+                AddError("User not found");
+                return CustomResponse();
+            }
 
-            var result = await _userManager.ConfirmEmailAsync(user!, WebUtility.UrlDecode(request[1]));
+            var result = await _userManager.ConfirmEmailAsync(user!, request.Token);
 
-            if (result.Succeeded)
-                return Redirect("/EmailVerification.html".Replace("STATUS", "true"));
+            if(result.Succeeded)
+                return CustomResponse("Success");
 
-            return Redirect("/EmailVerification.html".Replace("STATUS", "false"));
+            foreach (var error in result.Errors)
+                AddError(error.Description);
+
+            return CustomResponse();
         }
 
         /// <summary>

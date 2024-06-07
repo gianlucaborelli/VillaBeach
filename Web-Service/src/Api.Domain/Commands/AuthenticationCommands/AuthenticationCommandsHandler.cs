@@ -9,15 +9,18 @@ using FluentValidation.Results;
 using MediatR;
 using System.Net;
 using Api.CrossCutting.Identity.Authentication.Model;
+using Microsoft.Extensions.Configuration;
 
 namespace Api.Domain.Commands.AuthenticationCommands
 {
     public class AuthenticationCommandsHandler(
         IUserRepository userRepository,
         UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<Guid>> roleManager) : CommandHandler,
+        RoleManager<IdentityRole<Guid>> roleManager,
+        IConfiguration config) : CommandHandler,
         IRequestHandler<RegisterNewUserCommand, ValidationResult>
     {
+        private readonly IConfiguration _config = config;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly UserManager<AppUser> _userManager = userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
@@ -66,12 +69,14 @@ namespace Api.Domain.Commands.AuthenticationCommands
 
             _userRepository.Add(userEntity);
 
+            var token = WebUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
+
             userEntity.AddDomainEvent(
                 new NewUserRegisteredEvent(
                     user.Id,
                     user.Name,
                     user.Email,
-                    $"{user.Email},{WebUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user))}"
+                    $"{_config["Host:Url"]}/Authentication/EmailVerification?email={user.Email}&token={token}"
                 ));
 
             return await Commit(_userRepository.UnitOfWork);
