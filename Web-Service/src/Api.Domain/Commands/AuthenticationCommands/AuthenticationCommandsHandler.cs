@@ -14,20 +14,21 @@ using Microsoft.Extensions.Configuration;
 namespace Api.Domain.Commands.AuthenticationCommands
 {
     public class AuthenticationCommandsHandler(
-        IUserRepository userRepository,
-        UserManager<AppUser> userManager,
-        RoleManager<IdentityRole<Guid>> roleManager,
+        IUserRepository _userRepository,
+        UserManager<AppUser> _userManager,
+        RoleManager<IdentityRole<Guid>> _roleManager,
         IConfiguration config) : CommandHandler,
-        IRequestHandler<RegisterNewUserCommand, ValidationResult>
+        IRequestHandler<RegisterNewUserCommand, ValidationResult>,
+        IRequestHandler<ForgetPasswordRequestCommand, ValidationResult>
     {
         private readonly IConfiguration _config = config;
-        private readonly IUserRepository _userRepository = userRepository;
-        private readonly UserManager<AppUser> _userManager = userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager = roleManager;
+        private readonly IUserRepository _userRepository = _userRepository;
+        private readonly UserManager<AppUser> _userManager = _userManager;
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager = _roleManager;
 
         public async Task<ValidationResult> Handle(RegisterNewUserCommand request, CancellationToken cancellationToken)
         {
-            if (!request.IsValid()) return request.ValidationResult;            
+            if (!request.IsValid()) return request.ValidationResult;
 
             var user = new AppUser
             {
@@ -38,7 +39,7 @@ namespace Api.Domain.Commands.AuthenticationCommands
                     .Replace("-", string.Empty)
             };
 
-            var role = await _roleManager.FindByNameAsync("User");            
+            var role = await _roleManager.FindByNameAsync("User");
 
             var result = await _userManager.CreateAsync(user, request.Password);
 
@@ -49,7 +50,7 @@ namespace Api.Domain.Commands.AuthenticationCommands
 
                 return ValidationResult;
             }
-            
+
             var addRoleResult = await _userManager.AddToRoleAsync(user, role!.Name!);
             if (addRoleResult.Succeeded is false)
             {
@@ -78,6 +79,42 @@ namespace Api.Domain.Commands.AuthenticationCommands
                     user.Email,
                     $"{_config["Host:Url"]}/Authentication/EmailVerification?email={user.Email}&token={token}"
                 ));
+
+            return await Commit(_userRepository.UnitOfWork);
+        }
+
+        public async Task<ValidationResult> Handle(ForgetPasswordRequestCommand request, CancellationToken cancellationToken)
+        {
+            if (!request.IsValid()) return request.ValidationResult;
+
+            var user = await _userManager.FindByEmailAsync(request.Email);
+
+            if (user is null)
+            {
+                AddError("User not found");
+                return ValidationResult;
+            }
+
+            var token = WebUtility.UrlEncode( await _userManager.GeneratePasswordResetTokenAsync(user));
+
+            var userEntity = await  _userRepository.GetByIdentityIdAsync(user.Id);
+
+            if (userEntity is null)
+            {
+                AddError("Not Found");
+                return ValidationResult;
+            }
+
+            userEntity.AddDomainEvent(
+                new ForgottenPasswordRecoveryEvent(
+                    user.Id,
+                    user.Name,
+                    user.Email!,
+                    $"{_config["Host:Url"]}/Authentication/ForgotPassword?email={user.Email}&token={token}"
+                )
+            );
+
+            _userRepository.Update(userEntity);
 
             return await Commit(_userRepository.UnitOfWork);
         }

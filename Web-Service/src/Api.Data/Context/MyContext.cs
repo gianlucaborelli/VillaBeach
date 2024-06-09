@@ -12,8 +12,8 @@ namespace Api.Data.Context
     public class MyContext : DbContext, IUnitOfWork
     {
         private readonly IMediatorHandler _mediatorHandler;
-        
-        public DbSet<User> Users => Set<User>();        
+
+        public DbSet<User> Users => Set<User>();
         public DbSet<ProductPrice> ProductPrices => Set<ProductPrice>();
         public DbSet<PlanPrice> PlanPrices => Set<PlanPrice>();
         public DbSet<PurchasedProduct> PurchasedProducts => Set<PurchasedProduct>();
@@ -39,20 +39,22 @@ namespace Api.Data.Context
 
             modelBuilder.Ignore<ValidationResult>();
             modelBuilder.Ignore<Event>();
-            
+
             modelBuilder.Entity<Enrollment>(new EnrollmentMap().Configure);
             modelBuilder.Entity<Plan>(new PlanMap().Configure);
             modelBuilder.Entity<PlanPrice>(new PlanPriceMap().Configure);
             modelBuilder.Entity<Product>(new ProductMap().Configure);
             modelBuilder.Entity<ProductPrice>(new ProductPriceMap().Configure);
-            modelBuilder.Entity<Purchase>(new PurchaseMap().Configure);            
+            modelBuilder.Entity<Purchase>(new PurchaseMap().Configure);
             modelBuilder.Entity<PurchasedProduct>(new PurchasedProductsMap().Configure);
             modelBuilder.Entity<Sale>(new SaleMap().Configure);
             modelBuilder.Entity<SoldProduct>(new SoldProductMap().Configure);
             modelBuilder.Entity<User>(new UserMap().Configure);
         }
 
-        public async Task<bool> Commit() { 
+        public async Task<bool> Commit()
+        {
+
             await _mediatorHandler.PublishDomainEvents(this).ConfigureAwait(false);
 
             var success = await SaveChangesAsync() > 0;
@@ -77,12 +79,13 @@ namespace Api.Data.Context
                 .ForEach(entity => entity.Entity.ClearDomainEvents());
 
             var tasks = domainEvents
-                .Select(async (domainEvent) => {
+                .Select(async (domainEvent) =>
+                {
                     await mediator.PublishEvent(domainEvent);
                 });
 
             await Task.WhenAll(tasks);
         }
     }
-    
+
 }

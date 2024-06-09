@@ -16,13 +16,13 @@ namespace Api.Application.Controllers
     /// <summary>
     /// This controller contains endpoints used for user authentication and account control.
     /// </summary>
-    [Route("api/users")]    
+    [Route("api/users")]
     public class AuthenticationController : ApiController
     {
         private readonly ILogger<AuthenticationController> _logger;
-        private readonly SignInManager<AppUser> _signInManager;     
-        private readonly IAuthenticationService _authService;           
-        private readonly UserManager<AppUser> _userManager;        
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IAuthenticationService _authService;
+        private readonly UserManager<AppUser> _userManager;
         private readonly IJwtAuthManager _jwtManager;
         private readonly ILoggedInUser _loggedInUser;
 
@@ -59,7 +59,7 @@ namespace Api.Application.Controllers
         /// </remarks>
         [HttpPost("register")]
         [AllowAnonymous]
-        public async Task<ActionResult> Register(RegisterDtoRequest request)
+        public async Task<ActionResult> Register(RegisterRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
@@ -88,19 +88,20 @@ namespace Api.Application.Controllers
         /// <param name="request">The verification token associated with the user's email address.</param>        
         [HttpPost("verify_email")]
         [AllowAnonymous]
-        public async Task<ActionResult> EmailVerification([FromBody]EmailConfirmationRequest  request)
+        public async Task<ActionResult> EmailVerification([FromBody] EmailConfirmationRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var user = await _userManager.FindByEmailAsync(request.Email);
-            if(user is null){
+            if (user is null)
+            {
                 AddError("User not found");
                 return CustomResponse();
             }
 
             var result = await _userManager.ConfirmEmailAsync(user!, request.Token);
 
-            if(result.Succeeded)
+            if (result.Succeeded)
                 return CustomResponse("Success");
 
             foreach (var error in result.Errors)
@@ -162,7 +163,7 @@ namespace Api.Application.Controllers
         {
             var principal = _jwtManager.GetPrincipalFromExpiredToken(request.AccessToken);
             var result = await _jwtManager.ValidateRefresToken(request.RefreshToken, principal.GetUserId());
-            
+
 
             if (result.IsValid)
             {
@@ -202,7 +203,7 @@ namespace Api.Application.Controllers
 
         /// <summary>
         /// Changes the password for the currently authenticated user.
-        /// This HTTP PUT endpoint requires the caller to be authenticated.
+        /// This endpoint requires the caller to be authenticated.
         /// </summary>
         /// <param name="request">The new password to be set for the user.</param>
         /// <returns>
@@ -228,24 +229,25 @@ namespace Api.Application.Controllers
         /// Initiates a password reset request for a user with the specified email address.
         /// This HTTP GET endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="userEmail">The email address of the user requesting a password reset.</param>
+        /// <param name="request">The email address of the user requesting a password reset.</param>
         /// <returns>
         ///   <para>HTTP 200 (OK) response if the password reset request is successful.</para>
         ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
         /// </returns>
-        [HttpGet("forgot-password-request")]
+        [HttpPost("forgot-password")]
         [AllowAnonymous]
-        public async Task<ActionResult<bool>> ForgotPassword([FromQuery] string userEmail)
+        public async Task<ActionResult> ForgotPassword([FromQuery] ForgotPasswordRequest request)
         {
-            try
-            {
-                //await _service.ForgotPasswordRequest(userEmail);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
+            if (!ModelState.IsValid) return CustomResponse(ModelState);            
+
+            var result = await _authService.ForgetPasswordRequest(request);
+
+            if (result.IsValid) return NoContent();
+
+            foreach (var error in result.Errors)
+                AddError(error.ErrorMessage);
+
+            return CustomResponse();
         }
 
         /// <summary>

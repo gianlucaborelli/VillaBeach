@@ -1,3 +1,4 @@
+using Api.CrossCutting.Identity.Authentication.Model;
 using Api.Domain.Commands.AuthenticationCommands;
 using Api.Domain.Dtos.Authentication;
 using Api.Service.Interfaces;
@@ -20,9 +21,15 @@ namespace Api.Service.Services
             _mapper = mapper;
         }        
 
-        public Task<ValidationResult> Register(RegisterDtoRequest requestDto)
+        public Task<ValidationResult> Register(RegisterRequest requestDto)
         {
             var request = _mapper.Map<RegisterNewUserCommand>(requestDto);
+            return _mediator.Send(request);
+        }
+
+        public Task<ValidationResult> ForgetPasswordRequest(ForgotPasswordRequest user)
+        {
+            var request =_mapper.Map<ForgetPasswordRequestCommand>(user);
             return _mediator.Send(request);
         }        
     }

@@ -8,7 +8,9 @@ namespace Api.CrossCutting.Mappings
     {
         public DtoToCommand()
         {
-            CreateMap<RegisterDtoRequest, RegisterNewUserCommand>()
+            CreateMap<RegisterRequest, RegisterNewUserCommand>()
+                .ReverseMap();
+            CreateMap<ForgotPasswordRequest, ForgetPasswordRequestCommand>()
                 .ReverseMap();
         }
     }

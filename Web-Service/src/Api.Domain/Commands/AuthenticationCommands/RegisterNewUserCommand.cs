@@ -14,12 +14,12 @@ namespace Api.Domain.Commands.AuthenticationCommands
             Name = name;
             Email = email;
             Password = password;
-            ConfirmPassword = confirmPassword;            
+            ConfirmPassword = confirmPassword;
         }
 
         public override bool IsValid()
         {
-             ValidationResult = new RegisterNewUserCommandValidation().Validate(this);
+            ValidationResult = new RegisterNewUserCommandValidation().Validate(this);
             return ValidationResult.IsValid;
         }
     }

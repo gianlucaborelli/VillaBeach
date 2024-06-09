@@ -19,22 +19,19 @@ namespace Api.Data.Repository
 
         public IUnitOfWork UnitOfWork => Db;
 
-        // public async Task<bool> ExistsByEmailAsync(string email)
-        // {
-        //     var result = await DbSet.AnyAsync(user => user.Address.ToLower()
-        //           .Equals(email.ToLower()));
-
-        //           return result;            
-        // }
-
         public async Task<bool> ExistAsync(Guid id)
         {
             return await DbSet.AnyAsync(p => p.Id.Equals(id));
-        }        
+        }    
 
-        public Task<IEnumerable<User>?> GetByNameAsync(string name)
+        public async Task<IEnumerable<User>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await DbSet.ToListAsync();
+        }    
+
+        public async Task<List<User>> GetByNameAsync(string name)
+        {
+            return await DbSet.AsNoTracking().Where(u => u.Name.Contains(name)).ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(Guid id)
@@ -42,26 +39,10 @@ namespace Api.Data.Repository
             return await DbSet.FindAsync(id);
         }
 
-        public async Task<IEnumerable<User>> GetAllAsync()
+        public async Task<User?> GetByIdentityIdAsync(Guid identityId)
         {
-            return await DbSet.ToListAsync();
-        }
-
-
-        // public async Task<User?> GetByEmailAsync(string email)
-        // {
-        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.Address == email);
-        // }
-
-        // public async Task<User?> GetByEmailVerificationTokenAsync(string token)
-        // {
-        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Email.VerificationToken == token);
-        // }
-
-        // public async Task<User?> GetByForgotPasswordTokenAsync(string token)
-        // {
-        //     return await DbSet.AsNoTracking().FirstOrDefaultAsync(c => c.Authentication!.ForgotPasswordToken == token);
-        // }
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(u  => u.IdentityId.Equals(identityId));
+        }        
 
         public void Add(User user)
         {
