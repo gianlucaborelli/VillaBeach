@@ -65,6 +65,7 @@ namespace Api.Domain.Dtos.Authentication
         /// var registerRequest = new RegisterRequest { ConfirmPassword = "password123" };
         /// </code>
         /// </example>
+        [Compare("Password")]
         public required string ConfirmPassword { get; set; }
     }
 }

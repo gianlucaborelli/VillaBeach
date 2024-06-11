@@ -41,7 +41,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
-if (!app.Environment.IsDevelopment())
+if (!app.Environment.IsDevelopment() && app.Environment.IsStaging())
 {
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
@@ -50,7 +50,7 @@ if (!app.Environment.IsDevelopment())
 
 app.Use(async (context, next) =>
 {
-    if (context.Request.Path == "/swagger" && app.Environment.IsDevelopment())
+    if (context.Request.Path == "/swagger" && app.Environment.IsDevelopment() && app.Environment.IsStaging())
     {
         context.Response.Redirect("/swagger/index.html");
         return;

@@ -195,6 +195,7 @@ namespace Api.Application.Controllers
         ///   <para>HTTP 204 (No Content) response indicating successful logout.</para>
         /// </returns>
         [HttpPost("logout")]
+        [Authorize]
         public async Task<ActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -240,9 +241,27 @@ namespace Api.Application.Controllers
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);            
 
-            var result = await _authService.ForgetPasswordRequest(request);
+            var result = await _authService.ForgetPassword(request);
 
             if (result.IsValid) return NoContent();
+
+            foreach (var error in result.Errors)
+                AddError(error.ErrorMessage);
+
+            return CustomResponse();
+        }
+
+        [HttpPut("forgot-password")]
+        [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgetPasswordVerificationRequest request)
+        {
+            if (!ModelState.IsValid) return CustomResponse(ModelState);            
+
+            var result = await _authService.ForgetPasswordVerification(request);
+
+            if (result.IsValid) return Ok();
 
             foreach (var error in result.Errors)
                 AddError(error.ErrorMessage);

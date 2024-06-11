@@ -12,6 +12,7 @@ namespace Api.CrossCutting.DependencyInjection
         {
             services.AddScoped<IRequestHandler<RegisterNewUserCommand, ValidationResult>, AuthenticationCommandsHandler>();
             services.AddScoped<IRequestHandler<ForgetPasswordRequestCommand, ValidationResult>, AuthenticationCommandsHandler>();
+            services.AddScoped<IRequestHandler<ForgetPasswordVerificationCommand, ValidationResult>, AuthenticationCommandsHandler>();
         }
     }
 }

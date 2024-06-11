@@ -1,4 +1,3 @@
-using Api.CrossCutting.Identity.Authentication.Model;
 using Api.Domain.Commands.AuthenticationCommands;
 using Api.Domain.Dtos.Authentication;
 using Api.Service.Interfaces;
@@ -27,10 +26,15 @@ namespace Api.Service.Services
             return _mediator.Send(request);
         }
 
-        public Task<ValidationResult> ForgetPasswordRequest(ForgotPasswordRequest user)
+        public Task<ValidationResult> ForgetPassword(ForgotPasswordRequest requestDto)
         {
-            var request =_mapper.Map<ForgetPasswordRequestCommand>(user);
+            var request =_mapper.Map<ForgetPasswordRequestCommand>(requestDto);
             return _mediator.Send(request);
-        }        
+        }   
+
+        public Task<ValidationResult> ForgetPasswordVerification(ForgetPasswordVerificationRequest requestDto){
+            var request =_mapper.Map<ForgetPasswordVerificationCommand>(requestDto);
+            return _mediator.Send(request);
+        }     
     }
 }

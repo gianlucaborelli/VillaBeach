@@ -12,6 +12,8 @@ namespace Api.CrossCutting.Mappings
                 .ReverseMap();
             CreateMap<ForgotPasswordRequest, ForgetPasswordRequestCommand>()
                 .ReverseMap();
+            CreateMap<ForgetPasswordVerificationRequest, ForgetPasswordVerificationCommand>()
+                .ReverseMap();
         }
     }
 }

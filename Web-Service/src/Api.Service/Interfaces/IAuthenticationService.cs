@@ -7,6 +7,7 @@ namespace Api.Service.Interfaces
     public interface IAuthenticationService
     {
         Task<ValidationResult> Register(RegisterRequest request);
-        Task<ValidationResult> ForgetPasswordRequest(ForgotPasswordRequest request);
+        Task<ValidationResult> ForgetPassword(ForgotPasswordRequest request);
+        Task<ValidationResult> ForgetPasswordVerification(ForgetPasswordVerificationRequest requestDto);
     }
 }

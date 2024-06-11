@@ -7,6 +7,13 @@ namespace Api.Application.Pages.Authentication
 {
     public class EmailVerificationModel : PageModel
     {
+        private readonly IConfiguration _config;
+
+        public EmailVerificationModel(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public bool Confirmed { get; set; }
         public string? ErrorMessage { get; set; }
 
@@ -17,7 +24,7 @@ namespace Api.Application.Pages.Authentication
                 return RedirectToPage("/Error");
             }
 
-            var apiUrl = "http://Localhost:5251/api/users/verify_email";
+            var apiUrl = $"{_config["Host:Url"]}/api/users/verify_email";
             var client = new HttpClient();
 
             var requestData = new
