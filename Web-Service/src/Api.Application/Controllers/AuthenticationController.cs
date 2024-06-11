@@ -40,7 +40,7 @@ namespace Api.Application.Controllers
             _authService = authService;
             _jwtManager = jwtManager;
             _loggedInUser = loggedInUser;
-            _logger.LogInformation("Login controller called");
+            _logger.LogInformation("Authentication controller called");
         }
 
         /// <summary>
