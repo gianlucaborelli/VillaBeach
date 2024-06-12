@@ -123,8 +123,13 @@ namespace Api.Application.Controllers
             }
         }
 
+        /// <summary>
+        /// Deletes a user by ID.
+        /// </summary>
+        /// <param name="id">The ID of the user to delete.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the result of the delete operation.</returns>
         [HttpDelete("{id}")]
-        public async Task<ActionResult> Delete(Guid id)
+        public ActionResult Delete(Guid id)
         {
             _logger.LogInformation("Users Delete method Starting.");
 

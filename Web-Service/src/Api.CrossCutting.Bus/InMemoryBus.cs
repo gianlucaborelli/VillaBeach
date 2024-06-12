@@ -22,17 +22,22 @@ public sealed class InMemoryBus : IMediatorHandler
 
     public async Task PublishEvent<T>(T @event) where T : Event
     {
+        if (@event == null)
+            throw new ArgumentNullException(nameof(@event), "Event cannot be null");
+
+        var eventType = @event.GetType().Name;
+
         try
         {
             if (!@event.MessageType.Equals("DomainNotification"))
                 _eventStore?.Save(@event);
 
             await _mediator.Publish(@event);
-            _logger.LogInformation($"Published event of type {typeof(T).Name}");
+            _logger.LogInformation($"Published event of type {eventType}");
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, $"Error publishing event of type {typeof(T).Name}");
+            _logger.LogError(ex, $"Error publishing event of type {eventType}");
             throw;
         }
     }

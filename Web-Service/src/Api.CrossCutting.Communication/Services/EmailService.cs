@@ -22,24 +22,42 @@ namespace Api.CrossCutting.Communication.Services
 
         public async Task SendEmailVerification(string toEmail, string toName, string verificationLink)
         {
-            var emailTemplate = await LoadTemplate("EmailValidationModel.html");
+            try
+            {
+                var emailTemplate = await LoadTemplate("EmailValidationModel.html");
 
-            emailTemplate = emailTemplate.Replace("{{USER_NAME}}", toName)
-                                         .Replace("{{LINK_VALIDATION}}", verificationLink);
+                emailTemplate = emailTemplate.Replace("{{USER_NAME}}", toName)
+                                             .Replace("{{LINK_VALIDATION}}", verificationLink);
 
-            await _emailSender.SendEmailAsync(toEmail, "Verificação de Email", emailTemplate);
-            return;
+                await _emailSender.SendEmailAsync(toEmail, "Verificação de Email", emailTemplate);
+
+                _logger.LogInformation($"Email verification sent to: {toEmail}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending email verification to {toEmail}: {ex.Message}");
+                throw;
+            }
         }
 
         public async Task SendForgotPasswordEmail(string toEmail, string toName, string verificationLink)
         {
-            var emailTemplate = await LoadTemplate(TemplateEmailEnum.ForgetPassword.ToFileName());
+            try
+            {
+                var emailTemplate = await LoadTemplate(TemplateEmailEnum.ForgetPassword.ToFileName());
 
-            emailTemplate = emailTemplate.Replace("{{USER_NAME}}", toName)
-                                         .Replace("{{RESET_TOKEN}}", verificationLink);
+                emailTemplate = emailTemplate.Replace("{{USER_NAME}}", toName)
+                                             .Replace("{{RESET_TOKEN}}", verificationLink);
 
-            await _emailSender.SendEmailAsync(toEmail, "Recuperação de senha", emailTemplate);
-            return;
+                await _emailSender.SendEmailAsync(toEmail, "Recuperação de senha", emailTemplate);
+
+                _logger.LogInformation($"Forgot password email sent to: {toEmail}");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending forgot password email to {toEmail}: {ex.Message}");
+                throw;
+            }
         }
 
         private async Task<string> LoadTemplate(string templateName)

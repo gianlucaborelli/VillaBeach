@@ -109,16 +109,12 @@ namespace Api.Application.Controllers
 
             return CustomResponse();
         }
-
+   
         /// <summary>
-        /// Authenticates a user by validating the provided login credentials.
-        /// This HTTP POST endpoint is accessible without authentication.
+        /// Logs in a user with the provided credentials.
         /// </summary>
-        /// <param name="requestDto">A data transfer object (DTO) containing the user's email and password for authentication.</param>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response with a login result if authentication is successful.</para>
-        ///   <para>HTTP 400 (Bad Request) response with an error message if the provided user or password is incorrect.</para>
-        /// </returns>   
+        /// <param name="requestDto">The login request data transfer object.</param>
+        /// <returns>An <see cref="ActionResult"/> representing the result of the login operation.</returns>
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<ActionResult> Login(LoginDtoRequest requestDto)

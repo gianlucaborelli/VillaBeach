@@ -54,7 +54,6 @@ namespace Api.Data.Context
 
         public async Task<bool> Commit()
         {
-
             await _mediatorHandler.PublishDomainEvents(this).ConfigureAwait(false);
 
             var success = await SaveChangesAsync() > 0;
