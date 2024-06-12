@@ -17,7 +17,13 @@ namespace Api.CrossCutting.Communication.Services
         {
             _logger = logger;
             _emailSender = emailSender;
-            _templateDirectory = Path.Combine(Directory.GetParent(Directory.GetCurrentDirectory())!.FullName, "Api.CrossCutting.Communication", "Templates");
+
+            var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
+
+            _templateDirectory = Path.Combine(baseDirectory, "Api.CrossCutting.Communication", "Templates");
+
+            if (!Directory.Exists(_templateDirectory))
+                throw new DirectoryNotFoundException($"O diretório de templates não foi encontrado: {_templateDirectory}");
         }
 
         public async Task SendEmailVerification(string toEmail, string toName, string verificationLink)
