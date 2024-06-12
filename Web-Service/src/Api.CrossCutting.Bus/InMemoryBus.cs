@@ -7,18 +7,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Api.CrossCutting.Bus;
 
-public sealed class InMemoryBus : IMediatorHandler
+public sealed class InMemoryBus(
+    IEventStore eventStore,
+    IMediator mediator,
+    ILogger<InMemoryBus> logger) :
+     IMediatorHandler
 {
-    private readonly IMediator _mediator;
-    private readonly IEventStore _eventStore;
-    private readonly ILogger<InMemoryBus> _logger;
-
-    public InMemoryBus(IEventStore eventStore, IMediator mediator, ILogger<InMemoryBus> logger)
-    {
-        _eventStore = eventStore;
-        _mediator = mediator;
-        _logger = logger;
-    }
+    private readonly IMediator _mediator = mediator;
+    private readonly IEventStore _eventStore = eventStore;
+    private readonly ILogger<InMemoryBus> _logger = logger;
 
     public async Task PublishEvent<T>(T @event) where T : Event
     {
@@ -53,10 +50,5 @@ public sealed class InMemoryBus : IMediatorHandler
             _logger.LogError(ex, $"Error sending command of type {typeof(T).Name}");
             throw;
         }
-    }
-
-    Task<ValidationResult> IMediatorHandler.SendCommand<T>(T command)
-    {
-        throw new NotImplementedException();
     }
 }
