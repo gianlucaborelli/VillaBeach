@@ -16,7 +16,9 @@ namespace Api.Application.Controllers
     /// <summary>
     /// This controller contains endpoints used for user authentication and account control.
     /// </summary>
-    [Route("api/users")]
+    [Route("api/users/account")]
+    [Consumes("application/json")]
+    [Produces("application/json")]
     public class AuthenticationController : ApiController
     {
         private readonly ILogger<AuthenticationController> _logger;
@@ -46,19 +48,41 @@ namespace Api.Application.Controllers
         /// <summary>
         /// Registers a new user identity for the application. This endpoint is accessible without authentication.
         /// </summary>        
-        /// <param name="request">A data transfer object (DTO) containing the registration information for the new user.</param>
-        /// <returns>
-        ///   <para>HTTP 201 (Created) response if the registration is successful.</para>
-        ///   <para>HTTP 409 (Conflict) response if a conflict, such as duplicate registration, occurs.</para>
-        ///   <para>HTTP 500 (Internal Server Error) response for other application-related exceptions.</para>
-        /// </returns>
+        /// <param name="request">A data transfer object (DTO) containing the registration information for the new user.</param>        
         /// <remarks>
-        /// This endpoint is intended for user self-registration from the client application.
-        /// If registration fails due to duplicate user information, it returns Conflict with the corresponding error message.
-        /// In case of application errors, it returns InternalServerError with the appropriate error message.
+        /// This endpoint is intended for user self-registration from the client application. 
+        /// 
+        /// The request body should contain the user's Full Name, email address, password, and password confirmation. 
+        /// 
+        /// The password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, 
+        /// one number, and one special character. 
+        /// 
+        /// The password confirmation must match the password field.   
+        /// 
+        /// All fields are required.
+        ///  
+        /// Example:
+        /// 
+        ///     POST /register
+        ///     {
+        ///         "name": "Ellie Williams",
+        ///         "email": "ellie.williams@lastmail.com",
+        ///         "password": "1ValidPassword!",
+        ///         "confirmPassword": "1ValidPassword!"
+        ///     }
+        /// 
         /// </remarks>
+        /// <response code="201">The registration is successful.</response>
+        /// <response code="400">If domain validation fails, such as an invalid password, 
+        /// a password confirmation not matching, or an empty field.</response>
+        /// <response code="409">If an existing user is found with the same email address.</response>
+        /// <response code="500">If an internal server error occurs.</response>
         [HttpPost("register")]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.Created)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Conflict)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> Register(RegisterRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -82,12 +106,36 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Verifies a user's email address using the provided verification token.
-        /// This endpoint is accessible without authentication.
+        /// Verifies the email address of a user by confirming the email verification token. This endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="request">The verification token associated with the user's email address.</param>        
+        /// <remarks>
+        /// Verifies the email address using the confirmation token sent to the user's email. 
+        /// 
+        /// Example:
+        /// 
+        ///     POST /verify_email
+        ///     {
+        ///         "email": "ellie.williams@lastmail.com",
+        ///         "token": "c7349562b8760745921eb6fdd6dc89cc113d82b684586fd324e6f844c3f371d8"
+        ///     }
+        /// 
+        ///     <para> All fields are required. </para>
+        /// 
+        /// </remarks>
+        /// <param name="request"> 
+        ///    <para> Parameters for the request must include the user's email address and the confirmation token sent to the user's email for account verification. </para>
+        /// </param> 
+        /// <returns></returns>
+        /// <response code="200">The email verification is successful.</response>
+        /// <response code="400">The request is invalid or the email verification fails.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an internal server error occurs.</response>
         [HttpPost("verify_email")]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> EmailVerification([FromBody] EmailConfirmationRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -109,14 +157,45 @@ namespace Api.Application.Controllers
 
             return CustomResponse();
         }
-   
+
         /// <summary>
-        /// Logs in a user with the provided credentials.
+        /// Logs in a user with the provided email address and password. This endpoint is accessible without authentication.
         /// </summary>
-        /// <param name="requestDto">The login request data transfer object.</param>
-        /// <returns>An <see cref="ActionResult"/> representing the result of the login operation.</returns>
+        /// <param name="requestDto">
+        ///     A data transfer object (DTO) containing the user's email address and password.
+        /// </param>
+        /// <remarks>
+        /// This endpoint is used to authenticate a user with the provided email address and password.
+        /// 
+        /// The request body should contain the user's email address and password.
+        /// 
+        /// The email address and password are required fields.
+        /// 
+        /// The password must be at least 8 characters long and contain at least one uppercase letter, 
+        ///     one lowercase letter, one number, and one special character.
+        ///     
+        /// Example:
+        /// 
+        ///     POST /login
+        ///     {
+        ///         "email": "ellie.williams@lastmail.com",
+        ///         "token": "1ValidPassword!"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <returns>
+        ///     <para>HTTP 200 (OK) response with an access token and a refresh token if the login is successful.</para>
+        /// </returns>
+        /// <response code="200">The login is successful.</response>        
+        /// <response code="400">If the request is invalid or the login fails.</response>
+        /// <response code="404">If the user is not found.</response>
+        /// <response code="500">If an internal server error occurs.</response>
         [HttpPost("login")]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> Login(LoginDtoRequest requestDto)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -145,16 +224,33 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Refreshes the authentication token for a user by exchanging a valid refresh token.
-        /// This HTTP POST endpoint is accessible without authentication.
+        /// Refreshes the authentication token for the currently authenticated user.
+        /// This endpoint is accessible without authentication.
         /// </summary>
+        /// <remarks>
+        /// This endpoint is used to refresh the authentication token for the currently authenticated user. 
+        /// 
+        /// Example:
+        /// 
+        ///     POST /refresh-token
+        ///     {
+        ///         "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJlbGxpZS53aWxsaWFtc0BkZW1vLmNvb.1"
+        ///         "refreshToken": "c7349562b8760745921eb6fdd6dc89cc113d82b684586fd324e6f844c3f371d8" 
+        ///     }
+        /// 
+        /// </remarks>
         /// <param name="request">A data transfer object (DTO) containing the refresh token information.</param>
         /// <returns>
-        ///   <para>HTTP 200 (OK) response with a new authentication token if the refresh token is valid.</para>
-        ///   <para>HTTP 401 (Unauthorized) response with an error message if an exception occurs during the token refresh process.</para>
+        ///     <para>HTTP 200 (OK) response with a new access token and refresh token if the refresh is successful.</para>
         /// </returns>
+        /// <response code="200"> The refresh is successful.</response>       
+        /// <response code="401"> If the refresh token is invalid.</response>
+        /// <response code="500">If an internal server error occurs.</response>
         [HttpPost("refresh-token")]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.Unauthorized)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> RefreshToken([FromBody] RefreshTokenDtoRequest request)
         {
             var principal = _jwtManager.GetPrincipalFromExpiredToken(request.AccessToken);
@@ -185,13 +281,15 @@ namespace Api.Application.Controllers
 
         /// <summary>
         /// Logs out the currently authenticated user.
-        /// This HTTP POST endpoint requires the caller to be authenticated.
+        /// This endpoint requires the caller to be authenticated.
         /// </summary>
         /// <returns>
         ///   <para>HTTP 204 (No Content) response indicating successful logout.</para>
         /// </returns>
+        /// <response code="204"> The logout is successful.</response>
         [HttpPost("logout")]
         [Authorize]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
         public async Task<ActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
@@ -202,12 +300,31 @@ namespace Api.Application.Controllers
         /// Changes the password for the currently authenticated user.
         /// This endpoint requires the caller to be authenticated.
         /// </summary>
+        /// <remarks>
+        /// This endpoint is used to change the password for the currently authenticated user.
+        /// 
+        /// Example:
+        /// 
+        ///     PUT /change-password
+        ///     {
+        ///         "currentPassword": "1ValidPassword!",
+        ///         "newPassword": "1NewValidPassword!",
+        ///         "newPasswordConfirm": "1NewValidPassword!"
+        ///     }
+        /// 
+        /// </remarks>
         /// <param name="request">The new password to be set for the user.</param>
         /// <returns>
         ///   <para>HTTP 200 (OK) response with a boolean indicating successful password change.</para>
         /// </returns>
+        /// <response code="200"> The password change is successful.</response>
+        /// <response code="400"> If the request is invalid or the password change fails.</response>
+        /// <response code="500">If an internal server error occurs.</response>
         [HttpPut("change-password")]
         [Authorize]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> ChangePassword([FromBody] ChangePasswordRequest request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
@@ -223,19 +340,33 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Initiates a password reset request for a user with the specified email address.
-        /// This HTTP GET endpoint is accessible without authentication.
+        /// Sends a password reset email to the user with the provided email address.
+        /// This endpoint is accessible without authentication.
         /// </summary>
+        /// <remarks>
+        /// This endpoint is used to send a password reset email to the user with the provided email address.
+        /// 
+        /// Example:
+        /// 
+        ///     POST /forgot-password?Email=ellie.williams@lastmail.com
+        /// 
+        /// </remarks>
         /// <param name="request">The email address of the user requesting a password reset.</param>
         /// <returns>
         ///   <para>HTTP 200 (OK) response if the password reset request is successful.</para>
         ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
         /// </returns>
+        /// <response code="204"> The password reset request is successful.</response>
+        /// <response code="400"> If the request is invalid or the password reset request fails.</response>
+        /// <response code="500"> If an internal server error occurs.</response>
         [HttpPost("forgot-password")]
         [AllowAnonymous]
+        [ProducesResponseType((int)HttpStatusCode.NoContent)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.InternalServerError)]
         public async Task<ActionResult> ForgotPassword([FromQuery] ForgotPasswordRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);            
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var result = await _authService.ForgetPassword(request);
 
@@ -247,13 +378,37 @@ namespace Api.Application.Controllers
             return CustomResponse();
         }
 
+        /// <summary>
+        /// Verifies the password reset token and changes the password for the user.
+        /// This endpoint is accessible without authentication.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint is used to verify the password reset token and change the password for the user.
+        /// The request body should contain the token sent to the user's email, 
+        /// the user's email address, the new password, and the new password confirmation.
+        /// 
+        /// Example:
+        /// 
+        ///     PUT /forgot-password
+        ///     {
+        ///         "token": "c7349562b8760745921eb6fdd6dc89cc113d82b684586fd324e6f844c3f371d8"
+        ///         "email": "ellie.williams@lastmail.com",
+        ///         "newPassword": "1NewValidPassword!",
+        ///         "newPasswordConfirm": "1NewValidPassword!"
+        ///     }
+        /// 
+        /// </remarks>
+        /// <param name="request"></param>
+        /// <returns></returns>
+        /// <response code="200"> The password reset is successful.</response>
+        /// <response code="400"> If the request is invalid or the password reset fails.</response>
         [HttpPut("forgot-password")]
         [AllowAnonymous]
         [ProducesResponseType((int)HttpStatusCode.OK)]
-        [ProducesResponseType((int)HttpStatusCode.NotFound)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgetPasswordVerificationRequest request)
         {
-            if (!ModelState.IsValid) return CustomResponse(ModelState);            
+            if (!ModelState.IsValid) return CustomResponse(ModelState);
 
             var result = await _authService.ForgetPasswordVerification(request);
 
@@ -266,16 +421,29 @@ namespace Api.Application.Controllers
         }
 
         /// <summary>
-        /// Updates the role of a user identified by the provided user ID.
-        /// This HTTP PUT endpoint requires the caller to be authenticated with administrative privileges.
+        /// Sets the role for a user with the provided email address.
+        /// This endpoint requires the caller to be authenticated with the Admin or SuperAdmin role.
         /// </summary>
-        /// <param name="request">A data transfer object (DTO) containing the user ID and the new role to be assigned.</param>
-        /// <returns>
-        ///   <para>HTTP 200 (OK) response if the role update is successful.</para>
-        ///   <para>HTTP 400 (Bad Request) response with an error message if an exception occurs during the process.</para>
-        /// </returns>
+        /// <remarks> 
+        /// This endpoint is used to set the role for a user with the provided email address.
+        /// 
+        /// Example:
+        /// 
+        ///     PUT /forgot-password
+        ///     {
+        ///         "userEmail": "ellie.williams@lastmail.com",
+        ///         "newRole": "Admin"
+        ///     }
+        /// </remarks>
+        /// <param name="request">A data transfer object (DTO) containing the user ID and the new role to be assigned.</param>        
+        /// <response code="200"> The role is set successfully.</response>
+        /// <response code="400"> If the request is invalid or the role assignment fails.</response>
+        /// <response code="403"> If the caller is not authorized to set the role.</response>
         [HttpPut("set-role")]
         [Authorize(Roles = "Admin, SuperAdmin")]
+        [ProducesResponseType((int)HttpStatusCode.OK)]
+        [ProducesResponseType((int)HttpStatusCode.BadRequest)]
+        [ProducesResponseType((int)HttpStatusCode.Forbidden)]
         public async Task<ActionResult> SetRule([FromBody] SetRoleDto request)
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);

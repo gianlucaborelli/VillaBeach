@@ -13,8 +13,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS runtime
 WORKDIR /app
 COPY --from=build /app ./
 
-# Copiar os templates de comunicação para o diretório correto
-COPY --from=build /source/Api.CrossCutting.Communication/Templates /app/Api.CrossCutting.Communication/Templates
+# Copy communication templates to the correct directory
+COPY --from=build /source/Api.CrossCutting.Communication/Templates /Api.CrossCutting.Communication/Templates
 
 EXPOSE 80
 

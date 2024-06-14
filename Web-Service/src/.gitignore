@@ -1,0 +1,16 @@
+# Visual Studio Code
+.vscode/
+
+# .NET
+bin/
+obj/
+
+# ASP.NET
+*.sln.ide
+*.csproj.user
+*.userprefs
+*.vs/
+
+# Environment variables
+.env
+.env.*
