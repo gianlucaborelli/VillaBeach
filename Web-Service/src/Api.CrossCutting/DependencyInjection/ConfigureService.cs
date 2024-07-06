@@ -13,7 +13,6 @@ namespace Api.CrossCutting.DependencyInjection
         {
             serviceCollection.AddTransient<IUserService, UserService>();
             serviceCollection.AddTransient<IUserSettingsService, UserSettingsService>();
-            serviceCollection.AddTransient<IUserAddressService, UserAddressService>();
             serviceCollection.AddTransient<IAuthenticationService, AuthenticationService>();
             serviceCollection.AddTransient<IProductService, ProductService>();
             serviceCollection.AddTransient<IPurchaseService, PurchaseService>();

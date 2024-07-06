@@ -76,7 +76,6 @@ namespace Api.CrossCutting.Configuration
                         }
                     };
                     operation.Security = new List<OpenApiSecurityRequirement> { securityRequirement };
-                    operation.Responses.Add("401", new OpenApiResponse { Description = "Unauthorized" });
                 }
             }
         }

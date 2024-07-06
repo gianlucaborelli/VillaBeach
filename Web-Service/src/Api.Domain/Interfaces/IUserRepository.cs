@@ -7,6 +7,8 @@ namespace Api.Domain.Interface
     {
         Task<List<User>> GetByNameAsync (string name);        
 
+        Task<User?> GetByEmailAsync (string email);
+
         Task<User?> GetByIdentityIdAsync (Guid identityId);        
     }
 }

@@ -24,7 +24,7 @@ namespace Api.Application.Pages.Authentication
                 return RedirectToPage("/Error");
             }
 
-            var apiUrl = $"{_config["Host:Url"]}/api/users/verify_email";
+            var apiUrl = $"{_config["Host:Url"]}/api/users/account/verify_email";
             var client = new HttpClient();
 
             var requestData = new

@@ -15,7 +15,7 @@ using Api.Domain.Events.Authentication;
 namespace Api.Domain.Commands.AuthenticationCommands
 {
     public class AuthenticationCommandsHandler(
-        IUserRepository _userRepository,
+        IUserRepository userRepository,
         UserManager<AppUser> _userManager,
         RoleManager<IdentityRole<Guid>> _roleManager,
         IConfiguration config) : CommandHandler,
@@ -24,7 +24,7 @@ namespace Api.Domain.Commands.AuthenticationCommands
         IRequestHandler<ForgetPasswordVerificationCommand, ValidationResult>
     {
         private readonly IConfiguration _config = config;
-        private readonly IUserRepository _userRepository = _userRepository;
+        private readonly IUserRepository _userRepository = userRepository;
         private readonly UserManager<AppUser> _userManager = _userManager;
         private readonly RoleManager<IdentityRole<Guid>> _roleManager = _roleManager;
 
@@ -67,7 +67,8 @@ namespace Api.Domain.Commands.AuthenticationCommands
             var userEntity = new User
             {
                 Name = user.UserName,
-                IdentityId = user.Id
+                IdentityId = user.Id,
+                Email = user.Email
             };
 
             _userRepository.Add(userEntity);

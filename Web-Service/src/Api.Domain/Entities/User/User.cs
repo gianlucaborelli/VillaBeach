@@ -7,7 +7,9 @@ namespace Api.Domain.Entities
     {
         public required string Name { get; set; }
 
-        public required Guid IdentityId { get; set; }
+        public Guid? IdentityId { get; set; }
+
+        public required string Email { get; set; }
 
         public GenderEnum Gender { get; set; } = GenderEnum.RatherNotSay;
 

@@ -29,6 +29,11 @@ namespace Api.Data.Repository
             return await DbSet.ToListAsync();
         }    
 
+        public async Task<User?> GetByEmailAsync(string email)
+        {
+            return await DbSet.AsNoTracking().FirstOrDefaultAsync(u  => u.Email.Equals(email));
+        }
+
         public async Task<List<User>> GetByNameAsync(string name)
         {
             return await DbSet.AsNoTracking().Where(u => u.Name.Contains(name)).ToListAsync();
@@ -64,5 +69,7 @@ namespace Api.Data.Repository
         {
             Db.Dispose();
         }
+
+        
     }
 }

@@ -1,8 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Threading.Tasks;
 using Api.Domain.Dtos.Product;
 using Api.Domain.Dtos.ProductPrice;
 using Api.Domain.Dtos.Purchase;
@@ -16,12 +11,7 @@ namespace Api.CrossCutting.Mappings
     {
         public EntityToDtoProfile()
         {
-            // CreateMap<User, UserDto>()
-            //     .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email.Address))
-            //         .ReverseMap();
-            CreateMap<UserDtoCreateResult, User>()
-                .ReverseMap();
-            CreateMap<UserDtoUpdateResult, User>()
+            CreateMap<UserView, User>()
                 .ReverseMap();
 
             CreateMap<UserAddressDtoCreateRequest, Address>()
@@ -43,9 +33,9 @@ namespace Api.CrossCutting.Mappings
             CreateMap<Product, ProductDtoUpdateResult>()
                 .ReverseMap();
 
-            CreateMap<Product, ProductDtoAvailableResult>()
-                .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Prices.FirstOrDefault(x => x.Current == true)))
-                .ReverseMap();
+            // CreateMap<Product, ProductDtoAvailableResult>()
+            //     .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Prices.FirstOrDefault(x => x.Current == true)))
+            //     .ReverseMap();
 
             CreateMap<ProductPrice, ProductPriceDto>()
                 .ReverseMap();

@@ -4,22 +4,15 @@ using Api.Domain.Dtos.Authentication;
 using Api.Service.Interfaces;
 using AutoMapper;
 using FluentValidation.Results;
-using MediatR;
 
 namespace Api.Service.Services
 {
-    public class AuthenticationService : IAuthenticationService
+    public class AuthenticationService(
+        IMediatorHandler mediator,
+        IMapper mapper) : IAuthenticationService
     {
-        private readonly IMediatorHandler  _mediator;
-        private readonly IMapper _mapper;
-
-        public AuthenticationService(
-            IMediatorHandler  mediator,
-            IMapper mapper)
-        {        
-            _mediator = mediator;
-            _mapper = mapper;
-        }        
+        private readonly IMediatorHandler _mediator = mediator;
+        private readonly IMapper _mapper = mapper;
 
         public Task<ValidationResult> Register(RegisterRequest requestDto)
         {

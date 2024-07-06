@@ -3,14 +3,14 @@ using MediatR;
 
 namespace Api.Domain.Events
 {
-    class UserEventHandler :
+    class AuthenticationEventHandler :
         INotificationHandler<NewUserRegisteredEvent>,
         INotificationHandler<UserLoggedInEvent>,
         INotificationHandler<ForgottenPasswordRecoveryEvent>
     {
         private readonly IEmailService _emailService;
 
-        public UserEventHandler(IEmailService emailService)
+        public AuthenticationEventHandler(IEmailService emailService)
         {
             _emailService = emailService;
         }

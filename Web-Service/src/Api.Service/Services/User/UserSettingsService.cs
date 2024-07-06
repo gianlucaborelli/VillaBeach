@@ -1,25 +1,12 @@
-using System.Security.Authentication;
 using Api.Service.Interfaces;
 using Api.Domain.Interface;
 using AutoMapper;
-using Api.CrossCutting.Identity.Authentication;
-
 
 namespace Api.Service.Services
 {
-    public class UserSettingsService : IUserSettingsService
+    public class UserSettingsService(IMapper mapper) : IUserSettingsService
     {
-        private IUserRepository _repository;
-        //private IAuthenticationService _auth;
-
-        private readonly IMapper _mapper;
-
-        public UserSettingsService(IUserRepository repository, IMapper mapper)
-        {
-            _repository = repository;
-            _mapper = mapper;
-            //_auth = auth;
-        }
+        private readonly IMapper _mapper = mapper;
 
         public Dictionary<string, int> GetSettingByUserId()
         {

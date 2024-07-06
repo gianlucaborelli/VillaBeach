@@ -13,13 +13,19 @@ namespace Api.Data.Mapping
             builder.HasKey(u => u.Id);
 
             builder.HasIndex(u => u.Id)
-                   .IsUnique();
+                    .IsUnique();
 
-            //builder.OwnsOne(e => e.Authentication).ToTable("UserAuthentications");
+            builder.Property(u => u.Name)
+                    .IsRequired()
+                    .HasMaxLength(150);
+            
+            builder.HasAlternateKey(u => u.Email);
+
+            builder.Property(u => u.Email)
+                    .IsRequired()
+                    .HasMaxLength(150);
 
             builder.OwnsOne(u => u.Settings).ToTable("UserSettings");
-
-            //builder.OwnsOne(u => u.Email).ToTable("UserEmails");
 
             builder.OwnsMany(u => u.AddressList, a =>
                 {

@@ -3,7 +3,7 @@ using Api.Domain.Entities.UserEntityEnum;
 
 namespace Api.Domain.Dtos.User
 {
-    public class UserDto
+    public class UserView
     {
         public Guid Id { get; set; }
         public string? Name { get; set; }
