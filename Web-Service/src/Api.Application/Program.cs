@@ -10,9 +10,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddRazorPages();
-builder.Services.ConfigureAuthentication();
 builder.Services.ConfigureMapperService();
-builder.Services.ConfigureDependenciesRepository();
+builder.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
 builder.Services.RegisterServices();
 builder.Services.AddScoped<ModelBindingFailureFilter>();
@@ -21,7 +20,7 @@ builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSet
 
 builder.Services.AddLogging();
 builder.Services.AddControllers();
-builder.Services.AddAuthenticationUserConfiguration();
+builder.AddAuthenticationConfiguration();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.ConfigureSwagger();
 builder.Services.AddHttpContextAccessor();

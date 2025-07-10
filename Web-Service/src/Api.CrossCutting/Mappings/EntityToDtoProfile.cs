@@ -33,9 +33,8 @@ namespace Api.CrossCutting.Mappings
             CreateMap<Product, ProductDtoUpdateResult>()
                 .ReverseMap();
 
-            // CreateMap<Product, ProductDtoAvailableResult>()
-            //     .ForMember(dest => dest.Value, opt => opt.MapFrom(src => src.Prices.FirstOrDefault(x => x.Current == true)))
-            //     .ReverseMap();
+            CreateMap<Product, ProductDtoAvailableResult>()
+                .ReverseMap();
 
             CreateMap<ProductPrice, ProductPriceDto>()
                 .ReverseMap();
