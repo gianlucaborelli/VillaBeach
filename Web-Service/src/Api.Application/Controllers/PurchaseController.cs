@@ -1,6 +1,7 @@
 using System.Net;
 using Api.Domain.Dtos.Purchase;
-using Api.Service.Interfaces;
+using Api.Domain.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Application.Controllers
@@ -9,11 +10,13 @@ namespace Api.Application.Controllers
     [ApiController]
     public class PurchaseController : ControllerBase
     {
-        private IPurchaseService _service;
+        private readonly IPurchaseRepository _repository;
+        private readonly IMapper _mapper;
 
-        public PurchaseController(IPurchaseService service)
+        public PurchaseController(IPurchaseRepository repository, IMapper mapper)
         {
-            _service = service;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,7 +24,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.GetAll());
+                var purchases = await _repository.GetAllAsync();
+                var result = _mapper.Map<IEnumerable<PurchaseDto>>(purchases);
+                return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -35,7 +40,12 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.Get(id));
+                var purchase = await _repository.GetByIdAsync(id);
+                if (purchase == null)
+                    return NotFound();
+
+                var result = _mapper.Map<PurchaseDto>(purchase);
+                return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -49,7 +59,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.GetAllIncomplete());
+                // TODO: Implement when repository method is available
+                return BadRequest("GetAllIncomplete not implemented yet in repository.");
             }
             catch (ArgumentException e)
             {
@@ -63,7 +74,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.GetAllIncompleteByUser(userId));
+                // TODO: Implement when repository method is available
+                return BadRequest("GetAllIncompleteByUser not implemented yet in repository.");
             }
             catch (ArgumentException e)
             {
@@ -76,7 +88,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.FindByUserId(userId));
+                // TODO: Implement when repository method is available
+                return BadRequest("FindByUserId not implemented yet in repository.");
             }
             catch (ArgumentException e)
             {
@@ -89,16 +102,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                var result = await _service.SetPurchaseAsComplete(id);
-
-                if (result != null)
-                {
-                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })!), result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                // TODO: Implement purchase completion command when available
+                return BadRequest("Purchase completion not implemented yet. Please implement PurchaseCommands first.");
             }
             catch (ArgumentException e)
             {
@@ -111,16 +116,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                var result = await _service.Post(purchase);
-
-                if (result != null)
-                {
-                    return Created(new Uri(Url.Link("GetPurchaseWithId", new { id = result.Id })!), result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                // TODO: Implement purchase creation command when available
+                return BadRequest("Purchase creation not implemented yet. Please implement PurchaseCommands first.");
             }
             catch (ArgumentException e)
             {
@@ -133,16 +130,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                var result = await _service.Put(purchase);
-
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                // TODO: Implement purchase update command when available
+                return BadRequest("Purchase update not implemented yet. Please implement PurchaseCommands first.");
             }
             catch (ArgumentException e)
             {
@@ -155,7 +144,8 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.Delete(id));
+                // TODO: Implement purchase deletion command when available
+                return BadRequest("Purchase deletion not implemented yet. Please implement PurchaseCommands first.");
             }
             catch (ArgumentException e)
             {

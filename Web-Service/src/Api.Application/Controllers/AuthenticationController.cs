@@ -6,7 +6,9 @@ using Api.CrossCutting.Identity.Authentication.Model;
 using Api.CrossCutting.Identity.JWT.Manager;
 using Api.CrossCutting.Identity.User;
 using Api.Domain.Dtos.Authentication;
-using Api.Service.Interfaces;
+using Api.Core.Mediator;
+using Api.Domain.Commands.AuthenticationCommands;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -23,25 +25,28 @@ namespace Api.Application.Controllers
     {
         private readonly ILogger<AuthenticationController> _logger;
         private readonly SignInManager<AppUser> _signInManager;
-        private readonly IAuthenticationService _authService;
+        private readonly IMediatorHandler _mediator;
         private readonly UserManager<AppUser> _userManager;
         private readonly IJwtAuthManager _jwtManager;
         private readonly ILoggedInUser _loggedInUser;
+        private readonly IMapper _mapper;
 
         public AuthenticationController(
             ILogger<AuthenticationController> logger,
             SignInManager<AppUser> signInManager,
-            IAuthenticationService authService,
+            IMediatorHandler mediator,
             UserManager<AppUser> userManager,
             IJwtAuthManager jwtManager,
-            ILoggedInUser loggedInUser)
+            ILoggedInUser loggedInUser,
+            IMapper mapper)
         {
             _logger = logger;
             _signInManager = signInManager;
+            _mediator = mediator;
             _userManager = userManager;
-            _authService = authService;
             _jwtManager = jwtManager;
             _loggedInUser = loggedInUser;
+            _mapper = mapper;
             _logger.LogInformation("Authentication controller called");
         }
 
@@ -94,15 +99,13 @@ namespace Api.Application.Controllers
                 return Conflict("User already exists.");
             }
 
-            var result = await _authService.Register(request);
+            var command = _mapper.Map<RegisterNewUserCommand>(request);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
                 return Created();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         /// <summary>
@@ -368,14 +371,12 @@ namespace Api.Application.Controllers
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _authService.ForgetPassword(request);
+            var command = _mapper.Map<ForgetPasswordRequestCommand>(request);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid) return NoContent();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         /// <summary>
@@ -410,14 +411,12 @@ namespace Api.Application.Controllers
         {
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _authService.ForgetPasswordVerification(request);
+            var command = _mapper.Map<ForgetPasswordVerificationCommand>(request);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid) return Ok();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         /// <summary>

@@ -16,19 +16,17 @@ namespace Api.Service.Services
 
         public Task<ValidationResult> Register(RegisterRequest requestDto)
         {
-            var request = _mapper.Map<RegisterNewUserCommand>(requestDto);
-            return _mediator.SendCommand(request);
+            throw new NotImplementedException("Register method is not implemented yet.");
         }
 
         public Task<ValidationResult> ForgetPassword(ForgotPasswordRequest requestDto)
         {
-            var request =_mapper.Map<ForgetPasswordRequestCommand>(requestDto);
-            return _mediator.SendCommand(request);
+            throw new NotImplementedException("ForgetPassword method is not implemented yet.");
         }   
 
-        public Task<ValidationResult> ForgetPasswordVerification(ForgetPasswordVerificationRequest requestDto){
-            var request =_mapper.Map<ForgetPasswordVerificationCommand>(requestDto);
-            return _mediator.SendCommand(request);
+        public Task<ValidationResult> ForgetPasswordVerification(ForgetPasswordVerificationRequest requestDto)
+        {
+            throw new NotImplementedException("ForgetPasswordVerification method is not implemented yet.");
         }     
     }
 }

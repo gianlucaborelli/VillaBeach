@@ -1,7 +1,10 @@
 using System.Net;
 using Api.Application.Controllers.Abstraction;
 using Api.Domain.Dtos.User;
-using Api.Service.Interfaces;
+using Api.Core.Mediator;
+using Api.Domain.Commands.UserCommands;
+using Api.Domain.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,12 +18,20 @@ namespace Api.Application.Controllers
     public class UsersController : ApiController
     {
         private readonly ILogger<UsersController> _logger;
-        private readonly IUserService _service;
+        private readonly IMediatorHandler _mediator;
+        private readonly IUserRepository _userRepository;
+        private readonly IMapper _mapper;
 
-        public UsersController(IUserService service, ILogger<UsersController> logger)
+        public UsersController(
+            IMediatorHandler mediator, 
+            IUserRepository userRepository,
+            IMapper mapper,
+            ILogger<UsersController> logger)
         {
             _logger = logger;
-            _service = service;
+            _mediator = mediator;
+            _userRepository = userRepository;
+            _mapper = mapper;
             _logger.LogInformation("Users controller called ");
         }
 
@@ -39,7 +50,9 @@ namespace Api.Application.Controllers
         {
             _logger.LogInformation("Users GetAll method Starting.");
 
-            return Ok(await _service.GetAll());
+            var users = await _userRepository.GetAllAsync();
+            var result = _mapper.Map<List<UserView>>(users);
+            return Ok(result);
         }
 
         /// <summary>
@@ -59,7 +72,15 @@ namespace Api.Application.Controllers
         {
             _logger.LogInformation("Users Get method Starting.");
 
-            return Ok(await _service.GetById(id));
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+            {
+                AddError("User not found.");
+                return CustomResponse();
+            }
+
+            var result = _mapper.Map<UserView>(user);
+            return Ok(result);
         }
 
         /// <summary>
@@ -78,7 +99,9 @@ namespace Api.Application.Controllers
         {
             _logger.LogInformation("Users findByName method Starting.");
 
-            return Ok(await _service.GetByName(name));
+            var users = await _userRepository.GetByNameAsync(name);
+            var result = _mapper.Map<List<UserView>>(users);
+            return Ok(result);
         }
 
         /// <summary>
@@ -104,15 +127,13 @@ namespace Api.Application.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _service.CreateUser(user);
+            var command = _mapper.Map<CreateNewUserCommand>(user);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
                 return Created();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         /// <summary>
@@ -140,21 +161,19 @@ namespace Api.Application.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            if (await _service.Exist(id))
+            if (!await _userRepository.ExistAsync(id))
             {
                 AddError("User not found.");
                 return CustomResponse();
             }
 
-            var result = await _service.UpdateUser(user);
+            var command = _mapper.Map<UpdateUserCommand>(user);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
                 return Ok();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         /// <summary>
@@ -174,21 +193,19 @@ namespace Api.Application.Controllers
         {
             _logger.LogInformation("Users Delete method Starting.");
 
-            if (await _service.Exist(id))
+            if (!await _userRepository.ExistAsync(id))
             {
                 AddError("User not found.");
                 return CustomResponse();
             }
 
-            var result = await _service.DeleteUser(id);
+            var command = new DeleteUserCommand(id);
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
                 return Ok();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         [HttpPost("{userId}/address")]
@@ -198,15 +215,14 @@ namespace Api.Application.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _service.AddAddress(address, userId);
+            var command = _mapper.Map<AddAddressToUserCommand>(address);
+            command.UserId = userId;
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
-                return Ok();
+                return Created();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
 
         [HttpPut("{userId}/address/{addressId}")]
@@ -216,15 +232,14 @@ namespace Api.Application.Controllers
 
             if (!ModelState.IsValid) return CustomResponse(ModelState);
 
-            var result = await _service.UpdateAddress(address, userId);
+            var command = _mapper.Map<UpdateUserAddressCommand>(address);
+            command.UserId = userId;
+            var result = await _mediator.SendCommand(command);
 
             if (result.IsValid)
                 return Ok();
 
-            foreach (var error in result.Errors)
-                AddError(error.ErrorMessage);
-
-            return CustomResponse();
+            return CustomResponse(result);
         }
     }
 }

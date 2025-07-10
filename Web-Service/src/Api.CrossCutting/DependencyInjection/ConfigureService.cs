@@ -1,9 +1,7 @@
-using Api.Service.Interfaces;
-using Api.Service.Services;
-using Microsoft.Extensions.DependencyInjection;
 using Api.CrossCutting.Communication.Interfaces;
 using Api.CrossCutting.Communication.Sender;
 using Api.CrossCutting.Communication.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Api.CrossCutting.DependencyInjection
 {
@@ -11,11 +9,7 @@ namespace Api.CrossCutting.DependencyInjection
     {
         public static void ConfigureDependenciesService(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<IUserService, UserService>();
-            serviceCollection.AddTransient<IUserSettingsService, UserSettingsService>();
-            serviceCollection.AddTransient<IAuthenticationService, AuthenticationService>();
-            serviceCollection.AddTransient<IProductService, ProductService>();
-            serviceCollection.AddTransient<IPurchaseService, PurchaseService>();
+            // Communication services
             serviceCollection.AddTransient<IEmailSender, EmailSender>();
             serviceCollection.AddTransient<IEmailService, EmailService>();
         }

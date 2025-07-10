@@ -1,6 +1,7 @@
 using System.Net;
 using Api.Domain.Dtos.Product;
-using Api.Service.Interfaces;
+using Api.Domain.Interface;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Api.Application.Controllers
@@ -9,11 +10,13 @@ namespace Api.Application.Controllers
     [ApiController]
     public class ProductsController : ControllerBase
     {
-        private IProductService _service;
+        private readonly IProductRepository _repository;
+        private readonly IMapper _mapper;
 
-        public ProductsController(IProductService service)
+        public ProductsController(IProductRepository repository, IMapper mapper)
         {
-            _service = service;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -21,7 +24,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.GetAll());
+                var products = await _repository.GetAllAsync();
+                var result = _mapper.Map<IEnumerable<ProductDto>>(products);
+                return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -37,12 +42,13 @@ namespace Api.Application.Controllers
 
             try
             {
-                var result = await _service.FindByName(name);
+                var result = await _repository.FindByName(name);
 
                 if (result == null)
                     return NotFound();
 
-                return Ok(result);
+                var mappedResult = _mapper.Map<IEnumerable<ProductDto>>(result);
+                return Ok(mappedResult);
             }
             catch (ArgumentException e)
             {
@@ -56,7 +62,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.GetAvailableProducts());
+                var products = await _repository.GetAllAsync();
+                var result = _mapper.Map<IEnumerable<ProductDtoAvailableResult>>(products);
+                return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -70,7 +78,12 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.Get(id));
+                var product = await _repository.GetByIdAsync(id);
+                if (product == null)
+                    return NotFound();
+
+                var result = _mapper.Map<ProductDto>(product);
+                return Ok(result);
             }
             catch (ArgumentException e)
             {
@@ -83,16 +96,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                var result = await _service.Post(product);
-
-                if (result != null)
-                {
-                    return Created(new Uri(Url.Link("GetProductWithId", new { id = result.Id })!), result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                // TODO: Implement product creation command when available
+                // For now, returning a placeholder response
+                return BadRequest("Product creation not implemented yet. Please implement ProductCommands first.");
             }
             catch (ArgumentException e)
             {
@@ -105,16 +111,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                var result = await _service.Put(product);
-
-                if (result != null)
-                {
-                    return Ok(result);
-                }
-                else
-                {
-                    return BadRequest();
-                }
+                // TODO: Implement product update command when available
+                // For now, returning a placeholder response
+                return BadRequest("Product update not implemented yet. Please implement ProductCommands first.");
             }
             catch (ArgumentException e)
             {
@@ -127,7 +126,9 @@ namespace Api.Application.Controllers
         {
             try
             {
-                return Ok(await _service.Delete(id));
+                // TODO: Implement product deletion command when available
+                // For now, returning a placeholder response
+                return BadRequest("Product deletion not implemented yet. Please implement ProductCommands first.");
             }
             catch (ArgumentException e)
             {

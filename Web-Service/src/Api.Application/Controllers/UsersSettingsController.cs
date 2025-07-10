@@ -1,5 +1,5 @@
 using Api.Domain.Dtos.User;
-using Api.Service.Interfaces;
+using Api.Domain.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,12 +11,12 @@ namespace Api.Application.Controllers
     public class UsersSettingsController : ControllerBase
     {
         private readonly ILogger<UsersSettingsController> _logger;
-        private readonly IUserSettingsService _service;
+        private readonly IUserRepository _userRepository;
 
-        public UsersSettingsController(IUserSettingsService service, ILogger<UsersSettingsController> logger)
+        public UsersSettingsController(IUserRepository userRepository, ILogger<UsersSettingsController> logger)
         {
             _logger = logger;
-            _service = service;
+            _userRepository = userRepository;
             _logger.LogInformation("Users Settings controller called ");
         }
 
@@ -41,7 +41,9 @@ namespace Api.Application.Controllers
 
             try
             {
-                return Ok(await _service.UpdateSetting(request.Key, request.Value));
+                // TODO: Implement user settings update command when available
+                // For now, returning a placeholder response
+                return BadRequest("User settings update not implemented yet. Please implement UserSettingsCommands first.");
             }
             catch (ArgumentException e)
             {
