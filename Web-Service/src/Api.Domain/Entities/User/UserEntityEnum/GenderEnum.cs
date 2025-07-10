@@ -7,10 +7,10 @@ namespace Api.Domain.Entities.UserEntityEnum
         [Description("Prefiro não Responder")]
         RatherNotSay = 0,
         [Description("Feminino")]
-        Femele,
+        Female,
         [Description("Masculino")]
         Male,
         [Description("Não Binário")]
-        Nonbinary        
+        Nonbinary
     }
 }

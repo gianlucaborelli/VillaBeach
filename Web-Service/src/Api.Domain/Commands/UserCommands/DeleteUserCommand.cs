@@ -1,5 +1,5 @@
 using Api.Core.Events.Messaging;
-using Api.Domain.Commands.UserCommands.Validations;
+using FluentValidation;
 
 namespace Api.Domain.Commands.UserCommands
 {
@@ -16,6 +16,15 @@ namespace Api.Domain.Commands.UserCommands
         {
             ValidationResult = new DeleteUserCommandValidation().Validate(this);
             return ValidationResult.IsValid;
+        }
+
+        public class DeleteUserCommandValidation : AbstractValidator<DeleteUserCommand>
+        {
+            public DeleteUserCommandValidation()
+            {
+                RuleFor(u => u.Id)
+                    .NotEqual(Guid.Empty);
+            }
         }
     }
 }

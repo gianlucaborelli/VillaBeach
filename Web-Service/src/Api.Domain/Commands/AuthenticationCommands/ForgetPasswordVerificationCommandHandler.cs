@@ -1,17 +1,16 @@
-using Microsoft.AspNetCore.Identity;
-
-using Api.Core.Events.Messaging;
+﻿using Api.Core.Events.Messaging;
+using Api.CrossCutting.Identity.Authentication.Model;
+using Api.Domain.Commands.AuthenticationCommands;
+using Api.Domain.Events.Authentication;
 using Api.Domain.Interface;
-
 using FluentValidation.Results;
 using MediatR;
-using Api.CrossCutting.Identity.Authentication.Model;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Api.Domain.Events.Authentication;
 
-namespace Api.Domain.Commands.AuthenticationCommands
+namespace Domain.Commands.AuthenticationCommands
 {
-    public class AuthenticationCommandsHandler(
+    public class ForgetPasswordVerificationCommandHandler(
         IUserRepository userRepository,
         UserManager<AppUser> _userManager,
         RoleManager<IdentityRole<Guid>> _roleManager,
@@ -21,9 +20,7 @@ namespace Api.Domain.Commands.AuthenticationCommands
         private readonly IConfiguration _config = config;
         private readonly IUserRepository _userRepository = userRepository;
         private readonly UserManager<AppUser> _userManager = _userManager;
-        private readonly RoleManager<IdentityRole<Guid>> _roleManager = _roleManager;       
-
-        
+        private readonly RoleManager<IdentityRole<Guid>> _roleManager = _roleManager;
 
         public async Task<ValidationResult> Handle(ForgetPasswordVerificationCommand request, CancellationToken cancellationToken)
         {
