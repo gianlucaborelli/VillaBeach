@@ -31,6 +31,10 @@ namespace Api.Data.Mapping
 
             builder.Property(p => p.BarCode)
                     .HasMaxLength(15);
+
+            builder.Property(p => p.Price)
+                    .IsRequired()
+                    .HasPrecision(12, 2);
         }
     }
 }

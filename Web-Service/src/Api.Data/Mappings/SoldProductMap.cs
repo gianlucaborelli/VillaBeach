@@ -17,13 +17,13 @@ namespace Api.Data.Mapping
             builder.HasOne(s => s.Product)
                     .WithMany()
                     .HasForeignKey(s => s.ProductId);
-            
-            builder.HasOne(s => s.ProductPrice)
-                    .WithMany()
-                    .HasForeignKey(p => p.ProductPriceId);
 
             builder.Property(s => s.Amount)
                     .IsRequired();
+
+            builder.Property(s => s.Price)
+                    .IsRequired()
+                    .HasPrecision(12, 2);
         }
     }
 }

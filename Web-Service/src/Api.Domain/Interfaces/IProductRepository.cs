@@ -6,5 +6,6 @@ namespace Api.Domain.Interface
     public interface IProductRepository: IRepository<Product>
     {
         Task<IEnumerable<Product>?> FindByName (string name);
+        Task<Product?> FindByBarCode(string name);
     }
 }

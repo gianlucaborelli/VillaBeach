@@ -9,7 +9,6 @@ namespace Api.Domain.Entities
         public Guid ProductId { get; set; }
         public Product Product { get; set; } = new();
 
-        public Guid ProductPriceId { get; set; }
-        public ProductPrice ProductPrice { get; set; } = new();
+        public decimal Price { get; set; }
     }
 }

@@ -1,4 +1,6 @@
 using System.Net;
+using Api.Core.Mediator;
+using Api.Domain.Commands.ProductCommands;
 using Api.Domain.Dtos.Product;
 using Api.Domain.Interface;
 using AutoMapper;
@@ -12,11 +14,13 @@ namespace Api.Application.Controllers
     {
         private readonly IProductRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IMediatorHandler _mediatorHandler;
 
-        public ProductsController(IProductRepository repository, IMapper mapper)
+        public ProductsController(IProductRepository repository, IMapper mapper, IMediatorHandler mediatorHandler)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediatorHandler = mediatorHandler;
         }
 
         [HttpGet]
@@ -91,14 +95,49 @@ namespace Api.Application.Controllers
             }
         }
 
+        [HttpGet]
+        [Route("GetByBarCode", Name = "GetProductByBarCode")]
+        public async Task<ActionResult> GetByBarCode([FromQuery]string barCode)
+        {
+            try
+            {
+                var product = await _repository.FindByBarCode(barCode);
+                if (product is null)
+                    return NotFound();
+
+                var result = _mapper.Map<ProductDto>(product);
+                return Ok(result);
+            }
+            catch (ArgumentException e)
+            {
+                return StatusCode((int)HttpStatusCode.InternalServerError, e.Message);
+            }
+        }
+
         [HttpPost]
         public async Task<ActionResult> Post([FromBody] ProductDtoCreateRequest product)
         {
             try
             {
-                // TODO: Implement product creation command when available
-                // For now, returning a placeholder response
-                return BadRequest("Product creation not implemented yet. Please implement ProductCommands first.");
+                var command = new CreateProductCommand(
+                    product.Name,
+                    product.Description,
+                    product.BarCode,
+                    product.Price,
+                    product.Stock
+                );
+
+                var result = await _mediatorHandler.SendCommand(command);
+
+                if (!result.IsValid)
+                {
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                }
+
+                var createdProduct = await _repository.FindByName(product.Name);
+                var mappedResult = _mapper.Map<ProductDtoCreateResult>(createdProduct?.FirstOrDefault());
+                
+                return CreatedAtRoute("GetProductWithId", new { id = mappedResult.Id }, mappedResult);
             }
             catch (ArgumentException e)
             {
@@ -111,9 +150,26 @@ namespace Api.Application.Controllers
         {
             try
             {
-                // TODO: Implement product update command when available
-                // For now, returning a placeholder response
-                return BadRequest("Product update not implemented yet. Please implement ProductCommands first.");
+                var command = new UpdateProductCommand(
+                    product.Id,
+                    product.Name,
+                    product.Description,
+                    product.BarCode,
+                    product.Price,
+                    product.Stock
+                );
+
+                var result = await _mediatorHandler.SendCommand(command);
+
+                if (!result.IsValid)
+                {
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                }
+
+                var updatedProduct = await _repository.GetByIdAsync(product.Id);
+                var mappedResult = _mapper.Map<ProductDtoUpdateResult>(updatedProduct);
+                
+                return Ok(mappedResult);
             }
             catch (ArgumentException e)
             {
@@ -126,9 +182,16 @@ namespace Api.Application.Controllers
         {
             try
             {
-                // TODO: Implement product deletion command when available
-                // For now, returning a placeholder response
-                return BadRequest("Product deletion not implemented yet. Please implement ProductCommands first.");
+                var command = new DeleteProductCommand(id);
+
+                var result = await _mediatorHandler.SendCommand(command);
+
+                if (!result.IsValid)
+                {
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                }
+
+                return NoContent();
             }
             catch (ArgumentException e)
             {

@@ -22,12 +22,12 @@ namespace Api.Data.Mapping
                     .WithMany()
                     .HasForeignKey(p => p.ProductId);
 
-            builder.HasOne(p => p.ProductPrice)
-                    .WithMany()
-                    .HasForeignKey(p => p.ProductPriceId);
-
             builder.Property(p => p.Amount)
                     .IsRequired();
+
+            builder.Property(p => p.Price)
+                    .IsRequired()
+                    .HasPrecision(12, 2);
         }
     }
 }

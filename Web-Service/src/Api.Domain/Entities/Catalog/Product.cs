@@ -12,6 +12,6 @@ namespace Api.Domain.Entities
         
         public string? BarCode{get;set;}
 
-        public virtual List<ProductPrice> Prices { get; set; } = new();
+        public decimal Price { get; set; }
     }
 }

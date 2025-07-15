@@ -24,6 +24,12 @@ namespace Api.Data.Implementations
             return await DbSet.Where(u => u.Name.Contains(name)).ToListAsync();
         }
 
+        public async Task<Product?> FindByBarCode(string name)
+        {
+            return await DbSet.Where(u => u.BarCode.Equals(name))
+                              .FirstOrDefaultAsync();
+        }
+
         public async Task<bool> ExistAsync(Guid id)
         {
             return await DbSet.AnyAsync(p => p.Id.Equals(id));

@@ -1,5 +1,4 @@
 using Api.Domain.Dtos.Product;
-using Api.Domain.Dtos.ProductPrice;
 using Api.Domain.Dtos.Purchase;
 using Api.Domain.Dtos.User;
 using Api.Domain.Entities;
@@ -34,13 +33,7 @@ namespace Api.CrossCutting.Mappings
                 .ReverseMap();
 
             CreateMap<Product, ProductDtoAvailableResult>()
-                .ReverseMap();
-
-            CreateMap<ProductPrice, ProductPriceDto>()
-                .ReverseMap();
-            CreateMap<ProductPrice, ProductPriceDtoCreateResult>()
-                .ReverseMap();
-            CreateMap<ProductPrice, ProductPriceDtoUpdateResult>()
+                .ForMember(dest => dest.Available, opt => opt.MapFrom(src => src.Stock > 0))
                 .ReverseMap();
 
             CreateMap<Purchase, PurchaseDto>()

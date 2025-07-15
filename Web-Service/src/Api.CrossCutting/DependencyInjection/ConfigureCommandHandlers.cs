@@ -1,6 +1,7 @@
 using Domain.Commands.AuthenticationCommands;
 using Api.Domain.Commands.AuthenticationCommands;
 using Api.Domain.Commands.UserCommands;
+using Api.Domain.Commands.ProductCommands;
 using FluentValidation.Results;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
@@ -22,6 +23,11 @@ namespace Api.CrossCutting.DependencyInjection
             services.AddScoped<IRequestHandler<DeleteUserCommand, ValidationResult>, DeleteUserCommandHandler>();
             services.AddScoped<IRequestHandler<AddAddressToUserCommand, ValidationResult>, AddAddressToUserCommandHandler>();
             services.AddScoped<IRequestHandler<UpdateUserAddressCommand, ValidationResult>, UpdateUserAddressCommandHandler>();
+
+            // Product Commands
+            services.AddScoped<IRequestHandler<CreateProductCommand, ValidationResult>, CreateProductCommandHandler>();
+            services.AddScoped<IRequestHandler<UpdateProductCommand, ValidationResult>, UpdateProductCommandHandler>();
+            services.AddScoped<IRequestHandler<DeleteProductCommand, ValidationResult>, DeleteProductCommandHandler>();
         }
     }
 }

@@ -14,7 +14,6 @@ namespace Api.Data.Context
         private readonly IMediatorHandler _mediatorHandler;
 
         public DbSet<User> Users => Set<User>();
-        public DbSet<ProductPrice> ProductPrices => Set<ProductPrice>();
         public DbSet<PlanPrice> PlanPrices => Set<PlanPrice>();
         public DbSet<PurchasedProduct> PurchasedProducts => Set<PurchasedProduct>();
         public DbSet<SoldProduct> SoldProducts => Set<SoldProduct>();
@@ -44,7 +43,6 @@ namespace Api.Data.Context
             modelBuilder.Entity<Plan>(new PlanMap().Configure);
             modelBuilder.Entity<PlanPrice>(new PlanPriceMap().Configure);
             modelBuilder.Entity<Product>(new ProductMap().Configure);
-            modelBuilder.Entity<ProductPrice>(new ProductPriceMap().Configure);
             modelBuilder.Entity<Purchase>(new PurchaseMap().Configure);
             modelBuilder.Entity<PurchasedProduct>(new PurchasedProductsMap().Configure);
             modelBuilder.Entity<Sale>(new SaleMap().Configure);

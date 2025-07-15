@@ -13,5 +13,12 @@ namespace Api.Domain.Dtos.Product
         [Required(ErrorMessage ="Código de Barras é obrigatório.")]
         [EAN13]
         public string? BarCode { get; set; }
+
+        [Required(ErrorMessage ="Preço é obrigatório.")]
+        [DecimalPrecision(2)]
+        public decimal Price { get; set; }
+
+        [Required(ErrorMessage ="Estoque é obrigatório.")]
+        public int Stock { get; set; }
     }
 }
