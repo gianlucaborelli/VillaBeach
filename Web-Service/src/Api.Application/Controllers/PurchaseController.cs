@@ -3,6 +3,9 @@ using Api.Domain.Dtos.Purchase;
 using Api.Domain.Interface;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Api.Domain.Commands.PurchaseCommands;
+using Api.Core.Mediator;
+using FluentValidation.Results;
 
 namespace Api.Application.Controllers
 {
@@ -12,11 +15,13 @@ namespace Api.Application.Controllers
     {
         private readonly IPurchaseRepository _repository;
         private readonly IMapper _mapper;
+        private readonly IMediatorHandler _mediator;
 
-        public PurchaseController(IPurchaseRepository repository, IMapper mapper)
+        public PurchaseController(IPurchaseRepository repository, IMapper mapper, IMediatorHandler mediator)
         {
             _repository = repository;
             _mapper = mapper;
+            _mediator = mediator;
         }
 
         [HttpGet]
@@ -116,8 +121,11 @@ namespace Api.Application.Controllers
         {
             try
             {
-                // TODO: Implement purchase creation command when available
-                return BadRequest("Purchase creation not implemented yet. Please implement PurchaseCommands first.");
+                var command = _mapper.Map<CreatePurchaseCommand>(purchase);
+                ValidationResult result = await _mediator.SendCommand(command);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                return Ok();
             }
             catch (ArgumentException e)
             {
@@ -130,8 +138,11 @@ namespace Api.Application.Controllers
         {
             try
             {
-                // TODO: Implement purchase update command when available
-                return BadRequest("Purchase update not implemented yet. Please implement PurchaseCommands first.");
+                var command = _mapper.Map<UpdatePurchaseCommand>(purchase);
+                ValidationResult result = await _mediator.SendCommand(command);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                return Ok();
             }
             catch (ArgumentException e)
             {
@@ -144,8 +155,11 @@ namespace Api.Application.Controllers
         {
             try
             {
-                // TODO: Implement purchase deletion command when available
-                return BadRequest("Purchase deletion not implemented yet. Please implement PurchaseCommands first.");
+                var command = new DeletePurchaseCommand(id);
+                ValidationResult result = await _mediator.SendCommand(command);
+                if (!result.IsValid)
+                    return BadRequest(result.Errors.Select(e => e.ErrorMessage));
+                return Ok();
             }
             catch (ArgumentException e)
             {

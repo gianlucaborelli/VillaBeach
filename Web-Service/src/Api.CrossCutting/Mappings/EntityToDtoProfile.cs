@@ -42,6 +42,8 @@ namespace Api.CrossCutting.Mappings
                 .ReverseMap();
             CreateMap<Purchase, PurchaseDtoUpdateRequest>()
                 .ReverseMap();
+            CreateMap<PurchasedProduct, PurchasedProductDtoCreateRequest>()
+                .ReverseMap();
         }
     }
 }

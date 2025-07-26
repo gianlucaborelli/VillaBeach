@@ -6,11 +6,12 @@ using Api.CrossCutting.Identity.JWT.Settings;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
+var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
 
 builder.Host.UseSerilog((context, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 builder.Services.AddRazorPages();
-builder.Services.ConfigureMapperService();
+builder.Services.ConfigureMapperService(loggerFactory);
 builder.ConfigureDependenciesRepository();
 builder.Services.ConfigureDependenciesService();
 builder.Services.RegisterServices();

@@ -1,23 +1,24 @@
-
 using Api.CrossCutting.Mappings;
 using AutoMapper;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace Api.CrossCutting.Configuration
 {
     public static class ConfigureMapper
     {
-        public static void ConfigureMapperService(this IServiceCollection serviceCollection)
+        public static void ConfigureMapperService(this IServiceCollection services, ILoggerFactory loggerFactory)
         {
-            var mapperConfiguration = new MapperConfiguration(configuration =>
-            {
-                configuration.AddProfile(new DtoToCommand());
-                configuration.AddProfile(new EntityToDtoProfile());
-            });
+            var mapperConfigExpression = new MapperConfigurationExpression();
 
-            IMapper mapper = mapperConfiguration.CreateMapper();
+            mapperConfigExpression.AddProfile<DtoToCommand>();
+            mapperConfigExpression.AddProfile<EntityToDtoProfile>();
 
-            serviceCollection.AddSingleton(mapper);
+            var mapperConfiguration = new MapperConfiguration(mapperConfigExpression, loggerFactory);
+
+            var mapper = mapperConfiguration.CreateMapper();
+
+            services.AddSingleton(mapper);
         }
     }
 }
