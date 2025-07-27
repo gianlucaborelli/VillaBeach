@@ -2,15 +2,14 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using Api.CrossCutting.Extensions;
 using System.Text;
+using CrossCutting.Helpers;
 
 
 namespace Api.CrossCutting.Configuration
 {
-    public static class ConfigureProblemDetail
+    public static class ProblamDetailConfiguration
     {
         public static void UseProblemDetailsExceptionHandler(this IApplicationBuilder app)
         {

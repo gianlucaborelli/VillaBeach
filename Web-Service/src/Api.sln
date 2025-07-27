@@ -15,9 +15,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Service", "Api.Service\Serv
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Api.Core\Core.csproj", "{2FA3A91F-134E-47B6-9814-B5708E3DCEF6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Bus", "Api.CrossCutting.Bus\CrossCutting.Bus.csproj", "{272306D0-E2B7-4AF0-9558-814573AC9749}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Api.Crosscutting.Identity", "Api.Crosscutting.Identity\Crosscutting.Identity.csproj", "{99C48D90-78C1-48E5-9779-475E6188150A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Crosscutting.Identity", "Api.Crosscutting.Identity\Crosscutting.Identity.csproj", "{99C48D90-78C1-48E5-9779-475E6188150A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossCutting.Communication", "Api.CrossCutting.Communication\CrossCutting.Communication.csproj", "{F9E9369F-B038-49B9-970A-D0EA117F6F99}"
 EndProject
@@ -51,10 +49,6 @@ Global
 		{2FA3A91F-134E-47B6-9814-B5708E3DCEF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2FA3A91F-134E-47B6-9814-B5708E3DCEF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2FA3A91F-134E-47B6-9814-B5708E3DCEF6}.Release|Any CPU.Build.0 = Release|Any CPU
-		{272306D0-E2B7-4AF0-9558-814573AC9749}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{272306D0-E2B7-4AF0-9558-814573AC9749}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{272306D0-E2B7-4AF0-9558-814573AC9749}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{272306D0-E2B7-4AF0-9558-814573AC9749}.Release|Any CPU.Build.0 = Release|Any CPU
 		{99C48D90-78C1-48E5-9779-475E6188150A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{99C48D90-78C1-48E5-9779-475E6188150A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{99C48D90-78C1-48E5-9779-475E6188150A}.Release|Any CPU.ActiveCfg = Release|Any CPU

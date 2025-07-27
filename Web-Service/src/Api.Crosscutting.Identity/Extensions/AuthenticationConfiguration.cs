@@ -3,12 +3,12 @@ using Api.CrossCutting.Identity.Authentication.Model;
 using Api.CrossCutting.Identity.Data.Context;
 using Api.CrossCutting.Identity.JWT.Manager;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -16,7 +16,7 @@ namespace Api.CrossCutting.Identity.Extensions
 {
     public static class AuthenticationConfiguration
     {
-        public static WebApplicationBuilder AddAuthenticationConfiguration(this WebApplicationBuilder builder)
+        public static void AddAuthenticationConfiguration(this IHostApplicationBuilder builder)
         {
             builder.ConfigureAuthentication();
             builder.ConfigureIdentity();
@@ -25,12 +25,10 @@ namespace Api.CrossCutting.Identity.Extensions
 
             builder.Services.AddTransient<IJwtAuthManager, JwtAuthManager>();            
 
-            builder.Services.AddDbContext<IdentityContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));                 
-
-            return builder;
+            builder.Services.AddDbContext<IdentityContext>(options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));     
         }
 
-        private static void ConfigureIdentity(this WebApplicationBuilder builder)
+        private static void ConfigureIdentity(this IHostApplicationBuilder builder)
         {
             builder.Services.AddIdentity<AppUser, IdentityRole<Guid>>(options =>
             {
@@ -55,7 +53,7 @@ namespace Api.CrossCutting.Identity.Extensions
                 .AddDefaultTokenProviders();
         }
 
-        private static void ConfigureAuthentication(this WebApplicationBuilder builder)
+        private static void ConfigureAuthentication(this IHostApplicationBuilder builder)
         {
             var jwtSection = builder.Configuration.GetSection("JwtSettings");
             var secret = jwtSection["Secret"] ?? throw new ApplicationException("Token key is not configured.");

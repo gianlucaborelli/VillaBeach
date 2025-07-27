@@ -1,13 +1,9 @@
 using Api.Service.Interfaces;
-using Api.Domain.Interface;
-using AutoMapper;
 
 namespace Api.Service.Services
 {
-    public class UserSettingsService(IMapper mapper) : IUserSettingsService
+    public class UserSettingsService() : IUserSettingsService
     {
-        private readonly IMapper _mapper = mapper;
-
         public Dictionary<string, int> GetSettingByUserId()
         {
             throw new NotImplementedException();

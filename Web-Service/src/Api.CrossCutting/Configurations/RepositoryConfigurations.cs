@@ -7,16 +7,16 @@ using Api.Data.Implementations;
 using Api.Data.Repository;
 using Api.Data.Repository.EventSourcing;
 using Api.Domain.Interface;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
-namespace Api.CrossCutting.DependencyInjection
+namespace CrossCutting.Configuration
 {
-    public static class ConfigureRepository
+    public static class RepositoryConfigurations
     {
-        public static void ConfigureDependenciesRepository(this WebApplicationBuilder builder)
+        public static void AddRepositoryDependencies(this IHostApplicationBuilder builder)
         {
             builder.Services.AddDbContext<MyContext>(
                     options => options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"))

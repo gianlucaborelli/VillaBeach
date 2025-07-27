@@ -1,14 +1,16 @@
 using Api.CrossCutting.Mappings;
 using AutoMapper;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
 namespace Api.CrossCutting.Configuration
 {
-    public static class ConfigureMapper
+    public static class AutoMapperConfiguration
     {
-        public static void ConfigureMapperService(this IServiceCollection services, ILoggerFactory loggerFactory)
+        public static void AddAutoMapperConfiguration(this WebApplicationBuilder builder)
         {
+            var loggerFactory = LoggerFactory.Create(builder => builder.AddConsole());
             var mapperConfigExpression = new MapperConfigurationExpression();
 
             mapperConfigExpression.AddProfile<DtoToCommand>();
@@ -18,7 +20,7 @@ namespace Api.CrossCutting.Configuration
 
             var mapper = mapperConfiguration.CreateMapper();
 
-            services.AddSingleton(mapper);
+            builder.Services.AddSingleton(mapper);
         }
     }
 }

@@ -1,15 +1,17 @@
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.OpenApi.Models;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Api.CrossCutting.Configuration
 {
-    public static class SwaggerConfiguration
+    public static class SwaggerConfigurations
     {
-        public static void ConfigureSwagger(this IServiceCollection services)
+        public static void AddSwaggerConfiguration(this WebApplicationBuilder builder)
         {
-            services.AddSwaggerGen(options =>
+            builder.Services.AddSwaggerGen(options =>
             {
                 var xmlFile = "Application.xml";
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
@@ -78,6 +80,27 @@ namespace Api.CrossCutting.Configuration
                     operation.Security = new List<OpenApiSecurityRequirement> { securityRequirement };
                 }
             }
+        }
+
+        public static void UseSwaggerConfiguration(this WebApplication app)
+        {
+            if (app.Environment.IsDevelopment() || app.Environment.IsStaging())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(opt =>
+                {
+                    opt.SwaggerEndpoint("/swagger/v1/swagger.json", "villabeach_webservice V1");
+                });
+            }
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.Path == "/swagger" && (app.Environment.IsDevelopment() || app.Environment.IsStaging()))
+                {
+                    context.Response.Redirect("/swagger/index.html");
+                    return;
+                }
+                await next();
+            });
         }
     }
 }

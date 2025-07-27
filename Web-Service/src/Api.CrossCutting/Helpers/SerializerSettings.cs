@@ -1,7 +1,7 @@
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 
-namespace Api.CrossCutting.Extensions
+namespace CrossCutting.Helpers
 {
     public static class SerializerSettings
     {
